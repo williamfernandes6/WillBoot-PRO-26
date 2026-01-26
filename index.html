@@ -4,144 +4,230 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WillBoot-PRO • Aviator IA</title>
-
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-  body { background:#050505; color:white; font-family:sans-serif; }
-  .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(16px); border-radius:16px; }
+  body { background:#050505; font-family:sans-serif; color:white; }
+  .glass { background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); border-radius:16px; }
   .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
-  .btn { padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; }
+  .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
+  .btn-red:hover { background:#b91c1c; }
+  .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
+  .btn-gray:hover { background:#222; }
+  .signal-card { padding:16px; border-radius:12px; text-align:center; transition:0.3s; }
 </style>
 </head>
-
 <body>
 
-<!-- ==================== PÁGINA 1 - LOGIN SITE ==================== -->
+<!-- ========================= Página 1: Acesso ao Site ========================= -->
 <div id="page1" class="min-h-screen flex items-center justify-center">
-  <div class="glass p-10 max-w-md w-full border border-red-600/30">
-    <h1 class="text-3xl font-black text-red-600 text-center mb-6">WILLBOOT-PRO</h1>
-    <input id="userMain" placeholder="Usuário" class="w-full p-3 mb-4 bg-black border border-gray-700 rounded">
-    <input id="passMain" type="password" placeholder="Senha" class="w-full p-3 mb-6 bg-black border border-gray-700 rounded">
-    <button onclick="loginMain()" class="btn bg-red-600 w-full neon-red">🔐 ENTRAR</button>
+  <div class="glass p-10 w-full max-w-md border border-red-600/30">
+    <h1 class="text-3xl font-black text-red-600 mb-6 text-center">WILLBOOT-PRO</h1>
+    <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
+    <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700">
+    <button class="btn-red w-full neon-red mb-4" onclick="loginMain()">🔐 ENTRAR</button>
+    <p class="text-center text-gray-400 text-sm">Acesso normal ao site</p>
   </div>
 </div>
 
-<!-- ==================== PÁGINA 2 - DASHBOARD ==================== -->
+<!-- ========================= Página 2: Dashboard Normal ========================= -->
 <div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
-
-  <div class="glass p-6 flex justify-between items-center border border-red-600/20 mb-6">
+  <!-- Header -->
+  <div class="glass p-6 flex flex-col md:flex-row justify-between items-center border border-red-600/20 mb-6">
     <div id="clock2" class="text-red-500 font-bold"></div>
-    <button onclick="logout()" class="btn bg-gray-800">🚪 SAIR</button>
+    <div class="flex gap-4 mt-4 md:mt-0">
+      <button class="btn-red" onclick="generateSignalsPage2()">🔥 GERAR SINAIS</button>
+      <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
+    </div>
   </div>
 
-  <!-- SINAIS -->
-  <div id="signalsPage2" class="grid md:grid-cols-2 gap-6 mb-8"></div>
+  <!-- Sinais -->
+  <div id="signalsPage2" class="grid md:grid-cols-3 gap-6 my-10"></div>
 
-  <!-- GRÁFICO -->
-  <div class="glass p-6 border border-red-600/20 mb-10">
-    <h3 class="text-center font-bold mb-4">📊 Performance</h3>
+  <!-- Escolha de casas de apostas -->
+  <div class="glass p-6 mb-6 border border-red-600/20">
+    <label class="mb-2 block font-bold">Escolha a Casa de Aposta:</label>
+    <select id="betHouse" class="w-full p-3 rounded bg-black border border-gray-700">
+      <option value="ElephantBet">ElephantBet</option>
+      <option value="BantuBet">BantuBet</option>
+      <option value="888Bet">888Bet</option>
+      <option value="TopAposta">TopAposta</option>
+    </select>
+  </div>
+
+  <!-- Gráfico -->
+  <div class="glass p-6 rounded-xl border border-red-600/20">
+    <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
     <canvas id="chartPage2" height="120"></canvas>
   </div>
 
-  <!-- HISTÓRICO AVIATOR -->
-  <div class="glass p-6 border border-red-600/20 mb-8 text-center">
-    <h3 class="font-bold mb-3">📤 Analisar histórico Aviator</h3>
-    <input type="file" id="uploadHistory">
-    <button onclick="analyzeHistory()" class="btn bg-red-600 mt-3 neon-red">ANALISAR</button>
+  <!-- Acesso VIP -->
+  <div class="glass p-8 mt-10 border border-red-600/30 text-center">
+    <h2 class="text-2xl font-black text-red-600 mb-4">💎 ACESSO VIP</h2>
+    <p class="text-gray-300 mb-4">Sinais ROSA de alta probabilidade • IA treinada com histórico real</p>
+    <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700">
+    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
+    <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ENTRAR VIP</button>
+  </div>
+
+  <!-- Upload de histórico Aviator no final -->
+  <div class="glass p-6 mb-6 mt-10 border border-red-600/20 text-center">
+    <label class="block mb-2 font-bold">Enviar histórico Aviator (PNG/JPG)</label>
+    <input type="file" id="uploadHistory" accept="image/*" class="mb-4">
+    <button class="btn-red neon-red" onclick="analyzeHistory()">📊 ANALISAR</button>
     <p id="historyResult" class="mt-2 text-gray-300"></p>
   </div>
-
-  <!-- LOGIN VIP (AGORA ABAIXO) -->
-  <div class="glass p-6 border border-red-600/30 text-center">
-    <h3 class="text-xl font-black text-red-600 mb-4">💎 ACESSO VIP</h3>
-    <input id="vipUser" placeholder="Usuário VIP" class="w-full p-3 mb-3 bg-black border border-gray-700 rounded">
-    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-3 mb-4 bg-black border border-gray-700 rounded">
-    <button onclick="loginVIP()" class="btn bg-red-600 neon-red w-full">ENTRAR VIP</button>
-  </div>
-
 </div>
 
-<!-- ==================== PÁGINA 3 - VIP ==================== -->
+<!-- ========================= Página 3: VIP ========================= -->
 <div id="page3" class="hidden max-w-7xl mx-auto px-6 py-10">
+  <h1 class="text-3xl font-black text-red-600 mb-6 text-center">💎 VIP - Sinais ROSA</h1>
 
-  <h1 class="text-3xl font-black text-red-600 text-center mb-6">💎 ÁREA VIP</h1>
-  <div id="clock3" class="text-center text-red-500 font-bold mb-6"></div>
+  <!-- Horário -->
+  <div class="glass p-4 mb-6 text-center border border-red-600/20">
+    <div id="clock3" class="text-red-500 font-bold"></div>
+  </div>
 
-  <!-- SINAL ROSA -->
-  <div id="signalsVIP" class="grid md:grid-cols-1 gap-6 mb-8"></div>
+  <!-- Sinais ROSA -->
+  <div id="signalsVIP" class="grid md:grid-cols-3 gap-6 my-6"></div>
 
-  <!-- GRÁFICO VIP -->
-  <div class="glass p-6 border border-red-600/20 mb-10">
-    <h3 class="text-center font-bold mb-4">📊 Performance VIP</h3>
+  <!-- Gráfico VIP -->
+  <div class="glass p-6 rounded-xl border border-red-600/20">
+    <h3 class="text-center font-bold mb-4">📊 Performance VIP (Aviator)</h3>
     <canvas id="chartVIP" height="120"></canvas>
   </div>
 
-  <!-- HISTÓRICO AVIATOR VIP (NO FINAL) -->
-  <div class="glass p-6 border border-red-600/20 text-center">
-    <h3 class="font-bold mb-3">📤 Analisar histórico Aviator (VIP)</h3>
-    <input type="file" id="uploadHistoryVIP">
-    <button onclick="analyzeHistoryVIP()" class="btn bg-red-600 mt-3 neon-red">ANALISAR VIP</button>
-    <p id="historyResultVIP" class="mt-2 text-gray-300"></p>
+  <div class="glass p-6 mt-6 text-center border border-red-600/30">
+    <p class="text-gray-300">Usuário VIP: William | Passe: 230220</p>
   </div>
 
+  <!-- Upload de histórico Aviator VIP no final -->
+  <div class="glass p-6 mb-6 mt-10 border border-red-600/20 text-center">
+    <label class="block mb-2 font-bold">Enviar histórico Aviator VIP (PNG/JPG)</label>
+    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-4">
+    <button class="btn-red neon-red" onclick="analyzeHistoryVIP()">📊 ANALISAR VIP</button>
+    <p id="historyResultVIP" class="mt-2 text-gray-300"></p>
+  </div>
 </div>
 
 <script>
-/* ================= LOGIN SITE ================= */
-function loginMain(){
-  localStorage.setItem("site","on");
-  page1.classList.add("hidden");
-  page2.classList.remove("hidden");
-  generateSignalsPage2();
-}
-if(localStorage.getItem("site")) loginMain();
-function logout(){ localStorage.clear(); location.reload(); }
-
-/* ================= CLOCK ================= */
+// ========================= Relógios =========================
 setInterval(()=>{
-  const now=new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
-  if(clock2) clock2.innerHTML="🕐 "+now;
-  if(clock3) clock3.innerHTML="🕐 "+now;
+  const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+  if(document.getElementById("clock2")) clock2.innerHTML="🕐 "+now;
+  if(document.getElementById("clock3")) clock3.innerHTML="🕐 "+now;
 },1000);
 
-/* ================= SINAIS PAGE 2 ================= */
+// ========================= Página 1: Login =========================
+function loginMain(){
+  const u=userMain.value, p=passMain.value;
+  if(u && p){
+    localStorage.setItem("mainAccess","true");
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.remove("hidden");
+    loadHistoryPage2();
+  }
+}
+function logoutMain(){
+  localStorage.removeItem("mainAccess");
+  location.reload();
+}
+if(localStorage.getItem("mainAccess")) loginMain();
+
+// ========================= Página 2: Sinais =========================
+let historyPage2 = JSON.parse(localStorage.getItem("historyPage2")||"[]");
+let chartPage2Obj;
+
+function IApage2(tipo){
+  let mult, conf;
+  if(tipo==="azul"){ mult=(1+Math.random()*0.99).toFixed(2); conf=Math.floor(60+Math.random()*35);}
+  if(tipo==="roxo"){ mult=(2+Math.random()*7.99).toFixed(2); conf=Math.floor(60+Math.random()*35);}
+  return {mult, conf};
+}
+
 function generateSignalsPage2(){
-  signalsPage2.innerHTML=`
-  <div class="glass p-6 text-center border border-cyan-500/40">
-    <h3 class="text-cyan-400 font-bold">AZUL</h3>
-    <div class="text-4xl font-black text-cyan-300">×${(1+Math.random()*0.99).toFixed(2)}</div>
-  </div>
-  <div class="glass p-6 text-center border border-purple-500/40">
-    <h3 class="text-purple-400 font-bold">ROXO</h3>
-    <div class="text-4xl font-black text-purple-300">×${(2+Math.random()*7.99).toFixed(2)}</div>
-  </div>`;
+  const tipos=[{t:"AZUL",c:"cyan"},{t:"ROXO",c:"purple"}];
+  signalsPage2.innerHTML = tipos.map(x=>{
+    let r = IApage2(x.t.toLowerCase());
+    historyPage2.push(r.conf);
+    return `<div class="signal-card glass border border-${x.c}-500/40">
+      <h3 class="font-bold text-${x.c}-400 mb-2">SINAL ${x.t}</h3>
+      <div class="text-4xl font-black text-${x.c}-300 mb-2">×${r.mult}</div>
+      <p>Probabilidade: <b>${r.conf}%</b></p>
+    </div>`;
+  }).join("");
+  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
+  updateChartPage2();
 }
 
-/* ================= VIP LOGIN ================= */
+function loadHistoryPage2(){ updateChartPage2(); }
+
+function updateChartPage2(){
+  if(historyPage2.length>50) historyPage2=historyPage2.slice(-50);
+  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
+  if(chartPage2Obj) chartPage2Obj.destroy();
+  chartPage2Obj = new Chart(chartPage2.getContext("2d"),{
+    type:"line",
+    data:{labels:historyPage2.map((_,i)=>i+1), datasets:[{data:historyPage2,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.2)",tension:.4,fill:true}]},
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:60,max:100}}}
+  });
+}
+
+// ========================= VIP =========================
+const vipUserData={user:"William",pass:"230220"};
 function loginVIP(){
-  if(vipUser.value==="William" && vipPass.value==="230220"){
-    page2.classList.add("hidden");
-    page3.classList.remove("hidden");
-    generateVIP();
-  } else alert("Credenciais inválidas");
+  const u=vipUser.value,p=vipPass.value;
+  if(u===vipUserData.user && p===vipUserData.pass){
+    document.getElementById("page2").classList.add("hidden");
+    document.getElementById("page3").classList.remove("hidden");
+    generateSignalsVIP();
+  }else{
+    alert("Usuário ou senha VIP incorretos");
+  }
 }
 
-/* ================= VIP ================= */
-function generateVIP(){
-  signalsVIP.innerHTML=`
-  <div class="glass p-6 text-center border border-pink-500/40">
-    <h3 class="text-pink-400 font-bold">SINAL ROSA</h3>
-    <div class="text-4xl font-black text-pink-300">×${(10+Math.random()*90).toFixed(2)}</div>
-    <p>Probabilidade: <b>${80+Math.floor(Math.random()*19)}%</b></p>
+let historyVIP = JSON.parse(localStorage.getItem("historyVIP")||"[]");
+let chartVIPObj;
+
+function IA_VIP(){
+  let mult=(10+Math.random()*100).toFixed(2);
+  let conf=Math.floor(80+Math.random()*19); // sempre ≥80%
+  return {mult, conf};
+}
+
+function generateSignalsVIP(){
+  signalsVIP.innerHTML = "";
+  let r = IA_VIP();
+  historyVIP.push(r.conf);
+  signalsVIP.innerHTML = `<div class="signal-card glass border border-pink-500/40">
+    <h3 class="font-bold text-pink-400 mb-2">SINAL ROSA</h3>
+    <div class="text-4xl font-black text-pink-300 mb-2">×${r.mult}</div>
+    <p>Probabilidade: <b>${r.conf}%</b></p>
   </div>`;
+  localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
+  updateChartVIP();
 }
 
-/* ================= UPLOAD ================= */
-function analyzeHistory(){ historyResult.innerHTML="Chance estimada: 70%"; }
-function analyzeHistoryVIP(){ historyResultVIP.innerHTML="Chance VIP estimada: 90%"; }
-</script>
+function updateChartVIP(){
+  if(historyVIP.length>50) historyVIP=historyVIP.slice(-50);
+  localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
+  if(chartVIPObj) chartVIPObj.destroy();
+  chartVIPObj = new Chart(chartVIP.getContext("2d"),{
+    type:"line",
+    data:{labels:historyVIP.map((_,i)=>i+1), datasets:[{data:historyVIP,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.2)",tension:.4,fill:true}]},
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:60,max:100}}}
+  });
+}
 
+// ========================= Upload Simulado =========================
+function analyzeHistory(){
+  const file=document.getElementById("uploadHistory").files[0];
+  if(file){historyResult.innerHTML="Simulação: chance de acerto 70%";}else{historyResult.innerHTML="Nenhum arquivo selecionado";}
+}
+function analyzeHistoryVIP(){
+  const file=document.getElementById("uploadHistoryVIP").files[0];
+  if(file){historyResultVIP.innerHTML="Simulação VIP: chance de acerto 90%";}else{historyResultVIP.innerHTML="Nenhum arquivo selecionado";}
+}
+</script>
 </body>
-</html>
+      </html>

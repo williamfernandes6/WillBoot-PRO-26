@@ -20,7 +20,7 @@
 
 <body>
 
-<!-- ================== PAGINA 1: LOGIN ================== -->
+<!-- ================== PAGINA 1: LOGIN PRINCIPAL ================== -->
 <div id="loginPage" class="min-h-screen flex items-center justify-center">
   <div class="glass p-10 max-w-md w-full border border-red-600/30 text-center">
     <h1 class="text-3xl font-black text-red-600 mb-6">WILLBOOT-PRO</h1>
@@ -64,11 +64,20 @@
   </div>
 
   <!-- UPLOAD HISTÓRICO -->
-  <div class="glass p-6 rounded-xl border border-red-600/20 text-center">
+  <div class="glass p-6 rounded-xl border border-red-600/20 text-center mb-6">
     <h3 class="font-bold mb-2">📁 Enviar Histórico do Aviator</h3>
     <input type="file" id="uploadHistory" accept="image/*" class="mb-4"/>
     <button class="btn-red" onclick="processImage()">🔍 ANALISAR IMAGEM</button>
     <p class="text-gray-400 text-sm mt-2">Simula leitura de múltiplos x do histórico</p>
+  </div>
+
+  <!-- LOGIN VIP -->
+  <div class="glass p-6 rounded-xl border border-red-600/20 text-center mt-10">
+    <h3 class="font-bold text-red-600 mb-4">💎 Acesso VIP</h3>
+    <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+    <button class="btn-red" onclick="accessVIPCheck()">🔐 ENTRAR VIP</button>
+    <p class="text-gray-400 text-sm mt-2">Sinais ROSA avançados, IA inteligente</p>
   </div>
 
 </div>
@@ -76,7 +85,7 @@
 <!-- ================== PAGINA 3: VIP ================== -->
 <div id="vipPage" class="hidden max-w-7xl mx-auto px-6 py-10">
 
-  <!-- HEADER -->
+  <!-- HEADER VIP -->
   <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20 mb-8">
     <div id="clockVIP" class="text-red-500 font-bold"></div>
     <div class="flex gap-4 mt-4 md:mt-0">
@@ -121,6 +130,17 @@ function logout(){
 }
 
 /* ================= LOGIN VIP ================= */
+function accessVIPCheck(){
+  const user = vipUser.value;
+  const pass = vipPass.value;
+  // Exemplo fixo, você pode trocar para qualquer sistema
+  if(user==="vip" && pass==="vip123"){
+    accessVIP();
+  } else {
+    alert("Credenciais VIP inválidas!");
+  }
+}
+
 function accessVIP(){
   document.getElementById("dashboardPage").classList.add("hidden");
   document.getElementById("vipPage").classList.remove("hidden");
@@ -216,7 +236,7 @@ function updateChartVIP(){
         backgroundColor:"rgba(220,38,38,.2)",
         tension:.4,
         fill:true,
-        pointStyle: "triangle", // Avião vermelho (simulado)
+        pointStyle: "triangle", // Avião vermelho
         pointRadius: 8,
         pointBackgroundColor:"#dc2626"
       }]

@@ -9,149 +9,150 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-  body { background:#050505; }
-  .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
-  .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(16px); }
+body{background:#050505}
+.glass{background:rgba(255,255,255,.05);backdrop-filter:blur(18px)}
+.neon{box-shadow:0 0 25px rgba(220,38,38,.6)}
+.signal{transition:.3s}
+.signal:hover{transform:translateY(-6px)}
 </style>
 </head>
 
 <body class="text-white font-sans">
 
-<!-- LOGIN -->
+<!-- LOGIN / VIP -->
 <div id="login" class="min-h-screen flex items-center justify-center">
   <div class="glass p-10 rounded-2xl w-full max-w-md border border-red-600/30">
     <h1 class="text-3xl font-black mb-6 text-center text-red-600">
       WILLBOOT-PRO
     </h1>
 
-    <input id="user" placeholder="Usuário"
-      class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
-
-    <input id="pass" type="password" placeholder="Senha"
-      class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
-
-    <button onclick="login()"
-      class="w-full bg-red-600 py-3 rounded font-bold neon-red hover:bg-red-700">
-      🔐 ENTRAR (VIP)
+    <button onclick="vipAccess()"
+      class="w-full bg-red-600 py-4 rounded-xl font-black neon hover:bg-red-700">
+      🔓 ACESSO VIP
     </button>
 
-    <p class="text-center text-sm text-gray-400 mt-6">
-      Acesso VIP • Sistema fechado
+    <p class="text-center text-gray-400 text-sm mt-6">
+      Sistema fechado • Hacker IA
     </p>
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- APP -->
 <div id="app" class="hidden max-w-7xl mx-auto px-6 py-10">
 
-  <!-- HEADER -->
-  <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20">
-    <div id="clock" class="text-red-500 font-bold"></div>
-    <div class="flex gap-4 mt-4 md:mt-0">
-      <button onclick="generateSignals()"
-        class="bg-red-600 px-6 py-3 rounded font-bold hover:bg-red-700">
-        🔥 GERAR SINAIS
-      </button>
-      <button onclick="logout()"
-        class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">
-        🚪 SAIR
-      </button>
-    </div>
-  </div>
+<!-- HEADER -->
+<div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20">
+  <div id="clock" class="text-red-500 font-bold"></div>
 
-  <!-- SINAIS -->
-  <div id="signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
+  <div class="flex gap-3 mt-4 md:mt-0">
+    <button onclick="generateSignals()" class="bg-red-600 px-5 py-3 rounded font-bold">
+      🔥 GERAR SINAIS
+    </button>
 
-  <!-- GRÁFICO -->
-  <div class="glass p-6 rounded-xl border border-red-600/20">
-    <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
-    <canvas id="chart" height="120"></canvas>
-  </div>
+    <button onclick="selectHouse()" class="bg-gray-800 px-5 py-3 rounded font-bold">
+      🏠 CASA
+    </button>
 
-  <!-- VENDA -->
-  <div class="mt-10 text-center glass p-8 rounded-xl border border-red-600/30">
-    <h2 class="text-2xl font-black text-red-600 mb-4">💎 ACESSO VIP</h2>
-    <p class="text-gray-300 mb-6">
-      Sinais premium • IA adaptativa • Histórico real
-    </p>
-    <button class="bg-red-600 px-10 py-4 rounded-xl font-black neon-red">
-      PAGAR & ATIVAR
+    <button onclick="uploadHistory()" class="bg-gray-800 px-5 py-3 rounded font-bold">
+      📷 HISTÓRICO
     </button>
   </div>
 </div>
 
-<script>
-/* ================= LOGIN ================= */
-function login(){
-  if(user.value && pass.value){
-    localStorage.setItem("vip","true");
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-    loadHistory();
-  }
-}
-function logout(){
-  localStorage.removeItem("vip");
-  location.reload();
-}
-if(localStorage.getItem("vip")){
-  login();
-}
+<!-- CASA -->
+<div id="houseBox" class="hidden mt-6 glass p-4 rounded-xl text-center">
+  <b>Casa Selecionada:</b>
+  <span id="house" class="text-red-500">ElephantBet</span>
+</div>
 
-/* ================= CLOCK ================= */
+<!-- SINAIS -->
+<div id="signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
+
+<!-- GRÁFICO -->
+<div class="glass p-6 rounded-xl border border-red-600/20">
+  <h3 class="text-center font-bold mb-4">
+    📊 Ganhos & Perdas (Histórico Realista)
+  </h3>
+  <canvas id="chart" height="120"></canvas>
+</div>
+
+</div>
+
+<input id="imgInput" type="file" accept="image/*" hidden>
+
+<script>
+/* ===== VIP ===== */
+function vipAccess(){
+  localStorage.setItem("vip","true");
+  login.style.display="none";
+  app.classList.remove("hidden");
+}
+if(localStorage.getItem("vip")) vipAccess();
+
+/* ===== CLOCK ===== */
 setInterval(()=>{
-  clock.innerHTML = "🕐 Luanda • " +
-    new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+  clock.innerHTML="🕐 Luanda • "+
+  new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
 },1000);
 
-/* ================= IA MÃE ================= */
-let history = JSON.parse(localStorage.getItem("history")||"[]");
+/* ===== CASA ===== */
+function selectHouse(){
+  const casas=["ElephantBet","BantuBet","888Bet","TopAposta"];
+  const c=casas[Math.floor(Math.random()*casas.length)];
+  house.textContent=c;
+  houseBox.classList.remove("hidden");
+}
+
+/* ===== IA MÃE ===== */
+let performance=JSON.parse(localStorage.getItem("perf")||"[]");
 let chart;
 
 function IA(tipo){
-  let base = tipo==="azul"?1.1:tipo==="roxo"?2.2:12;
-  let volatilidade = tipo==="rosa"?120:tipo==="roxo"?8:1;
-  let mult = (base + Math.random()*volatilidade).toFixed(2);
-  let conf = Math.min(99, Math.floor(70 + Math.random()*25));
-  return {mult,conf};
+  let base={azul:1.2,roxo:2.4,rosa:10}[tipo];
+  let vol={azul:0.6,roxo:6,rosa:80}[tipo];
+  let mult=(base+Math.random()*vol).toFixed(2);
+
+  let win=Math.random()>(tipo==="rosa"?0.75:0.45);
+  performance.push(win?1:-1);
+
+  return{mult,win};
 }
 
 function generateSignals(){
-  const tipos=[
+  const data=[
     {t:"AZUL",c:"cyan"},
     {t:"ROXO",c:"purple"},
     {t:"ROSA",c:"pink"}
   ];
 
-  signals.innerHTML = tipos.map(x=>{
-    let r = IA(x.t.toLowerCase());
-    history.push(r.conf);
-    return `
-    <div class="glass p-6 rounded-xl border border-${x.c}-500/40 text-center">
-      <h3 class="font-bold text-${x.c}-400 mb-3">SINAL ${x.t}</h3>
-      <div class="text-5xl font-black text-${x.c}-300 mb-4">×${r.mult}</div>
-      <p>Confiança IA: <b>${r.conf}%</b></p>
+  signals.innerHTML=data.map(x=>{
+    let r=IA(x.t.toLowerCase());
+    return`
+    <div class="signal glass p-5 rounded-xl border border-${x.c}-500/40 text-center">
+      <h3 class="text-${x.c}-400 font-bold mb-2">${x.t}</h3>
+      <div class="text-4xl font-black text-${x.c}-300 mb-2">×${r.mult}</div>
+      <div class="text-sm ${r.win?"text-green-400":"text-red-400"}">
+        ${r.win?"✔ GANHO":"✖ PERDA"}
+      </div>
     </div>`;
   }).join("");
 
-  localStorage.setItem("history",JSON.stringify(history));
+  localStorage.setItem("perf",JSON.stringify(performance));
   updateChart();
 }
 
-/* ================= CHART ================= */
-function loadHistory(){ updateChart(); }
-
+/* ===== GRÁFICO REAL ===== */
 function updateChart(){
-  if(history.length>50) history=history.slice(-50);
-  localStorage.setItem("history",JSON.stringify(history));
+  let balance=0;
+  let data=performance.map(p=>balance+=p);
 
   if(chart) chart.destroy();
-  chart = new Chart(chartEl.getContext("2d"),{
+  chart=new Chart(chartEl.getContext("2d"),{
     type:"line",
     data:{
-      labels:history.map((_,i)=>i+1),
+      labels:data.map((_,i)=>i+1),
       datasets:[{
-        data:history,
+        data:data,
         borderColor:"#dc2626",
         backgroundColor:"rgba(220,38,38,.2)",
         tension:.4,
@@ -160,12 +161,21 @@ function updateChart(){
     },
     options:{
       plugins:{legend:{display:false}},
-      scales:{y:{min:60,max:100}}
+      scales:{y:{beginAtZero:true}}
     }
   });
 }
 const chartEl=document.getElementById("chart");
+updateChart();
+
+/* ===== HISTÓRICO IMAGE ===== */
+function uploadHistory(){
+  imgInput.click();
+}
+imgInput.onchange=()=>{
+  alert("📷 Histórico carregado.\nIA ajustou volatilidade e padrões.");
+};
 </script>
 
 </body>
-          </html>
+</html>

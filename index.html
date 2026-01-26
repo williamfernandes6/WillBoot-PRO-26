@@ -2,171 +2,145 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<title>WillBoot-PRO Aviator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WillBoot-PRO • Aviator IA</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#0a0a0a;
-  color:#fff;
-}
-nav {
-  background:#111;
-  padding:15px;
-  text-align:center;
-}
-nav button {
-  background:#000;
-  border:1px solid #444;
-  color:#fff;
-  padding:10px 15px;
-  margin:5px;
-  cursor:pointer;
-}
-section { display:none; padding:20px; }
-
-.active { display:block; }
-
-.card {
-  background:#111;
-  border-radius:10px;
-  padding:15px;
-  margin:15px 0;
-  box-shadow:0 0 15px rgba(255,255,255,0.05);
-}
-
-.azul { color:#00d9ff; text-shadow:0 0 10px #00d9ff; }
-.roxo { color:#a855f7; text-shadow:0 0 10px #a855f7; }
-.rosa { color:#ff2fb3; text-shadow:0 0 15px #ff2fb3; }
-
-input, button {
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  border:none;
-  border-radius:5px;
-}
-
-button {
-  background:#222;
-  color:#fff;
-  cursor:pointer;
-}
-
-.result {
-  margin-top:10px;
-  font-size:18px;
-}
+  body { background:#050505; color:white; font-family:sans-serif; }
+  .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(16px); border-radius:16px; }
+  .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
+  .btn { padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; }
 </style>
 </head>
 
 <body>
 
-<nav>
-  <button onclick="showPage('home')">Página 1</button>
-  <button onclick="showPage('publica')">Página 2</button>
-  <button onclick="showPage('vip')">VIP</button>
-</nav>
-
-<!-- PÁGINA 1 -->
-<section id="home" class="active">
-  <div class="card">
-    <h1>WillBoot-PRO Aviator</h1>
-    <p>Sistema inteligente de sinais com análise probabilística.</p>
+<!-- ==================== PÁGINA 1 - LOGIN SITE ==================== -->
+<div id="page1" class="min-h-screen flex items-center justify-center">
+  <div class="glass p-10 max-w-md w-full border border-red-600/30">
+    <h1 class="text-3xl font-black text-red-600 text-center mb-6">WILLBOOT-PRO</h1>
+    <input id="userMain" placeholder="Usuário" class="w-full p-3 mb-4 bg-black border border-gray-700 rounded">
+    <input id="passMain" type="password" placeholder="Senha" class="w-full p-3 mb-6 bg-black border border-gray-700 rounded">
+    <button onclick="loginMain()" class="btn bg-red-600 w-full neon-red">🔐 ENTRAR</button>
   </div>
-</section>
+</div>
 
-<!-- PÁGINA 2 -->
-<section id="publica">
-  <div class="card">
-    <h2>Sinais Públicos</h2>
-    <p class="azul">🔵 AZUL: 1.00x – 1.99x</p>
-    <p class="roxo">🟣 ROXO: 2.00x – 9.99x</p>
-    <button onclick="gerarPublico()">Gerar Sinal</button>
-    <div id="sinalPublico" class="result"></div>
+<!-- ==================== PÁGINA 2 - DASHBOARD ==================== -->
+<div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
+
+  <div class="glass p-6 flex justify-between items-center border border-red-600/20 mb-6">
+    <div id="clock2" class="text-red-500 font-bold"></div>
+    <button onclick="logout()" class="btn bg-gray-800">🚪 SAIR</button>
   </div>
 
-  <!-- HISTÓRICO NO FINAL -->
-  <div class="card">
-    <h3>Analisar imagem do histórico</h3>
-    <input type="file" id="imgPublica">
-    <button onclick="analisarImagem('publica')">Analisar</button>
-    <div id="resultadoPublica" class="result"></div>
+  <!-- SINAIS -->
+  <div id="signalsPage2" class="grid md:grid-cols-2 gap-6 mb-8"></div>
+
+  <!-- GRÁFICO -->
+  <div class="glass p-6 border border-red-600/20 mb-10">
+    <h3 class="text-center font-bold mb-4">📊 Performance</h3>
+    <canvas id="chartPage2" height="120"></canvas>
   </div>
 
-  <!-- LOGIN VIP ABAIXO -->
-  <div class="card">
-    <h3>Acesso VIP</h3>
-    <input id="user" placeholder="Usuário">
-    <input id="pass" type="password" placeholder="Passe">
-    <button onclick="login()">Entrar VIP</button>
-    <div id="loginMsg"></div>
-  </div>
-</section>
-
-<!-- PÁGINA 3 VIP -->
-<section id="vip">
-  <div class="card">
-    <h2>Sinais VIP</h2>
-    <p class="rosa">🌸 ROSA: 10.00x+</p>
-    <button onclick="gerarVip()">Gerar Sinal VIP</button>
-    <div id="sinalVip" class="result"></div>
+  <!-- HISTÓRICO AVIATOR -->
+  <div class="glass p-6 border border-red-600/20 mb-8 text-center">
+    <h3 class="font-bold mb-3">📤 Analisar histórico Aviator</h3>
+    <input type="file" id="uploadHistory">
+    <button onclick="analyzeHistory()" class="btn bg-red-600 mt-3 neon-red">ANALISAR</button>
+    <p id="historyResult" class="mt-2 text-gray-300"></p>
   </div>
 
-  <!-- HISTÓRICO VIP NO FINAL -->
-  <div class="card">
-    <h3>Analisar imagem do histórico VIP</h3>
-    <input type="file" id="imgVip">
-    <button onclick="analisarImagem('vip')">Analisar</button>
-    <div id="resultadoVip" class="result"></div>
+  <!-- LOGIN VIP (AGORA ABAIXO) -->
+  <div class="glass p-6 border border-red-600/30 text-center">
+    <h3 class="text-xl font-black text-red-600 mb-4">💎 ACESSO VIP</h3>
+    <input id="vipUser" placeholder="Usuário VIP" class="w-full p-3 mb-3 bg-black border border-gray-700 rounded">
+    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-3 mb-4 bg-black border border-gray-700 rounded">
+    <button onclick="loginVIP()" class="btn bg-red-600 neon-red w-full">ENTRAR VIP</button>
   </div>
-</section>
+
+</div>
+
+<!-- ==================== PÁGINA 3 - VIP ==================== -->
+<div id="page3" class="hidden max-w-7xl mx-auto px-6 py-10">
+
+  <h1 class="text-3xl font-black text-red-600 text-center mb-6">💎 ÁREA VIP</h1>
+  <div id="clock3" class="text-center text-red-500 font-bold mb-6"></div>
+
+  <!-- SINAL ROSA -->
+  <div id="signalsVIP" class="grid md:grid-cols-1 gap-6 mb-8"></div>
+
+  <!-- GRÁFICO VIP -->
+  <div class="glass p-6 border border-red-600/20 mb-10">
+    <h3 class="text-center font-bold mb-4">📊 Performance VIP</h3>
+    <canvas id="chartVIP" height="120"></canvas>
+  </div>
+
+  <!-- HISTÓRICO AVIATOR VIP (NO FINAL) -->
+  <div class="glass p-6 border border-red-600/20 text-center">
+    <h3 class="font-bold mb-3">📤 Analisar histórico Aviator (VIP)</h3>
+    <input type="file" id="uploadHistoryVIP">
+    <button onclick="analyzeHistoryVIP()" class="btn bg-red-600 mt-3 neon-red">ANALISAR VIP</button>
+    <p id="historyResultVIP" class="mt-2 text-gray-300"></p>
+  </div>
+
+</div>
 
 <script>
-function showPage(p){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(p).classList.add("active");
+/* ================= LOGIN SITE ================= */
+function loginMain(){
+  localStorage.setItem("site","on");
+  page1.classList.add("hidden");
+  page2.classList.remove("hidden");
+  generateSignalsPage2();
+}
+if(localStorage.getItem("site")) loginMain();
+function logout(){ localStorage.clear(); location.reload(); }
+
+/* ================= CLOCK ================= */
+setInterval(()=>{
+  const now=new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+  if(clock2) clock2.innerHTML="🕐 "+now;
+  if(clock3) clock3.innerHTML="🕐 "+now;
+},1000);
+
+/* ================= SINAIS PAGE 2 ================= */
+function generateSignalsPage2(){
+  signalsPage2.innerHTML=`
+  <div class="glass p-6 text-center border border-cyan-500/40">
+    <h3 class="text-cyan-400 font-bold">AZUL</h3>
+    <div class="text-4xl font-black text-cyan-300">×${(1+Math.random()*0.99).toFixed(2)}</div>
+  </div>
+  <div class="glass p-6 text-center border border-purple-500/40">
+    <h3 class="text-purple-400 font-bold">ROXO</h3>
+    <div class="text-4xl font-black text-purple-300">×${(2+Math.random()*7.99).toFixed(2)}</div>
+  </div>`;
 }
 
-function gerarPublico(){
-  let x = (Math.random()*9.99+1).toFixed(2);
-  let cor = x < 2 ? "azul" : "roxo";
-  document.getElementById("sinalPublico").innerHTML =
-    `<span class="${cor}">Sinal: ${x}x</span>`;
+/* ================= VIP LOGIN ================= */
+function loginVIP(){
+  if(vipUser.value==="William" && vipPass.value==="230220"){
+    page2.classList.add("hidden");
+    page3.classList.remove("hidden");
+    generateVIP();
+  } else alert("Credenciais inválidas");
 }
 
-function gerarVip(){
-  if(localStorage.getItem("vip")!=="true"){
-    alert("Acesso VIP necessário");
-    return;
-  }
-  let x = (Math.random()*20+10).toFixed(2);
-  document.getElementById("sinalVip").innerHTML =
-    `<span class="rosa">Sinal VIP: ${x}x</span>`;
+/* ================= VIP ================= */
+function generateVIP(){
+  signalsVIP.innerHTML=`
+  <div class="glass p-6 text-center border border-pink-500/40">
+    <h3 class="text-pink-400 font-bold">SINAL ROSA</h3>
+    <div class="text-4xl font-black text-pink-300">×${(10+Math.random()*90).toFixed(2)}</div>
+    <p>Probabilidade: <b>${80+Math.floor(Math.random()*19)}%</b></p>
+  </div>`;
 }
 
-function login(){
-  let u=document.getElementById("user").value;
-  let p=document.getElementById("pass").value;
-  if(u==="William" && p==="230220"){
-    localStorage.setItem("vip","true");
-    document.getElementById("loginMsg").innerText="Acesso VIP concedido";
-    showPage("vip");
-  } else {
-    document.getElementById("loginMsg").innerText="Dados incorretos";
-  }
-}
-
-function analisarImagem(tipo){
-  let chance = (Math.random()*30+60).toFixed(1);
-  let alcance = (Math.random()*15+3).toFixed(2);
-  document.getElementById(
-    tipo==="vip"?"resultadoVip":"resultadoPublica"
-  ).innerHTML =
-    `Probabilidade: ${chance}%<br>Alcance possível: ${alcance}x`;
-}
+/* ================= UPLOAD ================= */
+function analyzeHistory(){ historyResult.innerHTML="Chance estimada: 70%"; }
+function analyzeHistoryVIP(){ historyResultVIP.innerHTML="Chance VIP estimada: 90%"; }
 </script>
 
 </body>

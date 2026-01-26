@@ -13,44 +13,32 @@
   .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(16px); }
   .signal { transition: all 0.3s; }
   .signal:hover { transform: scale(1.05); }
-  #vip-chart-plane { position:absolute; width:30px; height:30px; background:red; border-radius:50%; transition: all 0.5s; }
+  #vip-chart-plane { position:absolute; width:25px; height:25px; background:red; border-radius:50%; z-index:10; transition: top 0.5s, left 0.5s; }
+  .centered { display:flex; justify-content:center; align-items:center; flex-direction:column; }
 </style>
 </head>
 <body class="text-white font-sans relative">
 
 <!-- ==================== PÁGINA 1: LOGIN ==================== -->
 <div id="page1-login" class="min-h-screen flex items-center justify-center">
-  <div class="glass p-10 rounded-2xl w-full max-w-md border border-red-600/30">
+  <div class="glass p-10 rounded-2xl w-full max-w-md border border-red-600/30 centered">
     <h1 class="text-3xl font-black mb-6 text-center text-red-600">WILLBOOT-PRO</h1>
-    <input id="user" placeholder="Usuário"
-      class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
-    <input id="pass" type="password" placeholder="Senha"
-      class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
-    <button onclick="login()" class="w-full bg-red-600 py-3 rounded font-bold neon-red hover:bg-red-700">
-      🔐 ENTRAR
-    </button>
-    <p class="text-center text-sm text-gray-400 mt-6">
-      Acesso ao Dashboard • VIP disponível
-    </p>
+    <input id="user" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+    <input id="pass" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
+    <button onclick="login()" class="w-full bg-red-600 py-3 rounded font-bold neon-red hover:bg-red-700">🔐 ENTRAR</button>
+    <p class="text-center text-sm text-gray-400 mt-6">Acesso ao Dashboard • VIP disponível</p>
   </div>
 </div>
 
-<!-- ==================== PÁGINA 2: DASHBOARD NORMAL ==================== -->
+<!-- ==================== PÁGINA 2: DASHBOARD ==================== -->
 <div id="page2-dashboard" class="hidden max-w-7xl mx-auto px-6 py-10">
 
   <!-- HEADER -->
-  <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20">
-    <div id="clock" class="text-red-500 font-bold"></div>
+  <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20 mb-6">
+    <div id="clock" class="text-red-500 font-bold text-lg"></div>
     <div class="flex gap-4 mt-4 md:mt-0">
-      <button onclick="generateSignals('normal')" class="bg-red-600 px-6 py-3 rounded font-bold hover:bg-red-700">
-        🔥 GERAR SINAIS
-      </button>
-      <button onclick="chooseCasa()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">
-        🏦 Escolher Casa
-      </button>
-      <button onclick="goVIP()" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500">
-        💎 ACESSO VIP
-      </button>
+      <button onclick="generateSignals('normal')" class="bg-red-600 px-6 py-3 rounded font-bold hover:bg-red-700">🔥 GERAR SINAIS</button>
+      <button onclick="chooseCasa()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">🏦 Escolher Casa</button>
       <button onclick="logout()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">🚪 SAIR</button>
     </div>
   </div>
@@ -58,43 +46,42 @@
   <!-- SINAIS -->
   <div id="signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
 
-  <!-- GRÁFICO -->
-  <div class="glass p-6 rounded-xl border border-red-600/20 relative">
+  <!-- GRÁFICO NORMAL -->
+  <div class="glass p-6 rounded-xl border border-red-600/20 mb-6">
     <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
     <canvas id="chart" height="120"></canvas>
   </div>
 
   <!-- UPLOAD HISTÓRICO -->
-  <div class="mt-6 glass p-6 rounded-xl border border-red-600/30 text-center">
+  <div class="mt-6 glass p-6 rounded-xl border border-red-600/30 centered mb-10">
     <h3 class="font-bold text-red-500 mb-4">📸 Upload Histórico Aviator</h3>
-    <input type="file" id="uploadHist" accept="image/*"/>
-    <button onclick="analyzeImage()" class="bg-red-600 px-6 py-3 rounded font-bold neon-red mt-3 hover:bg-red-700">Analisar</button>
+    <input type="file" id="uploadHist" accept="image/*" class="mb-3"/>
+    <button onclick="analyzeImage()" class="bg-red-600 px-6 py-3 rounded font-bold neon-red hover:bg-red-700">Analisar</button>
   </div>
-</div>
 
-<!-- ==================== PÁGINA 3: VIP ==================== -->
-<div id="page3-vip" class="hidden max-w-7xl mx-auto px-6 py-10">
+  <!-- ==================== SEÇÃO VIP ABAIXO ==================== -->
+  <div id="page3-vip" class="glass p-6 rounded-xl border border-yellow-600/20">
 
-  <!-- HEADER VIP -->
-  <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-yellow-600/20">
-    <div class="text-yellow-400 font-bold">🕐 Luanda • VIP</div>
-    <div class="flex gap-4 mt-4 md:mt-0">
-      <button onclick="generateSignals('vip')" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500">
-        🔥 GERAR SINAIS ROSA
-      </button>
+    <h2 class="text-2xl font-black text-yellow-400 mb-4 text-center">💎 ACESSO VIP</h2>
+    <p class="text-gray-300 text-center mb-6">Sinais ROSA premium • IA treinada com histórico real • Probabilidade ≥80%</p>
+
+    <!-- BOTÕES VIP -->
+    <div class="flex justify-center gap-4 mb-6">
+      <button onclick="generateSignals('vip')" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500">🔥 GERAR SINAIS VIP</button>
       <button onclick="backToDashboard()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">⬅ Dashboard</button>
+    </div>
+
+    <!-- SINAIS VIP -->
+    <div id="vip-signals" class="grid md:grid-cols-3 gap-6 my-6"></div>
+
+    <!-- GRÁFICO VIP COM AVIÃO -->
+    <div class="glass p-6 rounded-xl border border-yellow-600/20 relative" style="height:200px;">
+      <h3 class="text-center font-bold mb-4">📊 Performance VIP</h3>
+      <canvas id="vipChart" height="120"></canvas>
+      <div id="vip-chart-plane"></div>
     </div>
   </div>
 
-  <!-- SINAIS VIP -->
-  <div id="vip-signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
-
-  <!-- GRÁFICO VIP COM AVIÃO -->
-  <div class="glass p-6 rounded-xl border border-yellow-600/20 relative" style="height:200px;">
-    <h3 class="text-center font-bold mb-4">📊 Performance VIP (Histórico Real)</h3>
-    <canvas id="vipChart" height="120"></canvas>
-    <div id="vip-chart-plane"></div>
-  </div>
 </div>
 
 <script>
@@ -133,7 +120,7 @@ function IA(tipo){
     conf = Math.floor(70 + Math.random()*20);
   } else {
     mult = (12 + Math.random()*50).toFixed(2);
-    conf = Math.floor(80 + Math.random()*15); // VIP ROSA acima 80%
+    conf = Math.floor(80 + Math.random()*15); // VIP ROSA ≥80%
   }
   return {mult, conf};
 }
@@ -167,7 +154,8 @@ function loadHistory(){ updateChart('normal'); }
 function updateChart(mode){
   let dataArr = history.slice(-50);
   const ctx = mode==='vip'? document.getElementById("vipChart").getContext("2d") : document.getElementById("chart").getContext("2d");
-  if(mode==='vip') movePlane(dataArr);
+
+  if(mode==='vip') movePlaneSmooth(dataArr);
 
   if(mode==='vip' && vipChart) vipChart.destroy();
   if(mode==='normal' && chart) chart.destroy();
@@ -191,12 +179,23 @@ function updateChart(mode){
   else chart = new Chart(ctx, cfg);
 }
 
-/* ================= AVIÃO VIP ================= */
-function movePlane(dataArr){
+/* ================= AVIÃO VIP SUAVE ================= */
+function movePlaneSmooth(dataArr){
   const plane = document.getElementById("vip-chart-plane");
-  let val = dataArr[dataArr.length-1] || 80;
-  plane.style.top = (150 - val) + "px"; // ajuste vertical
-  plane.style.left = "calc(80% - 30px)"; // direita
+  let max = 100, min = 60;
+  let chartHeight = 150;
+
+  let index = 0;
+  function animate(){
+    if(index >= dataArr.length) return;
+    let val = dataArr[index];
+    let top = chartHeight - ((val-min)/(max-min))*chartHeight;
+    plane.style.top = top + "px";
+    plane.style.left = (index/dataArr.length*90)+"%";
+    index++;
+    setTimeout(animate, 300);
+  }
+  animate();
 }
 
 /* ================= CASA DE APOSTA ================= */
@@ -205,26 +204,17 @@ function chooseCasa(){
   if(casa) alert("Casa selecionada: "+casa);
 }
 
-/* ================= VIP ================= */
-function goVIP(){
-  document.getElementById("page2-dashboard").classList.add("hidden");
-  document.getElementById("page3-vip").classList.remove("hidden");
-  generateSignals('vip');
-}
-
-function backToDashboard(){
-  document.getElementById("page3-vip").classList.add("hidden");
-  document.getElementById("page2-dashboard").classList.remove("hidden");
-}
-
 /* ================= UPLOAD HISTÓRICO ================= */
 function analyzeImage(){
   const file = document.getElementById("uploadHist").files[0];
   if(!file){ alert("Escolha uma imagem!"); return; }
-  alert("Imagem enviada para análise da IA (OCR/Histórico)"); 
-  // Aqui futuramente integrar backend FastAPI
+  alert("Imagem enviada para análise da IA (OCR/Histórico)");
+  // Backend FastAPI futuro
 }
 
+function backToDashboard(){
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </script>
 </body>
 </html>

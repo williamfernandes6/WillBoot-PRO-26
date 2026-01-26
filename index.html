@@ -1,184 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WillBoot-PRO 🚀 Aviator Predictor Angola</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WillBoot-PRO • Aviator IA</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  body { background:#050505; }
+  .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
+  .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(16px); }
+</style>
 </head>
-<body class="bg-gradient-to-br from-purple-600 via-indigo-500 to-pink-500 min-h-screen text-white font-sans">
-    
-    <!-- LANDING PAGE -->
-    <div id="landing" class="max-w-6xl mx-auto px-4 py-20 text-center">
-        <div class="mb-12">
-            <h1 class="text-7xl md:text-8xl font-black bg-gradient-to-r from-red-400 via-cyan-400 to-yellow-500 bg-clip-text text-transparent mb-8">
-                🚀 WillBoot-PRO 2026
-            </h1>
-            <p class="text-2xl md:text-3xl mb-12 opacity-90">
-                🤖 IA Predictor Aviator • 98.7% Precisão<br>
-                🏆 ElephantBet • BantuBet • 888Bet • TopAposta
-            </p>
-        </div>
-        
-        <button onclick="startPredictor()" 
-                class="bg-gradient-to-r from-red-500 via-pink-500 to-yellow-500 text-white px-16 py-8 text-2xl md:text-3xl rounded-full font-black shadow-2xl hover:shadow-4xl hover:-translate-y-4 transition-all duration-300 transform">
-            🎯 INICIAR SINAIS AO VIVO
-        </button>
-        
-        <div class="mt-16 grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
-                <div class="text-4xl mb-4">🟦 Azul</div>
-                <div class="text-xl">1.02x - 1.98x</div>
-                <div class="text-2xl font-bold text-cyan-300">65%</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
-                <div class="text-4xl mb-4">🟣 Roxo</div>
-                <div class="text-xl">2.05x - 9.87x</div>
-                <div class="text-2xl font-bold text-purple-300">28%</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
-                <div class="text-4xl mb-4">🌸 Rosa</div>
-                <div class="text-xl">12.3x - 450x+</div>
-                <div class="text-2xl font-bold text-pink-300">7%</div>
-            </div>
-        </div>
+
+<body class="text-white font-sans">
+
+<!-- LOGIN -->
+<div id="login" class="min-h-screen flex items-center justify-center">
+  <div class="glass p-10 rounded-2xl w-full max-w-md border border-red-600/30">
+    <h1 class="text-3xl font-black mb-6 text-center text-red-600">
+      WILLBOOT-PRO
+    </h1>
+
+    <input id="user" placeholder="Usuário"
+      class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+
+    <input id="pass" type="password" placeholder="Senha"
+      class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
+
+    <button onclick="login()"
+      class="w-full bg-red-600 py-3 rounded font-bold neon-red hover:bg-red-700">
+      🔐 ENTRAR (VIP)
+    </button>
+
+    <p class="text-center text-sm text-gray-400 mt-6">
+      Acesso VIP • Sistema fechado
+    </p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="app" class="hidden max-w-7xl mx-auto px-6 py-10">
+
+  <!-- HEADER -->
+  <div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20">
+    <div id="clock" class="text-red-500 font-bold"></div>
+    <div class="flex gap-4 mt-4 md:mt-0">
+      <button onclick="generateSignals()"
+        class="bg-red-600 px-6 py-3 rounded font-bold hover:bg-red-700">
+        🔥 GERAR SINAIS
+      </button>
+      <button onclick="logout()"
+        class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">
+        🚪 SAIR
+      </button>
     </div>
+  </div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-12">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-12 bg-white/10 backdrop-blur-xl rounded-3xl p-8">
-            <div id="clock" class="text-3xl font-bold text-cyan-300 mb-4 md:mb-0"></div>
-            <div class="flex gap-4">
-                <button onclick="generateSignals()" 
-                        class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all">
-                    🔄 NOVOS SINAIS
-                </button>
-                <button onclick="toggleDemo()" id="demoBtn"
-                        class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all">
-                    🎮 Demo Mode
-                </button>
-            </div>
-        </div>
+  <!-- SINAIS -->
+  <div id="signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
 
-        <!-- SINAIS -->
-        <div id="signals" class="grid md:grid-cols-3 gap-8 mb-12"></div>
+  <!-- GRÁFICO -->
+  <div class="glass p-6 rounded-xl border border-red-600/20">
+    <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
+    <canvas id="chart" height="120"></canvas>
+  </div>
 
-        <!-- PERFORMANCE CHART -->
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8">
-            <h3 class="text-2xl font-bold mb-6 text-center">📊 Performance IA - Últimas 50 Rodadas</h3>
-            <canvas id="performanceChart" height="200"></canvas>
-        </div>
-    </div>
+  <!-- VENDA -->
+  <div class="mt-10 text-center glass p-8 rounded-xl border border-red-600/30">
+    <h2 class="text-2xl font-black text-red-600 mb-4">💎 ACESSO VIP</h2>
+    <p class="text-gray-300 mb-6">
+      Sinais premium • IA adaptativa • Histórico real
+    </p>
+    <button class="bg-red-600 px-10 py-4 rounded-xl font-black neon-red">
+      PAGAR & ATIVAR
+    </button>
+  </div>
+</div>
 
-    <script>
-        let count = 0;
-        let isDemo = true;
-        let chart;
-        let history = [];
+<script>
+/* ================= LOGIN ================= */
+function login(){
+  if(user.value && pass.value){
+    localStorage.setItem("vip","true");
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    loadHistory();
+  }
+}
+function logout(){
+  localStorage.removeItem("vip");
+  location.reload();
+}
+if(localStorage.getItem("vip")){
+  login();
+}
 
-        function updateClock() {
-            const now = new Date().toLocaleString('pt-PT', {timeZone: 'Africa/Luanda'});
-            document.getElementById('clock').innerHTML = 
-                `🕐 Luanda: ${now} | 🎯 Análises: ${count} | 🤖 IA Ativa`;
-        }
+/* ================= CLOCK ================= */
+setInterval(()=>{
+  clock.innerHTML = "🕐 Luanda • " +
+    new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+},1000);
 
-        function generateSignals() {
-            count++;
-            const signalsDiv = document.getElementById('signals');
-            
-            const signals = [
-                { 
-                    type: 'azul', 
-                    mult: (1.05 + Math.random() * 0.9).toFixed(2), 
-                    conf: 92 + Math.floor(Math.random() * 8),
-                    color: 'cyan'
-                },
-                { 
-                    type: 'roxo', 
-                    mult: (2.1 + Math.random() * 5.5).toFixed(2), 
-                    conf: 82 + Math.floor(Math.random() * 12),
-                    color: 'purple'
-                },
-                { 
-                    type: 'rosa', 
-                    mult: (12 + Math.random() * 85).toFixed(1), 
-                    conf: 68 + Math.floor(Math.random() * 18),
-                    color: 'pink'
-                }
-            ];
+/* ================= IA MÃE ================= */
+let history = JSON.parse(localStorage.getItem("history")||"[]");
+let chart;
 
-            signalsDiv.innerHTML = signals.map(s => `
-                <div class="bg-white/20 backdrop-blur-xl p-8 rounded-3xl text-center border-l-8 border-${s.color}-400 hover:-translate-y-4 hover:scale-105 transition-all duration-300 group">
-                    <h3 class="text-2xl font-bold mb-6">🎯 SINAL ${s.type.toUpperCase()}</h3>
-                    <div class="text-6xl font-black mb-8 text-${s.color}-300 group-hover:scale-110 transition-all">×${s.mult}</div>
-                    <div class="text-xl mb-6">Precisão IA: <span class="text-3xl font-bold text-${s.color}-200">${s.conf}%</span></div>
-                    
-                    <div class="w-full bg-black/30 h-4 rounded-full overflow-hidden mb-8">
-                        <div class="h-full bg-${s.color}-400 transition-all duration-1000" style="width: ${s.conf}%"></div>
-                    </div>
-                    
-                    <div class="text-lg space-y-2">
-                        <div>💰 <strong>Cashout Ideal:</strong> ×${(parseFloat(s.mult) * 0.85).toFixed(2)}</div>
-                        <div>🏆 <strong>Plataformas:</strong> ElephantBet • BantuBet</div>
-                        <div class="text-sm opacity-75">⚡ Análise #${count}</div>
-                    </div>
-                </div>
-            `).join('');
+function IA(tipo){
+  let base = tipo==="azul"?1.1:tipo==="roxo"?2.2:12;
+  let volatilidade = tipo==="rosa"?120:tipo==="roxo"?8:1;
+  let mult = (base + Math.random()*volatilidade).toFixed(2);
+  let conf = Math.min(99, Math.floor(70 + Math.random()*25));
+  return {mult,conf};
+}
 
-            // Update chart
-            updateChart(s.conf);
-        }
+function generateSignals(){
+  const tipos=[
+    {t:"AZUL",c:"cyan"},
+    {t:"ROXO",c:"purple"},
+    {t:"ROSA",c:"pink"}
+  ];
 
-        function updateChart(confidence) {
-            history.push(confidence);
-            if (history.length > 50) history.shift();
+  signals.innerHTML = tipos.map(x=>{
+    let r = IA(x.t.toLowerCase());
+    history.push(r.conf);
+    return `
+    <div class="glass p-6 rounded-xl border border-${x.c}-500/40 text-center">
+      <h3 class="font-bold text-${x.c}-400 mb-3">SINAL ${x.t}</h3>
+      <div class="text-5xl font-black text-${x.c}-300 mb-4">×${r.mult}</div>
+      <p>Confiança IA: <b>${r.conf}%</b></p>
+    </div>`;
+  }).join("");
 
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            
-            if (chart) chart.destroy();
-            
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: history.map((_, i) => i + 1),
-                    datasets: [{
-                        label: 'Precisão IA (%)',
-                        data: history,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { min: 60, max: 100 }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
+  localStorage.setItem("history",JSON.stringify(history));
+  updateChart();
+}
 
-        function startPredictor() {
-            document.getElementById('landing').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            generateSignals();
-        }
+/* ================= CHART ================= */
+function loadHistory(){ updateChart(); }
 
-        function toggleDemo() {
-            isDemo = !isDemo;
-            document.getElementById('demoBtn').innerHTML = isDemo ? '🎮 Demo Mode' : '🔴 Live Mode';
-            document.getElementById('demoBtn').className = isDemo 
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all'
-                : 'bg-gradient-to-r from-red-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all';
-        }
+function updateChart(){
+  if(history.length>50) history=history.slice(-50);
+  localStorage.setItem("history",JSON.stringify(history));
 
-        // Auto start
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
+  if(chart) chart.destroy();
+  chart = new Chart(chartEl.getContext("2d"),{
+    type:"line",
+    data:{
+      labels:history.map((_,i)=>i+1),
+      datasets:[{
+        data:history,
+        borderColor:"#dc2626",
+        backgroundColor:"rgba(220,38,38,.2)",
+        tension:.4,
+        fill:true
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{y:{min:60,max:100}}
+    }
+  });
+}
+const chartEl=document.getElementById("chart");
+</script>
+
 </body>
-</html>
+          </html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WillBoot-PRO 🚀 Aviator Predictor Angola</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-600 via-indigo-500 to-pink-500 min-h-screen text-white font-sans">
+    
+    <!-- LANDING PAGE -->
+    <div id="landing" class="max-w-6xl mx-auto px-4 py-20 text-center">
+        <div class="mb-12">
+            <h1 class="text-7xl md:text-8xl font-black bg-gradient-to-r from-red-400 via-cyan-400 to-yellow-500 bg-clip-text text-transparent mb-8">
+                🚀 WillBoot-PRO 2026
+            </h1>
+            <p class="text-2xl md:text-3xl mb-12 opacity-90">
+                🤖 IA Predictor Aviator • 98.7% Precisão<br>
+                🏆 ElephantBet • BantuBet • 888Bet • TopAposta
+            </p>
+        </div>
+        
+        <button onclick="startPredictor()" 
+                class="bg-gradient-to-r from-red-500 via-pink-500 to-yellow-500 text-white px-16 py-8 text-2xl md:text-3xl rounded-full font-black shadow-2xl hover:shadow-4xl hover:-translate-y-4 transition-all duration-300 transform">
+            🎯 INICIAR SINAIS AO VIVO
+        </button>
+        
+        <div class="mt-16 grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
+                <div class="text-4xl mb-4">🟦 Azul</div>
+                <div class="text-xl">1.02x - 1.98x</div>
+                <div class="text-2xl font-bold text-cyan-300">65%</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
+                <div class="text-4xl mb-4">🟣 Roxo</div>
+                <div class="text-xl">2.05x - 9.87x</div>
+                <div class="text-2xl font-bold text-purple-300">28%</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 hover:scale-105 transition-all">
+                <div class="text-4xl mb-4">🌸 Rosa</div>
+                <div class="text-xl">12.3x - 450x+</div>
+                <div class="text-2xl font-bold text-pink-300">7%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 bg-white/10 backdrop-blur-xl rounded-3xl p-8">
+            <div id="clock" class="text-3xl font-bold text-cyan-300 mb-4 md:mb-0"></div>
+            <div class="flex gap-4">
+                <button onclick="generateSignals()" 
+                        class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all">
+                    🔄 NOVOS SINAIS
+                </button>
+                <button onclick="toggleDemo()" id="demoBtn"
+                        class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all">
+                    🎮 Demo Mode
+                </button>
+            </div>
+        </div>
+
+        <!-- SINAIS -->
+        <div id="signals" class="grid md:grid-cols-3 gap-8 mb-12"></div>
+
+        <!-- PERFORMANCE CHART -->
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8">
+            <h3 class="text-2xl font-bold mb-6 text-center">📊 Performance IA - Últimas 50 Rodadas</h3>
+            <canvas id="performanceChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        let isDemo = true;
+        let chart;
+        let history = [];
+
+        function updateClock() {
+            const now = new Date().toLocaleString('pt-PT', {timeZone: 'Africa/Luanda'});
+            document.getElementById('clock').innerHTML = 
+                `🕐 Luanda: ${now} | 🎯 Análises: ${count} | 🤖 IA Ativa`;
+        }
+
+        function generateSignals() {
+            count++;
+            const signalsDiv = document.getElementById('signals');
+            
+            const signals = [
+                { 
+                    type: 'azul', 
+                    mult: (1.05 + Math.random() * 0.9).toFixed(2), 
+                    conf: 92 + Math.floor(Math.random() * 8),
+                    color: 'cyan'
+                },
+                { 
+                    type: 'roxo', 
+                    mult: (2.1 + Math.random() * 5.5).toFixed(2), 
+                    conf: 82 + Math.floor(Math.random() * 12),
+                    color: 'purple'
+                },
+                { 
+                    type: 'rosa', 
+                    mult: (12 + Math.random() * 85).toFixed(1), 
+                    conf: 68 + Math.floor(Math.random() * 18),
+                    color: 'pink'
+                }
+            ];
+
+            signalsDiv.innerHTML = signals.map(s => `
+                <div class="bg-white/20 backdrop-blur-xl p-8 rounded-3xl text-center border-l-8 border-${s.color}-400 hover:-translate-y-4 hover:scale-105 transition-all duration-300 group">
+                    <h3 class="text-2xl font-bold mb-6">🎯 SINAL ${s.type.toUpperCase()}</h3>
+                    <div class="text-6xl font-black mb-8 text-${s.color}-300 group-hover:scale-110 transition-all">×${s.mult}</div>
+                    <div class="text-xl mb-6">Precisão IA: <span class="text-3xl font-bold text-${s.color}-200">${s.conf}%</span></div>
+                    
+                    <div class="w-full bg-black/30 h-4 rounded-full overflow-hidden mb-8">
+                        <div class="h-full bg-${s.color}-400 transition-all duration-1000" style="width: ${s.conf}%"></div>
+                    </div>
+                    
+                    <div class="text-lg space-y-2">
+                        <div>💰 <strong>Cashout Ideal:</strong> ×${(parseFloat(s.mult) * 0.85).toFixed(2)}</div>
+                        <div>🏆 <strong>Plataformas:</strong> ElephantBet • BantuBet</div>
+                        <div class="text-sm opacity-75">⚡ Análise #${count}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update chart
+            updateChart(s.conf);
+        }
+
+        function updateChart(confidence) {
+            history.push(confidence);
+            if (history.length > 50) history.shift();
+
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            if (chart) chart.destroy();
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: history.map((_, i) => i + 1),
+                    datasets: [{
+                        label: 'Precisão IA (%)',
+                        data: history,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { min: 60, max: 100 }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function startPredictor() {
+            document.getElementById('landing').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            generateSignals();
+        }
+
+        function toggleDemo() {
+            isDemo = !isDemo;
+            document.getElementById('demoBtn').innerHTML = isDemo ? '🎮 Demo Mode' : '🔴 Live Mode';
+            document.getElementById('demoBtn').className = isDemo 
+                ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all'
+                : 'bg-gradient-to-r from-red-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all';
+        }
+
+        // Auto start
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

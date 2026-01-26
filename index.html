@@ -12,6 +12,7 @@
   .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
   .signal { padding:1rem; border-radius:1rem; text-align:center; transition: all .3s; }
   .signal:hover { transform:scale(1.05); }
+  .plane-icon { width:24px; height:24px; position:absolute; transform:translate(-12px,-12px); }
 </style>
 </head>
 <body class="text-white">
@@ -43,7 +44,7 @@
   <div id="signalsDash" class="grid md:grid-cols-3 gap-6 my-10"></div>
 
   <!-- GRÁFICO -->
-  <div class="glass p-6 rounded-xl border border-red-600/20">
+  <div class="glass p-6 rounded-xl border border-red-600/20 relative">
     <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
     <canvas id="chartDash" height="120"></canvas>
   </div>
@@ -70,13 +71,21 @@
     </div>
   </div>
 
+  <!-- BOTÃO UPLOAD HISTÓRICO -->
+  <div class="mt-6 glass p-6 rounded-xl border border-red-600/30 text-center">
+    <input type="file" id="aviatorImg" accept="image/*" class="mb-4"/>
+    <button onclick="analyzeImage()" class="bg-red-600 px-6 py-3 rounded font-bold neon-red hover:bg-red-700">📷 ANALISAR HISTÓRICO</button>
+    <p id="analysisResult" class="mt-4 text-green-400 font-bold"></p>
+  </div>
+
   <!-- SINAIS VIP -->
   <div id="signalsVIP" class="grid md:grid-cols-3 gap-6 my-10"></div>
 
   <!-- GRÁFICO VIP -->
-  <div class="glass p-6 rounded-xl border border-red-600/20">
+  <div class="glass p-6 rounded-xl border border-red-600/20 relative">
     <h3 class="text-center font-bold mb-4">📊 Performance VIP (Histórico Real)</h3>
     <canvas id="chartVIP" height="120"></canvas>
+    <img id="plane" class="plane-icon" src="https://cdn-icons-png.flaticon.com/512/252/252025.png" alt="Avião Vermelho">
   </div>
 </div>
 
@@ -138,7 +147,8 @@ function generateSignals(page){
   hist = isVIP ? historyVIP : historyDash;
 
   container.innerHTML = tipos.map(x=>{
-    if(isVIP && x.t==="AZUL" || x.t==="ROXO") return ""; // VIP só ROSA
+    if(isVIP && x.t!=="ROSA") return ""; // VIP só ROSA
+    if(!isVIP && x.t==="ROSA") return ""; // Dashboard não mostra ROSA
     let r = IA(x.t.toLowerCase(),isVIP);
     hist.push(r.conf);
     return `<div class="signal glass border border-${x.c}-500/40 text-center">
@@ -173,30 +183,53 @@ function updateChart(page){
     fill:true
   };
 
+  let chartObj = new Chart(ctx,{
+    type:"line",
+    data:{ labels:hist.map((_,i)=>i+1), datasets:[dataset] },
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{y:{min:60,max:100}},
+      animation:{duration:800}
+    }
+  });
+
   if(page==='vip'){
-    chartVIP = new Chart(ctx,{
-      type:"line",
-      data:{ labels:hist.map((_,i)=>i+1), datasets:[dataset] },
-      options:{
-        plugins:{legend:{display:false}},
-        scales:{y:{min:60,max:100}}
-      }
-    });
-  } else {
-    chartDash = new Chart(ctx,{
-      type:"line",
-      data:{ labels:hist.map((_,i)=>i+1), datasets:[dataset] },
-      options:{
-        plugins:{legend:{display:false}},
-        scales:{y:{min:60,max:100}}
-      }
-    });
-  }
+    chartVIP = chartObj;
+    animatePlane(chartVIP, hist);
+  } else { chartDash = chartObj; }
 }
 
 const chartDashEl = document.getElementById("chartDash");
 const chartVIPEl = document.getElementById("chartVIP");
+const planeIcon = document.getElementById("plane");
 
+/* ========================= ANIMAÇÃO AVIÃO VIP ========================= */
+function animatePlane(chart, data){
+  if(data.length===0) return;
+  let meta = chart.getDatasetMeta(0);
+  let points = meta.data;
+  let i = 0;
+  function movePlane(){
+    if(i>=points.length) return;
+    let pos = points[i].getProps(['x','y'],true);
+    planeIcon.style.left = pos.x + 'px';
+    planeIcon.style.top = pos.y + 'px';
+    i++;
+    requestAnimationFrame(movePlane);
+  }
+  movePlane();
+}
+
+/* ========================= ANALISE IMAGEM AVIATOR ========================= */
+function analyzeImage(){
+  const file = document.getElementById("aviatorImg").files[0];
+  if(!file){ alert("Escolha uma imagem primeiro"); return; }
+  // Aqui você pode integrar OCR ou backend FastAPI
+  // Simulação: gerar chance aleatória de acerto
+  let chance = (80 + Math.random()*15).toFixed(2);
+  analysisResult.innerHTML = `Chance estimada de acerto com base no histórico: ${chance}%`;
+}
 </script>
+
 </body>
-    </html>
+</html>

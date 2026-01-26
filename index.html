@@ -6,7 +6,6 @@
 <title>WillBoot-PRO • Aviator IA</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
   body { background:#050505; }
   .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
@@ -26,7 +25,7 @@
     <input id="user" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
     <input id="pass" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
     <button onclick="login()" class="w-full bg-red-600 py-3 rounded font-bold neon-red hover:bg-red-700">🔐 ENTRAR</button>
-    <p class="text-center text-sm text-gray-400 mt-6">Acesso ao Dashboard • VIP disponível</p>
+    <p class="text-center text-sm text-gray-400 mt-6">Acesso ao Dashboard • VIP abaixo</p>
   </div>
 </div>
 
@@ -59,29 +58,37 @@
     <button onclick="analyzeImage()" class="bg-red-600 px-6 py-3 rounded font-bold neon-red hover:bg-red-700">Analisar</button>
   </div>
 
-  <!-- ==================== SEÇÃO VIP ABAIXO ==================== -->
-  <div id="page3-vip" class="glass p-6 rounded-xl border border-yellow-600/20">
+  <!-- ==================== LOGIN VIP ABAIXO ==================== -->
+  <div class="glass p-6 rounded-xl border border-yellow-600/30 centered">
+    <h2 class="text-2xl font-black text-yellow-400 mb-4 text-center">💎 LOGIN VIP</h2>
+    <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+    <button onclick="loginVIP()" class="w-full bg-yellow-600 py-3 rounded font-bold neon-red hover:bg-yellow-500">🔐 ACESSO VIP</button>
+    <p class="text-center text-sm text-gray-400 mt-4">Sinais ROSA premium • IA treinada com histórico real • Probabilidade ≥80%</p>
+  </div>
+</div>
 
-    <h2 class="text-2xl font-black text-yellow-400 mb-4 text-center">💎 ACESSO VIP</h2>
-    <p class="text-gray-300 text-center mb-6">Sinais ROSA premium • IA treinada com histórico real • Probabilidade ≥80%</p>
+<!-- ==================== PÁGINA 3: VIP ==================== -->
+<div id="page3-vip" class="hidden max-w-7xl mx-auto px-6 py-10">
 
-    <!-- BOTÕES VIP -->
-    <div class="flex justify-center gap-4 mb-6">
-      <button onclick="generateSignals('vip')" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500">🔥 GERAR SINAIS VIP</button>
-      <button onclick="backToDashboard()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">⬅ Dashboard</button>
-    </div>
+  <h2 class="text-2xl font-black text-yellow-400 mb-4 text-center">💎 ACESSO VIP</h2>
+  <p class="text-gray-300 text-center mb-6">Sinais ROSA premium • IA treinada com histórico real • Probabilidade ≥80%</p>
 
-    <!-- SINAIS VIP -->
-    <div id="vip-signals" class="grid md:grid-cols-3 gap-6 my-6"></div>
-
-    <!-- GRÁFICO VIP COM AVIÃO -->
-    <div class="glass p-6 rounded-xl border border-yellow-600/20 relative" style="height:200px;">
-      <h3 class="text-center font-bold mb-4">📊 Performance VIP</h3>
-      <canvas id="vipChart" height="120"></canvas>
-      <div id="vip-chart-plane"></div>
-    </div>
+  <!-- BOTÕES VIP -->
+  <div class="flex justify-center gap-4 mb-6">
+    <button onclick="generateSignals('vip')" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500">🔥 GERAR SINAIS VIP</button>
+    <button onclick="backToDashboard()" class="bg-gray-800 px-6 py-3 rounded font-bold hover:bg-gray-700">⬅ Dashboard</button>
   </div>
 
+  <!-- SINAIS VIP -->
+  <div id="vip-signals" class="grid md:grid-cols-3 gap-6 my-6"></div>
+
+  <!-- GRÁFICO VIP COM AVIÃO -->
+  <div class="glass p-6 rounded-xl border border-yellow-600/20 relative" style="height:200px;">
+    <h3 class="text-center font-bold mb-4">📊 Performance VIP</h3>
+    <canvas id="vipChart" height="120"></canvas>
+    <div id="vip-chart-plane"></div>
+  </div>
 </div>
 
 <script>
@@ -99,6 +106,15 @@ function logout(){
   location.reload();
 }
 if(localStorage.getItem("vip")) login();
+
+/* ================= LOGIN VIP ================= */
+function loginVIP(){
+  if(vipUser.value && vipPass.value){
+    document.getElementById("page2-dashboard").classList.add("hidden");
+    document.getElementById("page3-vip").classList.remove("hidden");
+    generateSignals('vip');
+  }
+}
 
 /* ================= CLOCK ================= */
 setInterval(()=>{
@@ -209,7 +225,6 @@ function analyzeImage(){
   const file = document.getElementById("uploadHist").files[0];
   if(!file){ alert("Escolha uma imagem!"); return; }
   alert("Imagem enviada para análise da IA (OCR/Histórico)");
-  // Backend FastAPI futuro
 }
 
 function backToDashboard(){
@@ -217,4 +232,4 @@ function backToDashboard(){
 }
 </script>
 </body>
-</html>
+        </html>

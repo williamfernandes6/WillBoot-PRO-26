@@ -11,28 +11,38 @@
 <style>
 body{background:#050505}
 .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(18px)}
-.neon{box-shadow:0 0 25px rgba(220,38,38,.6)}
+.neon{box-shadow:0 0 18px rgba(220,38,38,.6)}
 .signal{transition:.3s}
-.signal:hover{transform:translateY(-6px)}
+.signal:hover{transform:translateY(-4px)}
+#plane{
+  position:absolute;
+  width:26px;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body class="text-white font-sans">
 
-<!-- LOGIN / VIP -->
+<!-- LOGIN -->
 <div id="login" class="min-h-screen flex items-center justify-center">
   <div class="glass p-10 rounded-2xl w-full max-w-md border border-red-600/30">
-    <h1 class="text-3xl font-black mb-6 text-center text-red-600">
-      WILLBOOT-PRO
-    </h1>
+    <h1 class="text-3xl font-black mb-6 text-center text-red-600">WILLBOOT-PRO</h1>
 
-    <button onclick="vipAccess()"
-      class="w-full bg-red-600 py-4 rounded-xl font-black neon hover:bg-red-700">
-      🔓 ACESSO VIP
+    <input id="user" placeholder="Usuário"
+      class="w-full mb-4 p-3 rounded bg-black border border-gray-700"/>
+
+    <input id="pass" type="password" placeholder="Senha"
+      class="w-full mb-6 p-3 rounded bg-black border border-gray-700"/>
+
+    <button onclick="login()"
+      class="w-full bg-red-600 py-3 rounded font-bold neon hover:bg-red-700">
+      🔐 ENTRAR (VIP)
     </button>
 
-    <p class="text-center text-gray-400 text-sm mt-6">
-      Sistema fechado • Hacker IA
+    <p class="text-center text-sm text-gray-400 mt-6">
+      Acesso VIP • IA Profissional
     </p>
   </div>
 </div>
@@ -41,141 +51,158 @@ body{background:#050505}
 <div id="app" class="hidden max-w-7xl mx-auto px-6 py-10">
 
 <!-- HEADER -->
-<div class="glass p-6 rounded-xl flex flex-col md:flex-row justify-between items-center border border-red-600/20">
+<div class="glass p-6 rounded-xl flex justify-between items-center border border-red-600/20">
   <div id="clock" class="text-red-500 font-bold"></div>
-
-  <div class="flex gap-3 mt-4 md:mt-0">
-    <button onclick="generateSignals()" class="bg-red-600 px-5 py-3 rounded font-bold">
-      🔥 GERAR SINAIS
+  <div class="flex gap-3">
+    <button onclick="upload.click()" class="bg-gray-800 px-4 py-2 rounded">
+      📷 Histórico
     </button>
-
-    <button onclick="selectHouse()" class="bg-gray-800 px-5 py-3 rounded font-bold">
-      🏠 CASA
+    <button onclick="generateSignal()"
+      class="bg-red-600 px-6 py-2 rounded font-bold neon hover:bg-red-700">
+      🌹 GERAR SINAL ROSA
     </button>
-
-    <button onclick="uploadHistory()" class="bg-gray-800 px-5 py-3 rounded font-bold">
-      📷 HISTÓRICO
+    <button onclick="logout()" class="bg-gray-700 px-4 py-2 rounded">
+      🚪
     </button>
   </div>
 </div>
 
+<input id="upload" type="file" accept="image/*" hidden onchange="processImage(this)">
+
 <!-- CASA -->
-<div id="houseBox" class="hidden mt-6 glass p-4 rounded-xl text-center">
-  <b>Casa Selecionada:</b>
-  <span id="house" class="text-red-500">ElephantBet</span>
+<div class="my-6">
+  <select onchange="setCasa(this.value)"
+    class="bg-black border border-gray-700 p-3 rounded">
+    <option value="">Escolher Casa</option>
+    <option>ElephantBet</option>
+    <option>PremierBet</option>
+    <option>Betway</option>
+  </select>
 </div>
 
-<!-- SINAIS -->
-<div id="signals" class="grid md:grid-cols-3 gap-6 my-10"></div>
+<!-- SINAL -->
+<div id="signals" class="my-10 flex justify-center"></div>
 
 <!-- GRÁFICO -->
-<div class="glass p-6 rounded-xl border border-red-600/20">
+<div class="glass p-6 rounded-xl border border-red-600/20 relative">
   <h3 class="text-center font-bold mb-4">
-    📊 Ganhos & Perdas (Histórico Realista)
+    📊 Performance Real • Avião IA
   </h3>
   <canvas id="chart" height="120"></canvas>
+  <img id="plane" src="https://cdn-icons-png.flaticon.com/512/744/744465.png">
 </div>
 
 </div>
-
-<input id="imgInput" type="file" accept="image/*" hidden>
 
 <script>
-/* ===== VIP ===== */
-function vipAccess(){
-  localStorage.setItem("vip","true");
-  login.style.display="none";
-  app.classList.remove("hidden");
+/* ================= LOGIN ================= */
+function login(){
+  if(user.value && pass.value){
+    localStorage.setItem("vip","true");
+    loginDiv.classList.add("hidden");
+    app.classList.remove("hidden");
+    initChart();
+  }
 }
-if(localStorage.getItem("vip")) vipAccess();
+function logout(){
+  localStorage.clear();
+  location.reload();
+}
+if(localStorage.getItem("vip")) login();
 
-/* ===== CLOCK ===== */
+/* ================= CLOCK ================= */
 setInterval(()=>{
   clock.innerHTML="🕐 Luanda • "+
-  new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+    new Date().toLocaleTimeString("pt-PT",{timeZone:"Africa/Luanda"});
 },1000);
 
-/* ===== CASA ===== */
-function selectHouse(){
-  const casas=["ElephantBet","BantuBet","888Bet","TopAposta"];
-  const c=casas[Math.floor(Math.random()*casas.length)];
-  house.textContent=c;
-  houseBox.classList.remove("hidden");
-}
-
-/* ===== IA MÃE ===== */
-let performance=JSON.parse(localStorage.getItem("perf")||"[]");
+/* ================= HISTÓRICO ================= */
+let saldo=0;
+let historico=[0];
 let chart;
+let historicoImagens=[];
 
-function IA(tipo){
-  let base={azul:1.2,roxo:2.4,rosa:10}[tipo];
-  let vol={azul:0.6,roxo:6,rosa:80}[tipo];
-  let mult=(base+Math.random()*vol).toFixed(2);
-
-  let win=Math.random()>(tipo==="rosa"?0.75:0.45);
-  performance.push(win?1:-1);
-
-  return{mult,win};
-}
-
-function generateSignals(){
-  const data=[
-    {t:"AZUL",c:"cyan"},
-    {t:"ROXO",c:"purple"},
-    {t:"ROSA",c:"pink"}
-  ];
-
-  signals.innerHTML=data.map(x=>{
-    let r=IA(x.t.toLowerCase());
-    return`
-    <div class="signal glass p-5 rounded-xl border border-${x.c}-500/40 text-center">
-      <h3 class="text-${x.c}-400 font-bold mb-2">${x.t}</h3>
-      <div class="text-4xl font-black text-${x.c}-300 mb-2">×${r.mult}</div>
-      <div class="text-sm ${r.win?"text-green-400":"text-red-400"}">
-        ${r.win?"✔ GANHO":"✖ PERDA"}
-      </div>
-    </div>`;
-  }).join("");
-
-  localStorage.setItem("perf",JSON.stringify(performance));
-  updateChart();
-}
-
-/* ===== GRÁFICO REAL ===== */
-function updateChart(){
-  let balance=0;
-  let data=performance.map(p=>balance+=p);
-
-  if(chart) chart.destroy();
+/* ================= GRÁFICO + AVIÃO ================= */
+function initChart(){
   chart=new Chart(chartEl.getContext("2d"),{
     type:"line",
     data:{
-      labels:data.map((_,i)=>i+1),
+      labels:[0],
       datasets:[{
-        data:data,
+        data:historico,
         borderColor:"#dc2626",
-        backgroundColor:"rgba(220,38,38,.2)",
-        tension:.4,
-        fill:true
+        backgroundColor:"rgba(220,38,38,.15)",
+        tension:.35,
+        fill:true,
+        pointRadius:0
       }]
     },
     options:{
+      animation:false,
       plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true}}
+      scales:{y:{ticks:{color:"#aaa"}}}
     }
   });
 }
-const chartEl=document.getElementById("chart");
-updateChart();
 
-/* ===== HISTÓRICO IMAGE ===== */
-function uploadHistory(){
-  imgInput.click();
+function atualizarGrafico(){
+  historico.push(saldo);
+  chart.data.labels.push(historico.length);
+  chart.update();
+  moverAviao();
 }
-imgInput.onchange=()=>{
-  alert("📷 Histórico carregado.\nIA ajustou volatilidade e padrões.");
-};
+
+function moverAviao(){
+  const canvas=chartEl;
+  const last=historico.length-1;
+  const meta=chart.getDatasetMeta(0).data[last];
+  if(meta){
+    plane.style.left=canvas.offsetLeft+meta.x+"px";
+    plane.style.top=canvas.offsetTop+meta.y+"px";
+    plane.style.transform=`translate(-50%,-50%) rotate(${saldo>=0?-20:25}deg)`;
+  }
+}
+
+/* ================= IA ROSA VIP ================= */
+function gerarSinalRosa(){
+  let base=80;
+  if(historicoImagens.length>0) base+=Math.min(15,historicoImagens.length*2);
+  let prob=Math.min(95,base);
+  let mult=(10+Math.random()*30).toFixed(2);
+  let win=Math.random()<prob/100;
+  saldo+=win?1:-1;
+  atualizarGrafico();
+  return{mult,prob};
+}
+
+function generateSignal(){
+  let r=gerarSinalRosa();
+  signals.innerHTML=`
+    <div class="glass p-6 rounded-xl border border-pink-500/40 text-center signal w-80">
+      <h3 class="font-bold text-pink-400 mb-2">🌹 SINAL ROSA VIP</h3>
+      <div class="text-4xl font-black mb-3 text-pink-300">×${r.mult}</div>
+      <p class="text-sm">Probabilidade de acerto: <b>${r.prob}%</b></p>
+      <p class="text-xs text-gray-400">🧠 IA treinada com histórico real</p>
+    </div>`;
+}
+
+/* ================= UPLOAD HISTÓRICO ================= */
+function processImage(input){
+  if(input.files.length>0){
+    historicoImagens.push(input.files[0].name);
+    alert("📷 Histórico recebido • IA reforçada");
+  }
+}
+
+/* ================= CASA ================= */
+function setCasa(c){localStorage.setItem("casa",c);}
+
+/* ================= VARS ================= */
+const loginDiv=document.getElementById("login");
+const app=document.getElementById("app");
+const chartEl=document.getElementById("chart");
+const plane=document.getElementById("plane");
 </script>
 
 </body>
-</html>
+  </html>

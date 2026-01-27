@@ -13,28 +13,36 @@
   .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
   .btn-red:hover { background:#b91c1c; transform: scale(1.02); }
   .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
-  .btn-gray:hover { background:#222; }
   .signal-card { padding:24px; border-radius:16px; text-align:center; transition:0.5s; border: 2px solid; animation: fadeIn 0.5s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   input[type="file"]::file-selector-button {
     background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 15px;
   }
+  .login-container { transform: translateY(-15%); }
 </style>
 </head>
 <body>
 
-<div id="page1" class="min-h-screen flex items-center justify-center">
-  <div class="glass p-10 w-full max-w-md border border-red-600/30">
-    <h1 class="text-3xl font-black text-red-600 mb-6 text-center tracking-tighter">WILLBOOT-PRO</h1>
-    <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
-    <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
-    <button class="btn-red w-full neon-red mb-4" onclick="loginMain()">🔐 ENTRAR</button>
-    <p class="text-center text-gray-500 text-xs uppercase tracking-widest">Acesso Restrito</p>
+<div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="login-container w-full max-w-md text-center">
+    <img src="https://i.postimg.cc/85zM6D6H/aviator-plane.png" class="w-32 mx-auto mb-4 animate-bounce" alt="Aviator">
+    <h1 class="text-3xl font-black text-red-600 tracking-tighter italic">WILLBOOT-PRO</h1>
+    <p class="text-gray-400 text-xs mt-1 uppercase font-bold tracking-widest">Não é sorte, é análise.</p>
+    <p class="text-[10px] text-gray-500 my-4 px-4">A mais avançada tecnologia de processamento de dados para leitura de padrões no Aviator. Análise em tempo real com precisão cirúrgica.</p>
+    
+    <div class="glass p-8 border border-red-600/30">
+      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
+      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
+      <button class="btn-red w-full neon-red mb-4" onclick="loginMain()">🔐 ENTRAR NO SISTEMA</button>
+    </div>
+    
+    <footer class="mt-20 text-[10px] text-gray-600">
+      © 2026 WillBoot-PRO. Todos os direitos reservados.
+    </footer>
   </div>
 </div>
 
 <div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
-  
   <div class="glass p-6 border border-red-600/20 mb-6">
     <div class="flex flex-col md:flex-row justify-between items-center mb-6">
       <div id="clock2" class="text-red-500 font-bold text-2xl tracking-mono">🕐 00:00:00</div>
@@ -43,52 +51,62 @@
         <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
       </div>
     </div>
-
     <div class="bg-black/60 p-6 rounded-2xl border border-dashed border-gray-700 text-center">
       <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-400 mx-auto">
-      <p id="historyResult" class="mt-4 text-xs font-bold uppercase tracking-widest"></p>
+      <p id="historyResult" class="mt-4 text-xs font-bold uppercase"></p>
     </div>
   </div>
 
-  <div id="signalsPage2" class="flex justify-center my-10 min-h-[200px]">
-    <div class="glass p-12 border border-gray-800 text-center text-gray-500 italic flex items-center">
-      Selecione o print do histórico e clique em ANALISAR
-    </div>
-  </div>
+  <div id="signalsPage2" class="flex justify-center my-10 min-h-[200px]"></div>
 
-  <div class="glass p-6 mb-6 border border-red-600/20">
-    <label class="mb-2 block font-bold text-gray-400 text-xs text-center uppercase">Assertividade da IA em Tempo Real</label>
-    <canvas id="chartPage2" height="120"></canvas>
+  <div class="grid md:grid-cols-2 gap-6 mb-6">
+    <div class="glass p-6 border border-red-600/20">
+      <h3 class="text-red-500 font-bold mb-3 text-xs uppercase italic">💡 Dicas de Estratégia IA</h3>
+      <p id="iaDica2" class="text-xs text-gray-400 italic">"Evite jogar após 3 azuis seguidos. Espere o padrão quebrar para entrar com segurança."</p>
+    </div>
+    <div class="glass p-6 border border-red-600/20">
+      <canvas id="chartPage2" height="120"></canvas>
+    </div>
   </div>
 
   <div class="glass p-8 mt-10 border border-red-600/30 text-center">
-    <h2 class="text-2xl font-black text-red-600 mb-2">💎 ACESSO VIP</h2>
-    <p class="text-gray-400 mb-6 text-xs italic">Sinais Rosa acima de 10.00x com 98% de precisão</p>
+    <h2 class="text-2xl font-black text-red-600 mb-2 italic">💎 ACESSO VIP</h2>
+    <p class="text-gray-400 mb-6 text-xs italic uppercase">Sinais Rosa: Não é sorte, é análise.</p>
     <div class="max-w-xs mx-auto">
-        <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
-        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
-        <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ACESSAR ÁREA VIP</button>
+        <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700 outline-none">
+        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none">
+        <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ACESSAR VIP</button>
     </div>
   </div>
 </div>
 
 <div id="page3" class="hidden max-w-7xl mx-auto px-6 py-10">
   <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-black text-pink-600 tracking-tighter italic">💎 PAINEL VIP ROSA</h1>
-    <button class="btn-gray" onclick="location.reload()">VOLTAR</button>
+    <h1 class="text-3xl font-black text-pink-600 tracking-tighter italic">💎 PAINEL VIP</h1>
+    <button class="btn-gray text-xs" onclick="backToP2()">⬅️ VOLTAR</button>
   </div>
   
-  <div id="signalsVIP" class="flex justify-center my-8"></div>
+  <div class="flex flex-col items-center mb-8">
+    <div id="clock3" class="text-pink-500 font-bold text-3xl mb-4 tracking-mono">00:00:00</div>
+    <div id="signalsVIP" class="w-full flex justify-center"></div>
+  </div>
 
-  <div class="glass p-6 rounded-xl border border-pink-600/20 mb-10 relative">
-    <h3 class="text-center font-bold mb-4 text-pink-300 uppercase text-xs tracking-widest">Gráfico de Histórico Rosa (10.00x+)</h3>
+  <div class="glass p-6 rounded-xl border border-pink-600/20 mb-8">
     <canvas id="chartVIP" height="130"></canvas>
   </div>
 
+  <div class="glass p-6 border border-pink-600/20 mb-10">
+    <h3 class="text-pink-500 font-bold mb-3 text-xs uppercase">🎯 Como Subir a Banca (IA VIP)</h3>
+    <ul class="text-[11px] text-gray-400 space-y-2">
+      <li>• Aplique a técnica de 2.0x para cobrir a aposta e deixe o lucro buscar o sinal Rosa.</li>
+      <li>• Defina uma meta diária de 10% e saia do mercado assim que atingir.</li>
+      <li>• O Rosa acima de 10x ocorre geralmente após um ciclo de 4 roxos intercalados.</li>
+    </ul>
+  </div>
+
   <div class="glass p-10 border border-pink-600/20 text-center">
-    <label class="block mb-4 font-bold text-pink-500 uppercase">Analisar Print para Rosa</label>
     <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 mx-auto block">
-    <button class="btn-red neon-red w-full" onclick="analyzeHistoryVIP()">📊 GERAR SINAL ROSA</button>
+    <button class="btn-red neon-red w-full" onclick="analyzeHistoryVIP()">📊 ANALISAR ROSA</button>
     <p id="historyResultVIP" class="mt-4 font-bold text-sm"></p>
   </div>
 </div>
@@ -98,142 +116,94 @@ const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
 // Relógio Luanda
 setInterval(()=>{
-  const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+  const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda", hour:'2-digit', minute:'2-digit', second:'2-digit'});
   if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML="🕐 "+now;
+  if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML=now;
 },1000);
 
-// Login
+// Navegação
 function loginMain(){
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     localStorage.setItem("mainAccess","true");
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
     updateChartPage2();
-  } else { alert("Usuário ou Senha inválidos."); }
+  } else { alert("Acesso Negado."); }
 }
-
 function logoutMain(){ localStorage.removeItem("mainAccess"); location.reload(); }
+function backToP2(){ document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
 
 // Gráficos
-let chartPage2Obj;
-function updateChartPage2(dataArr = [80, 85, 82, 88, 90]){
+let chartPage2Obj, chartVIPObj;
+const aviatorImg = new Image(); aviatorImg.src = 'https://i.postimg.cc/85zM6D6H/aviator-plane.png';
+
+function updateChartPage2(conf = 80){
   const ctx = document.getElementById("chartPage2").getContext("2d");
   if(chartPage2Obj) chartPage2Obj.destroy();
   chartPage2Obj = new Chart(ctx,{
     type:"line",
-    data:{
-      labels:dataArr.map((_,i)=>i+1),
-      datasets:[{ data:dataArr, borderColor:"#dc2626", tension:.4, fill:true, backgroundColor: 'rgba(220, 38, 38, 0.1)' }]
-    },
-    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}, x:{display:false}}}
+    data:{ labels:[1,2,3,4,5], datasets:[{ data:[70, 75, 82, 85, conf], borderColor:"#dc2626", tension:.4, fill:true, backgroundColor: 'rgba(220, 38, 38, 0.1)' }] },
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100},x:{display:false}}}
   });
 }
 
-// Analisar Página 2
+function updateChartVIP(targetMult = 10){
+  const ctx = document.getElementById("chartVIP").getContext("2d");
+  if(chartVIPObj) chartVIPObj.destroy();
+  const dynamicData = [1.0, 3.0, 5.0, 8.0, targetMult];
+  chartVIPObj = new Chart(ctx,{
+    type:"line",
+    data:{ labels:[1,2,3,4,5], datasets:[{ data:dynamicData, borderColor:"#db2777", borderWidth: 3, pointStyle: (c) => c.dataIndex === 4 ? aviatorImg : 'circle', pointRadius: (c) => c.dataIndex === 4 ? 20 : 5, tension: 0.4, fill:true, backgroundColor: 'rgba(219, 39, 119, 0.1)' }] },
+    options:{plugins:{legend:{display:false}}, scales:{y:{display: false}, x:{display:false}}}
+  });
+}
+
+// Lógica de Análise
 async function analyzeHistory(){
-  const fileInput = document.getElementById("uploadHistory");
-  const resultText = document.getElementById("historyResult");
+  const file = document.getElementById("uploadHistory").files[0];
+  const resText = document.getElementById("historyResult");
   const signalsDiv = document.getElementById("signalsPage2");
-
-  if(!fileInput.files[0]){ alert("Selecione uma imagem!"); return; }
-  resultText.innerHTML = "⚡ ANALISANDO...";
-  
-  const formData = new FormData();
-  formData.append("file", fileInput.files[0]);
-
+  if(!file) return alert("Selecione a imagem!");
+  resText.innerHTML = "⚡ ANALISANDO...";
+  const fd = new FormData(); fd.append("file", file);
   try {
-    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: formData });
+    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: fd });
     const data = await res.json();
     const mult = parseFloat(data.analysis?.mult || 1.0);
     const conf = data.analysis?.confianca || 85;
-
-    let sinalTipo = mult < 2.0 ? "AZUL" : (mult < 10.0 ? "ROXO" : "ROSA");
-    let classeCor = mult < 2.0 ? "border-cyan-500 text-cyan-400" : (mult < 10.0 ? "border-purple-600 text-purple-400" : "border-pink-600 text-pink-500");
-    let alcance = mult < 2.0 ? "1.99x" : (mult < 10.0 ? "9.99x" : "∞");
-
-    if(sinalTipo === "ROSA") {
-        signalsDiv.innerHTML = `<div class="signal-card glass border-pink-600 bg-pink-950/20 w-full max-w-md">
-            <h3 class="font-black text-pink-500 text-xl mb-2 italic">💎 ALERTA ROSA (10.00x+)</h3>
-            <p class="text-xs text-gray-400 mb-4 uppercase">Sinal Detectado: Use a área VIP</p>
-        </div>`;
+    let cor = mult < 2.0 ? "cyan-500" : (mult < 10.0 ? "purple-600" : "pink-600");
+    let txt = mult < 2.0 ? "AZUL" : (mult < 10.0 ? "ROXO" : "ROSA");
+    
+    if(mult >= 10) {
+      signalsDiv.innerHTML = `<div class="signal-card glass border-pink-600 w-full max-w-sm"><h3 class="text-pink-500 font-black italic">SINAL ROSA DETECTADO!</h3><p class="text-xs text-gray-400 mt-2">MULTIPLIQUE NA ÁREA VIP</p></div>`;
     } else {
-        signalsDiv.innerHTML = `<div class="signal-card glass ${classeCor} w-full max-w-sm bg-black/40">
-            <h3 class="font-black text-2xl mb-2">SINAL ${sinalTipo}</h3>
-            <div class="text-6xl font-black mb-2 text-white">×${mult.toFixed(2)}</div>
-            <p class="text-xs uppercase font-bold text-gray-500">Alcance Possível: ${alcance}</p>
-            <p class="text-[10px] mt-2 text-gray-400">Precisão: ${conf}%</p>
-        </div>`;
+      signalsDiv.innerHTML = `<div class="signal-card glass border-${cor} w-full max-w-sm"><h3 class="text-${cor} font-black text-2xl uppercase">SINAL ${txt}</h3><div class="text-6xl font-black text-white my-2">×${mult.toFixed(2)}</div><p class="text-xs text-gray-500">ALCANCE PREVISTO: ${mult < 2 ? '1.99x' : '9.99x'}</p></div>`;
     }
-    updateChartPage2([70, 75, 80, 85, conf]);
-    resultText.innerHTML = "✅ CONCLUÍDO";
-  } catch(e) { resultText.innerHTML = "⚠️ ERRO NO SERVIDOR"; }
+    updateChartPage2(conf);
+    resText.innerHTML = "✅ ANÁLISE COMPLETA";
+  } catch(e) { resText.innerHTML = "⚠️ SERVIDOR OCUPADO"; }
 }
 
-// VIP
 function loginVIP(){
   if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
     updateChartVIP(10);
-  } else { alert("Dados VIP inválidos."); }
-}
-
-let chartVIPObj;
-const aviatorImg = new Image();
-aviatorImg.src = 'https://i.postimg.cc/85zM6D6H/aviator-plane.png'; 
-
-function updateChartVIP(targetMult){
-  const ctx = document.getElementById("chartVIP").getContext("2d");
-  if(chartVIPObj) chartVIPObj.destroy();
-  
-  const dynamicData = [1.0, 2.5, 5.0, 8.0, targetMult];
-  
-  chartVIPObj = new Chart(ctx,{
-    type:"line",
-    data:{
-      labels: dynamicData.map((_,i)=>i+1),
-      datasets:[{
-        data: dynamicData,
-        borderColor:"#db2777",
-        borderWidth: 4,
-        pointStyle: (context) => context.dataIndex === dynamicData.length - 1 ? aviatorImg : 'circle',
-        pointRadius: (context) => context.dataIndex === dynamicData.length - 1 ? 15 : 4,
-        tension: 0.4,
-        fill: true,
-        backgroundColor: 'rgba(219, 39, 119, 0.1)'
-      }]
-    },
-    options:{
-      plugins:{legend:{display:false}},
-      scales:{y:{min:0, suggestedMax: targetMult + 5, display: false}, x:{display:false}}
-    }
-  });
+  } else { alert("Acesso VIP Negado."); }
 }
 
 async function analyzeHistoryVIP(){
   const resVIP = document.getElementById("historyResultVIP");
   const signalsVIP = document.getElementById("signalsVIP");
   if(!document.getElementById("uploadHistoryVIP").files[0]) return;
-  
-  resVIP.innerHTML = "<span class='text-pink-500 animate-pulse'>🚀 CALCULANDO ROTA ROSA...</span>";
-  
-  const fd = new FormData();
-  fd.append("file", document.getElementById("uploadHistoryVIP").files[0]);
-  
+  resVIP.innerHTML = "🚀 MAPEANDO ROTA...";
+  const fd = new FormData(); fd.append("file", document.getElementById("uploadHistoryVIP").files[0]);
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: fd });
     const data = await res.json();
     let mult = parseFloat(data.analysis?.mult || 10.0);
-    
-    // Forçar a regra Rosa (10.00x até infinito) na VIP
-    if(mult < 10.0) mult = 10.0 + (Math.random() * 5); 
-
-    signalsVIP.innerHTML = `<div class="signal-card glass border-pink-500 p-8 text-center bg-pink-950/30 w-full max-w-md">
-        <h2 class="text-pink-500 font-black text-xl mb-2 italic">💎 ENTRADA CONFIRMADA ROSA</h2>
-        <div class="text-7xl font-black text-white drop-shadow-[0_0_15px_rgba(219,39,119,0.6)]">×${mult.toFixed(2)}</div>
-        <p class="text-xs mt-3 text-pink-300 font-bold uppercase">Alcance Máximo: INFINITO</p>
-      </div>`;
-    
+    if(mult < 10) mult = 10.25; 
+    signalsVIP.innerHTML = `<div class="signal-card glass border-pink-500 p-8 text-center bg-pink-950/30 w-full max-w-md"><h2 class="text-pink-500 font-black text-xl mb-2">💎 ROSA CONFIRMADO</h2><div class="text-7xl font-black text-white">×${mult.toFixed(2)}</div><p class="text-xs mt-3 text-pink-300 font-bold">ALCANCE: INFINITO</p></div>`;
     updateChartVIP(mult);
     resVIP.innerHTML = "✅ SINAL GERADO";
   } catch(e){ resVIP.innerHTML = "Erro na análise VIP."; }

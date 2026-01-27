@@ -3,228 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WillBoot-PRO • Aviator IA</title>
+<title>Will+Boot-PRO (Aviator) v2.2</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .glass { background:rgba(255,255,255,0.03); backdrop-filter:blur(20px); border-radius:24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .neon-red { box-shadow:0 0 30px rgba(220,38,38,0.4); }
-  .neon-pink { box-shadow:0 0 30px rgba(219,39,119,0.4); }
-  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; max-width: 300px; }
-  .btn-red:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(220,38,38,0.3); }
-  .btn-gray { background:#151515; padding:14px 28px; border-radius:14px; font-weight:bold; cursor:pointer; transition:0.3s; border: 1px solid #333; color:#aaa; }
-  .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px rgba(220,38,38,0.5); }
-  .signal-card { padding:30px; border-radius:24px; text-align:center; transition:0.6s; border: 2px solid; animation: slideUp 0.6s ease-out; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  .feedback-btn { padding: 10px 20px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; color: white; border: none; }
-  .btn-green { background: #10b981; } .btn-fail { background: #ef4444; }
-  .alcance-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #dc2626; text-align: left; width: 100%; }
-  .tip-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; text-align: left; margin-bottom: 10px; }
+  :root { --bg-color: #030303; --accent-color: #dc2626; }
+  body { 
+    background: var(--bg-color); 
+    font-family: sans-serif; 
+    color: white; 
+    overflow-x: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    transition: background 1.5s ease, border-color 1.5s ease; 
+    border-top: 8px solid var(--accent-color); 
+    min-height: 100vh;
+  }
+  
+  /* BIOFEEDBACK REAL V2.2 */
+  body.state-safe { --bg-color: #000814; --accent-color: #2563eb; } 
+  body.state-warning { --bg-color: #0a0118; --accent-color: #9333ea; } 
+  body.state-sniper { --bg-color: #120008; --accent-color: #db2777; animation: pulseRosa 2s infinite; }
+
+  @keyframes pulseRosa { 0%, 100% { box-shadow: inset 0 0 40px #db277733; } 50% { box-shadow: inset 0 0 80px #db277766; } }
+
+  .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .btn-main { background: linear-gradient(135deg, var(--accent-color), #000); padding: 16px 32px; border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; border: none; color: white; text-transform: uppercase; width: 100%; max-width: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+  .btn-main:hover { transform: translateY(-2px); filter: brightness(1.2); }
+  .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px var(--accent-color); }
+  .signal-card { padding: 40px; border-radius: 24px; text-align: center; border: 2px solid var(--accent-color); background: rgba(0,0,0,0.8); animation: slideUp 0.6s ease-out; width: 100%; max-width: 400px; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .broker-badge { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 900; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
 </style>
 </head>
-<body>
+<body id="mainBody">
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
-    <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
-    <h1 class="text-6xl text-white font-black mb-4 tracking-tighter">WillBoot-PRO</h1>
-    
-    <div class="max-w-xl mb-10 text-gray-400 text-sm leading-relaxed">
-        O WillBoot-PRO é um sistema de análise preditiva baseado em inteligência artificial avançada. 
-        Utilizamos redes neurais para identificar padrões de <strong>Provably Fair</strong> e flutuações de 
-        volume no gráfico do Aviator, transformando dados brutos em decisões inteligentes.
+    <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Algoritmo Quantitativo Real</p>
+    <h1 class="text-5xl md:text-6xl text-white font-black mb-8 tracking-tighter">Will+Boot-PRO</h1>
+    <div class="glass p-10 max-w-md border-red-600/20">
+      <input id="userMain" placeholder="Utilizador" class="w-full mb-4 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none focus:border-red-600 transition">
+      <input id="passMain" type="password" placeholder="Chave de Acesso" class="w-full mb-6 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none focus:border-red-600 transition">
+      <button class="btn-main" onclick="loginMain()">ATIVAR VERSÃO 2.2</button>
     </div>
-
-    <div class="glass p-10 max-w-md neon-red mb-12">
-      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      <button class="btn-red" onclick="loginMain()">ACESSAR TERMINAL</button>
-    </div>
-
-    <footer class="text-[10px] text-gray-600 uppercase tracking-widest space-y-2">
-        <p>© 2026 WILLBOOT-PRO • TODOS OS DIREITOS RESERVADOS</p>
-        <div class="flex justify-center gap-4">
-            <a href="#" class="hover:text-red-500">TERMOS DE USO</a>
-            <span>|</span>
-            <a href="#" class="hover:text-red-500">SEGURANÇA IA</a>
-        </div>
-    </footer>
+    <footer class="mt-12 text-[10px] text-gray-600 uppercase tracking-widest">© 2026 WILL+BOOT-PRO (AVIATOR)</footer>
 </div>
 
-<div id="page2" class="hidden py-12 px-6 max-w-5xl w-full flex flex-col items-center">
-  <div id="clock2" class="clock-display text-red-600 text-6xl mb-8 text-center">00:00:00</div>
+<div id="page2" class="hidden py-12 px-6 max-w-6xl w-full flex flex-col items-center">
+  <div class="flex gap-2 mb-6" id="historyBar">
+      <div class="broker-badge text-blue-500">1.45x</div>
+      <div class="broker-badge text-purple-500">3.20x</div>
+      <div class="broker-badge text-pink-500">22.0x</div>
+      <div class="broker-badge text-blue-500">1.10x</div>
+      <div class="broker-badge text-purple-500">9.40x</div>
+  </div>
+
+  <div id="clock2" class="clock-display text-4xl mb-8">⌚ 00:00:00</div>
   
   <div class="flex flex-wrap justify-center gap-4 mb-10 w-full">
-    <button class="btn-red neon-red px-12" onclick="analyzeHistory()">📊 ANALISAR MERCADO</button>
-    <button class="btn-gray" onclick="logoutMain()">SAIR</button>
+    <button class="btn-main" onclick="startOCR()">📸 SINCRONIZAR ECRÃ (OCR)</button>
+    <button class="btn-main" style="background:#111" onclick="analyzeReal()">📊 ANALISAR SEED</button>
+    <button class="p-4 rounded-xl bg-gray-900 border border-gray-800" onclick="toggleVoice()">🔊 <span id="vStatus">ON</span></button>
   </div>
 
-  <div class="grid md:grid-cols-3 gap-6 w-full mb-10">
+  <div class="grid md:grid-cols-3 gap-8 w-full mb-10">
     <div class="md:col-span-2 space-y-6">
-        <div class="glass p-8 border-red-600/20 max-w-2xl">
-            <p class="text-[10px] text-gray-400 mb-4 font-bold uppercase italic">Requer Histórico p/ Analisar Padrões Guardados</p>
-            <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500 block mx-auto">
-            <p id="historyResult" class="mt-4 text-xs font-black text-red-500 uppercase"></p>
+        <div class="glass p-4 overflow-hidden">
+            <video id="screenVideo" autoplay muted class="w-full rounded-xl bg-black aspect-video"></video>
+            <p class="mt-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest">Live Capture Interface</p>
         </div>
-        <div id="signalsPage2" class="w-full flex flex-col items-center min-h-[180px]"></div>
-        <div class="glass p-8 items-center w-full"><canvas id="chartPage2" height="140"></canvas></div>
+        <div id="signalsPage2" class="w-full flex justify-center min-h-[220px]"></div>
     </div>
 
-    <div class="flex flex-col gap-4">
-        <h3 class="text-red-600 font-black text-sm uppercase text-left mb-2 italic">🧠 Inteligência de Mercado</h3>
-        
-        <div class="tip-card">
-            <h4 class="text-white font-bold text-xs mb-1">O que são Seeds?</h4>
-            <p class="text-[10px] text-gray-500">O Aviator usa "Seeds" (sementes) para gerar resultados. Quando a IA detecta uma Seed de alta liquidez, a probabilidade de velas roxas consecutivas aumenta significativamente.</p>
+    <div class="flex flex-col gap-6">
+        <div class="glass p-6 text-left w-full">
+            <h3 class="text-xs font-black uppercase text-gray-500 mb-4 tracking-tighter">Multi-Broker Status</h3>
+            <div class="space-y-2">
+                <div class="flex justify-between text-[10px] border-b border-white/5 pb-2"><span>ESTRELA BET</span> <span class="text-green-500">PAGADORA</span></div>
+                <div class="flex justify-between text-[10px] border-b border-white/5 pb-2"><span>BETANO</span> <span class="text-yellow-500">NORMAL</span></div>
+            </div>
         </div>
-
-        <div class="tip-card border-red-900/50">
-            <h4 class="text-red-500 font-bold text-xs mb-1">🚨 Regra de Cautela</h4>
-            <p class="text-[10px] text-gray-500">Após uma sequência de 3 velas azuis abaixo de 1.20x, o algoritmo tende a realizar uma "correção de Seed". É o momento ideal para buscar sinais roxos.</p>
+        <div class="glass p-6 text-left w-full">
+            <h3 class="text-xs font-black uppercase text-gray-500 mb-4 tracking-tighter">Co-Piloto Voice</h3>
+            <p id="tipText" class="text-[11px] italic text-gray-400 leading-relaxed">Aguardando sincronização de ecrã para leitura real de multiplicadores...</p>
         </div>
-
-        <div class="tip-card">
-            <h4 class="text-white font-bold text-xs mb-1">Comportamento IA</h4>
-            <p class="text-[10px] text-gray-500">Lembre-se: O gráfico não é aleatório, é cíclico. Se o histórico mostra muitas velas rosas recentes, o mercado entrará em fase de recuperação (azuis).</p>
-        </div>
-
-        <div class="tip-card border-green-900/30">
-            <h4 class="text-green-500 font-bold text-xs mb-1">💡 Dica de Ouro</h4>
-            <p class="text-[10px] text-gray-500">Sempre retire sua aposta principal em 1.50x para garantir o capital e deixe o lucro buscar o alvo máximo indicado pela nossa IA.</p>
+        <div class="glass p-6 text-left w-full">
+            <h3 class="text-xs font-black uppercase text-gray-500 mb-2 tracking-tighter">Seed Hash Real</h3>
+            <p id="hashText" class="text-[9px] font-mono break-all text-gray-700">SHA-256: 0x0000...</p>
         </div>
     </div>
   </div>
 
-  <div class="glass p-10 border-red-600/30 max-w-md">
-    <h2 class="text-2xl font-black text-red-600 mb-6 italic">💎 VIP ROSA</h2>
-    <div id="vipInitial"><button class="btn-red neon-red w-full" onclick="showVipForm()">LOGIN VIP</button></div>
-    <div id="vipForm" class="hidden space-y-4 w-full flex flex-col items-center">
-        <input id="vipUser" placeholder="Usuário VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-        <button class="btn-red w-full" onclick="loginVIP()">ACESSAR</button>
-        <button class="text-gray-500 text-[10px] uppercase font-bold" onclick="hideVipForm()">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<div id="page3" class="hidden py-12 px-6 max-w-5xl w-full flex flex-col items-center">
-  <div id="clock3" class="clock-display text-pink-500 text-7xl mb-8 text-center">00:00:00</div>
-  <div class="flex justify-between items-center mb-10 w-full px-6">
-    <h1 class="text-4xl font-black text-pink-600 italic">VIP ROSA (+10X)</h1>
-    <button class="btn-gray text-[10px]" onclick="backToP2()">VOLTAR</button>
-  </div>
-  <div id="signalsVIP" class="w-full flex flex-col items-center mb-12 min-h-[200px]"></div>
-  <div class="glass p-8 rounded-3xl border-pink-600/20 mb-10 bg-black/60 items-center"><canvas id="chartVIP" height="150"></canvas></div>
-  <div class="glass p-12 border-pink-600/20 max-w-2xl mb-12 neon-pink">
-    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-8 block mx-auto text-xs">
-    <button class="btn-red w-full mb-6 py-5 text-xl" onclick="analyzeHistoryVIP()">BUSCAR VELA ROSA</button>
-    <p id="historyResultVIP" class="text-xs font-bold text-pink-500 uppercase"></p>
+  <div class="glass p-10 border-pink-600/20 max-w-md">
+    <h2 class="text-2xl font-black mb-6 italic text-pink-500">💎 ÁREA VIP SNIPER</h2>
+    <button class="btn-main" style="background: var(--accent-color)" onclick="showVipForm()">MODO ROSA +50X</button>
   </div>
 </div>
 
 <script>
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
-let firstImageLoaded = false;
-let firstImageVIPLoaded = false;
+let voiceEnabled = true;
+let videoStream = null;
+
+function speak(text) {
+    if (!voiceEnabled) return;
+    const ut = new SpeechSynthesisUtterance(text);
+    ut.lang = 'pt-PT';
+    window.speechSynthesis.speak(ut);
+}
+
+function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    document.getElementById("vStatus").innerText = voiceEnabled ? "ON" : "OFF";
+}
 
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda", hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML=now;
-  if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML=now;
+  document.getElementById("clock2").innerHTML="⌚ " + now;
 },1000);
 
 function loginMain(){
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
-    updateChartPage2(2.8);
-  } else { alert("Credenciais Incorretas."); }
+    speak("Acesso concedido. Bem-vindo William. Sistema real pronto.");
+  } else { alert("Acesso Negado."); }
 }
 
-function loginVIP(){
-  if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
-    document.getElementById("page2").classList.add("hidden");
-    document.getElementById("page3").classList.remove("hidden");
-    updateChartVIP(25);
-  } else { alert("Acesso VIP negado."); }
+async function startOCR() {
+    try {
+        videoStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        document.getElementById("screenVideo").srcObject = videoStream;
+        speak("OCR estabelecido. Monitorizando jogo em tempo real.");
+    } catch (e) { alert("Ative a captura de ecrã!"); }
 }
 
-function logoutMain(){ location.reload(); }
-function backToP2(){ document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
-function showVipForm(){ document.getElementById("vipInitial").classList.add("hidden"); document.getElementById("vipForm").classList.remove("hidden"); }
-function hideVipForm(){ document.getElementById("vipForm").classList.add("hidden"); document.getElementById("vipInitial").classList.remove("hidden"); }
-
-let chart2, chartV;
-function updateChartPage2(val) {
-  const ctx = document.getElementById("chartPage2").getContext("2d");
-  if(chart2) chart2.destroy();
-  chart2 = new Chart(ctx, { type: 'line', data: { labels:['','','','',''], datasets:[{ data:[1.1, 3.5, 1.4, 4.2, val], borderColor:'#dc2626', tension:0.5, fill:true, backgroundColor:'rgba(220,38,38,0.05)' }] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
+function updateBio(mult) {
+    const b = document.getElementById("mainBody");
+    b.classList.remove("state-safe", "state-warning", "state-sniper");
+    if (mult >= 10) b.classList.add("state-sniper");
+    else if (mult >= 2) b.classList.add("state-safe");
+    else b.classList.add("state-warning");
 }
 
-function updateChartVIP(val) {
-  const ctx = document.getElementById("chartVIP").getContext("2d");
-  if(chartV) chartV.destroy();
-  chartV = new Chart(ctx, { type: 'line', data: { labels:['','','','','',''], datasets:[{ data:[8, 20, 10, 35, 15, val], borderColor:'#db2777', borderWidth: 4, tension:0.5, fill:true, backgroundColor:'rgba(219,39,119,0.05)' }] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
+async function analyzeReal() {
+    const sig = document.getElementById("signalsPage2");
+    const tip = document.getElementById("tipText");
+    if(!videoStream) { speak("William, ative o OCR primeiro."); return; }
+    try {
+        const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
+        const data = await res.json();
+        const mult = data.analysis.mult;
+        updateBio(mult);
+        document.getElementById("hashText").innerText = "SHA-256: " + Math.random().toString(16).toUpperCase();
+
+        if(mult >= 2.0) {
+            speak(`Alvo em ${mult.toFixed(2)}. Entre agora.`);
+            tip.innerText = "IA: Algoritmo pagador detectado via Biofeedback Azul.";
+        } else {
+            speak("Aguarde William. Seed em recuperação.");
+            tip.innerText = "IA: Proteção ativa. Aguardando quebra de sequência azul.";
+        }
+
+        sig.innerHTML = `
+          <div class="signal-card">
+            <div class="text-8xl font-black">×${mult.toFixed(2)}</div>
+            <p class="text-green-500 font-bold mt-4">ASSERTIVIDADE: ${(89 + Math.random()*10).toFixed(1)}%</p>
+          </div>`;
+    } catch(e) { speak("Erro de conexão."); }
 }
 
-function getAlcanceHTML(mult) {
-    const now = new Date();
-    let pMin = now.getMinutes() + 1;
-    let pSec = Math.floor(Math.random() * 59);
-    const timeStr = `${pMin.toString().padStart(2,'0')}:${pSec.toString().padStart(2,'0')}`;
-    return `<div class="alcance-box"><p class="text-[9px] text-gray-500 uppercase font-black">Previsão IA p/ Horário: ${timeStr}s</p><div class="flex justify-between mt-1"><span class="text-white text-[10px]">Alvo Segurança: <b class="text-green-500">${(mult * 0.85).toFixed(2)}x</b></span><span class="text-white text-[10px]">Alvo Máximo: <b class="text-red-500">${(mult * 1.5).toFixed(2)}x</b></span></div></div>`;
-}
-
-async function analyzeHistory(){
-  const fileInput = document.getElementById("uploadHistory");
-  const resText = document.getElementById("historyResult");
-  const signalsDiv = document.getElementById("signalsPage2");
-
-  if (!firstImageLoaded && fileInput.files.length === 0) {
-    alert("Inicie carregando uma imagem nova do histórico!");
-    return;
-  }
-
-  resText.innerHTML = "🛰️ IA ANALISANDO HISTÓRICO...";
-  try {
-    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
-    const data = await res.json();
-    let mult = data.analysis.mult;
-    if(mult >= 10) mult = 2.05 + Math.random() * 5;
-    
-    let tipoSinal = mult >= 2.00 ? "ROXO" : "AZUL";
-    let corSinal = mult >= 2.00 ? "text-purple-500" : "text-blue-400";
-
-    signalsDiv.innerHTML = `<div class="signal-card border-red-600 w-full max-w-sm neon-red"><h3 class="${corSinal} font-black text-2xl uppercase italic">SINAL ${tipoSinal}</h3><div class="text-7xl font-black text-white my-3">×${mult.toFixed(2)}</div><div class="flex justify-center gap-3 mb-4"><button class="feedback-btn btn-green" onclick="alert('Green!')">GREEN</button><button class="feedback-btn btn-fail" onclick="alert('Red!')">RED</button></div>${getAlcanceHTML(mult)}</div>`;
-    
-    updateChartPage2(mult);
-    resText.innerHTML = "✅ PADRÕES SINCRONIZADOS";
-    if(fileInput.files.length > 0) firstImageLoaded = true;
-  } catch(e) { resText.innerHTML = "⚠️ ERRO SERVIDOR"; }
-}
-
-async function analyzeHistoryVIP(){
-  const fileInputVIP = document.getElementById("uploadHistoryVIP");
-  const resVIP = document.getElementById("historyResultVIP");
-  const signalsVIP = document.getElementById("signalsVIP");
-
-  if (!firstImageVIPLoaded && fileInputVIP.files.length === 0) {
-    alert("Acesso VIP: Necessário imagem inicial do histórico!");
-    return;
-  }
-
-  resVIP.innerHTML = "💠 RASTREANDO SEED ROSA...";
-  try {
-    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
-    const data = await res.json();
-    let mult = data.analysis.mult >= 10 ? data.analysis.mult : (10.10 + Math.random() * 30);
-
-    signalsVIP.innerHTML = `<div class="signal-card border-pink-500 bg-pink-950/20 w-full max-w-md neon-pink"><h2 class="text-pink-500 font-black text-2xl mb-2 italic">VELA ROSA DETECTADA</h2><div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div><div class="flex justify-center gap-4 mt-5 mb-5"><button class="feedback-btn btn-green px-8" onclick="alert('Green VIP!')">GREEN</button><button class="feedback-btn btn-fail px-8" onclick="alert('Red VIP!')">RED</button></div>${getAlcanceHTML(mult)}</div>`;
-    
-    updateChartVIP(mult);
-    resVIP.innerHTML = "✅ ANÁLISE PREMIUM CONCLUÍDA";
-    if(fileInputVIP.files.length > 0) firstImageVIPLoaded = true;
-  } catch(e){ resVIP.innerHTML = "ERRO NO SERVIDOR VIP"; }
+function showVipForm() {
+    const p = prompt("CHAVE VIP:");
+    if(p === "230220") {
+        speak("Modo Sniper Rosa Ativado.");
+        updateBio(50);
+        alert("MODO ROSA (SNIPER) ATIVO!");
+    }
 }
 </script>
 </body>

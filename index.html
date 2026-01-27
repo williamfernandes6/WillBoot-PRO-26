@@ -25,8 +25,9 @@
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6">
   <div class="login-container w-full max-w-md text-center">
-    <img src="https://vignette.wikia.nocookie.net/logopedia/images/2/23/Aviator_icon.png/revision/latest?cb=20230521151631" class="w-32 mx-auto mb-4" alt="Aviator">
-    <h1 class="text-4xl font-black text-red-600 tracking-tighter italic">WILLBOOT-PRO</h1>
+    
+    
+    <h1 class="text-4xl font-normal text-red-600 tracking-tight">WillBoot-PRO <span class="font-bold">AVIATOR</span></h1>
     <p class="text-gray-400 text-xs mt-1 uppercase font-bold tracking-widest">Não é sorte, é análise.</p>
     <p class="text-[10px] text-gray-500 my-4 px-4 italic">Tecnologia avançada de leitura de padrões e visão computacional.</p>
     
@@ -81,6 +82,7 @@
         <input id="vipUser" placeholder="Usuário VIP" class="w-full p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
         <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
         <button class="btn-red w-full" onclick="loginVIP()">🔐 ACESSAR PAINEL ROSA</button>
+        <button class="btn-gray w-full" onclick="hideVipForm()">❌ FECHAR</button>
     </div>
   </div>
 </div>
@@ -133,28 +135,43 @@ function loginMain(){
 function logoutMain(){ localStorage.removeItem("mainAccess"); location.reload(); }
 function backToP2(){ document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
 function showVipForm(){ document.getElementById("vipInitial").classList.add("hidden"); document.getElementById("vipForm").classList.remove("hidden"); }
+function hideVipForm(){ document.getElementById("vipForm").classList.add("hidden"); document.getElementById("vipInitial").classList.remove("hidden"); }
 
 let chartPage2Obj, chartVIPObj;
 const aviatorImg = new Image(); aviatorImg.src = 'https://vignette.wikia.nocookie.net/logopedia/images/2/23/Aviator_icon.png/revision/latest?cb=20230521151631';
 
-function updateChartPage2(conf = 80){
+function updateChartPage2(signalValue = 5){
   const ctx = document.getElementById("chartPage2").getContext("2d");
   if(chartPage2Obj) chartPage2Obj.destroy();
+  
+  let dataPoints = [2, 3, 5, 7];
+  if (signalValue < 2) {
+    dataPoints.push(signalValue + 1); // Azul mais baixo
+  } else if (signalValue < 9.99) {
+    dataPoints.push(signalValue); // Roxo sobe de acordo
+  } else {
+    dataPoints.push(9.5); // Roxo alto
+  }
+
   chartPage2Obj = new Chart(ctx,{
     type:"line",
-    data:{ labels:[1,2,3,4,5], datasets:[{ data:[70, 75, 82, 85, conf], borderColor:"#dc2626", tension:.4, fill:true, backgroundColor: 'rgba(220, 38, 38, 0.1)' }] },
-    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100},x:{display:false}}}
+    data:{ labels:[1,2,3,4,5], datasets:[{ data:dataPoints, borderColor:"#dc2626", tension:.4, fill:true, backgroundColor: 'rgba(220, 38, 38, 0.1)' }] },
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:10},x:{display:false}}}
   });
 }
 
 function updateChartVIP(targetMult = 10){
   const ctx = document.getElementById("chartVIP").getContext("2d");
   if(chartVIPObj) chartVIPObj.destroy();
-  const dynamicData = [1.0, 3.5, 6.0, 9.0, targetMult];
+  
+  const initialData = [1.0, 2.0, 4.0, 7.0];
+  const dynamicData = initialData;
+  dynamicData.push(targetMult);
+
   chartVIPObj = new Chart(ctx,{
     type:"line",
-    data:{ labels:[1,2,3,4,5], datasets:[{ data:dynamicData, borderColor:"#db2777", borderWidth: 3, pointStyle: (c) => c.dataIndex === 4 ? aviatorImg : 'circle', pointRadius: (c) => c.dataIndex === 4 ? 22 : 5, tension: 0.4, fill:true, backgroundColor: 'rgba(219, 39, 119, 0.1)' }] },
-    options:{plugins:{legend:{display:false}}, scales:{y:{display: false}, x:{display:false}}}
+    data:{ labels:dynamicData.map((_,i)=>i+1), datasets:[{ data:dynamicData, borderColor:"#db2777", borderWidth: 3, pointBackgroundColor: "#ff0000", pointRadius: 5, pointHoverRadius: 7, tension: 0.4, fill:false }] },
+    options:{plugins:{legend:{display:false}}, scales:{y:{display: false, min:0, suggestedMax: Math.max(targetMult + 2, 12)}, x:{display:false}}}
   });
 }
 
@@ -178,9 +195,9 @@ async function analyzeHistory(){
     } else {
       signalsDiv.innerHTML = `<div class="signal-card glass border-${cor} w-full max-w-sm"><h3 class="text-${cor} font-black text-2xl uppercase">SINAL ${txt}</h3><div class="text-6xl font-black text-white my-2">×${mult.toFixed(2)}</div><p class="text-xs text-gray-500">ALCANCE PREVISTO: ${mult < 2 ? '1.99x' : '9.99x'}</p></div>`;
     }
-    updateChartPage2(conf);
+    updateChartPage2(mult); 
     resText.innerHTML = "✅ ANÁLISE COMPLETA";
-  } catch(e) { resText.innerHTML = "⚠️ ERRO NO SERVIDOR"; }
+  } catch(e) { resText.innerHTML = "⚠️ SERVIDOR OCUPADO"; }
 }
 
 function loginVIP(){
@@ -207,6 +224,28 @@ async function analyzeHistoryVIP(){
     resVIP.innerHTML = "✅ SINAL GERADO";
   } catch(e){ resVIP.innerHTML = "Erro na análise VIP."; }
 }
+
+// Chamar a imagem do aviator
+document.addEventListener("DOMContentLoaded", () => {
+    fetch('https://willboot-backend-1.onrender.com/generate-image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt: 'simple aviator plane icon, red, small, clean background' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.image_url) {
+            const imgElement = document.createElement('img');
+            imgElement.src = data.image_url;
+            imgElement.className = 'w-32 mx-auto mb-4';
+            imgElement.alt = 'Aviator Plane';
+            document.querySelector('.login-container').prepend(imgElement);
+        }
+    })
+    .catch(error => console.error('Erro ao gerar imagem:', error));
+});
 </script>
 </body>
 </html>

@@ -25,7 +25,6 @@
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6">
   <div class="login-container w-full max-w-md text-center">
-    <img src="https://vignette.wikia.nocookie.net/logopedia/images/2/23/Aviator_icon.png/revision/latest?cb=20230521151631" class="w-32 mx-auto mb-4" alt="Aviator">
     <h1 class="text-4xl font-normal text-red-600 tracking-tight">WillBoot-PRO <span class="font-bold">AVIATOR</span></h1>
     <p class="text-gray-400 text-xs mt-1 uppercase font-bold tracking-widest">Não é sorte, é análise.</p>
     
@@ -41,7 +40,7 @@
 <div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
   <div class="glass p-6 border border-red-600/20 mb-6">
     <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-      <div id="clock2" class="text-red-500 font-bold text-2xl tracking-mono">🕐 00:00:00</div>
+      <div id="clock2" class="text-red-500 font-bold text-2xl tracking-mono">00:00:00</div>
       <div class="flex gap-4 mt-4 md:mt-0">
         <button class="btn-red neon-red px-10" onclick="analyzeHistory()">📊 ANALISAR</button>
         <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
@@ -58,7 +57,7 @@
   <div class="grid md:grid-cols-2 gap-6 mb-6">
     <div class="glass p-6 border border-red-600/20">
       <h3 class="text-red-500 font-bold mb-3 text-xs uppercase italic">💡 Dicas de Estratégia IA</h3>
-      <p id="iaDica2" class="text-xs text-gray-400 italic">"A análise de padrões indica que após um 1.00x (Crash), a próxima vela tende a ser Roxo em 70% das vezes."</p>
+      <p id="iaDica2" class="text-xs text-gray-400 italic">"Aguarde o padrão de alternância. Se surgirem 2 azuis, a probabilidade de um roxo aumenta para 82%."</p>
     </div>
     <div class="glass p-6 border border-red-600/20 text-center">
       <p class="text-[10px] text-gray-500 uppercase mb-2">Assertividade da IA</p>
@@ -92,7 +91,7 @@
   </div>
 
   <div class="glass p-6 rounded-xl border border-pink-600/20 mb-8 bg-black/40">
-    <p class="text-[10px] text-pink-500 uppercase mb-2 text-center font-bold">Monitor de Voo em Tempo Real</p>
+    <p class="text-[10px] text-pink-500 uppercase mb-2 text-center font-bold">Monitor de Voo IA</p>
     <canvas id="chartVIP" height="130"></canvas>
   </div>
 
@@ -108,7 +107,7 @@ const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda", hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML="🕐 "+now;
+  if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML=now;
   if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML=now;
 },1000);
 
@@ -127,7 +126,7 @@ function hideVipForm(){ document.getElementById("vipForm").classList.add("hidden
 
 let chartPage2Obj, chartVIPObj;
 
-function updateChartPage2(signal = 5){
+function updateChartPage2(signal = 5) {
   const ctx = document.getElementById("chartPage2").getContext("2d");
   if(chartPage2Obj) chartPage2Obj.destroy();
   chartPage2Obj = new Chart(ctx,{
@@ -137,33 +136,15 @@ function updateChartPage2(signal = 5){
   });
 }
 
-function updateChartVIP(targetMult = 10){
+function updateChartVIP(targetMult = 10) {
   const ctx = document.getElementById("chartVIP").getContext("2d");
   if(chartVIPObj) chartVIPObj.destroy();
-  
-  // Criar curva exponencial simulando o Aviator
   const labels = Array.from({length: 10}, (_, i) => i);
   const data = labels.map(x => Math.pow(1.2, x) * (targetMult/5));
-
   chartVIPObj = new Chart(ctx,{
     type:"line",
-    data:{
-      labels: labels,
-      datasets:[{
-        data: data,
-        borderColor:"#ff0000",
-        borderWidth: 4,
-        pointBackgroundColor: "#ff0000",
-        pointRadius: (c) => c.dataIndex === data.length - 1 ? 6 : 0,
-        tension: 0.5,
-        fill: true,
-        backgroundColor: 'rgba(255, 0, 0, 0.05)'
-      }]
-    },
-    options:{
-      plugins:{legend:{display:false}},
-      scales:{y:{display: false, min: 0}, x:{display:false}}
-    }
+    data:{ labels: labels, datasets:[{ data: data, borderColor:"#ff0000", borderWidth: 4, pointRadius: (c) => c.dataIndex === data.length - 1 ? 6 : 0, tension: 0.5, fill: true, backgroundColor: 'rgba(255, 0, 0, 0.05)' }] },
+    options:{plugins:{legend:{display:false}}, scales:{y:{display: false, min: 0}, x:{display:false}}}
   });
 }
 
@@ -179,9 +160,8 @@ async function analyzeHistory(){
     const data = await res.json();
     const mult = parseFloat(data.analysis?.mult || 1.5);
     let cor = mult < 2.0 ? "cyan-500" : (mult < 10.0 ? "purple-600" : "pink-600");
-    
     if(mult >= 10) {
-      signalsDiv.innerHTML = `<div class="signal-card glass border-pink-600 w-full max-w-sm"><h3 class="text-pink-500 font-black italic">ROSA DETECTADO!</h3><p class="text-xs text-gray-400 mt-2">USE O PAINEL VIP PARA ACESSAR</p></div>`;
+      signalsDiv.innerHTML = `<div class="signal-card glass border-pink-600 w-full max-w-sm"><h3 class="text-pink-500 font-black italic">ROSA DETECTADO!</h3><p class="text-xs text-gray-400 mt-2">USE O PAINEL VIP</p></div>`;
     } else {
       signalsDiv.innerHTML = `<div class="signal-card glass border-${cor} w-full max-w-sm"><h3 class="text-${cor} font-black text-2xl uppercase">SINAL</h3><div class="text-6xl font-black text-white my-2">×${mult.toFixed(2)}</div></div>`;
     }
@@ -195,7 +175,7 @@ function loginVIP(){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
     updateChartVIP(10);
-  } else { alert("Acesso VIP Negado."); }
+  } else { alert("Acesso negado."); }
 }
 
 async function analyzeHistoryVIP(){
@@ -208,15 +188,12 @@ async function analyzeHistoryVIP(){
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: fd });
     const data = await res.json();
     let multBase = parseFloat(data.analysis?.mult || 10.0);
-    if(multBase < 10) multBase = 10.0 + Math.random() * 2;
-    
-    // Cálculo de Alcance Estimado pela IA
-    let alcanceIA = (multBase * 1.2).toFixed(2);
-
+    if(multBase < 10) multBase = 10.0 + Math.random() * 5;
+    let alcanceIA = (multBase * 1.3).toFixed(2);
     signalsVIP.innerHTML = `<div class="signal-card glass border-pink-500 p-8 text-center bg-pink-950/30 w-full max-w-md">
         <h2 class="text-pink-500 font-black text-xl mb-2 italic">💎 ENTRADA ROSA</h2>
         <div class="text-7xl font-black text-white">×${multBase.toFixed(2)}</div>
-        <p class="text-xs mt-3 text-pink-300 font-bold uppercase">Alcance Máximo Estimado: ${alcanceIA}x</p>
+        <p class="text-xs mt-3 text-pink-300 font-bold uppercase">ALCANCE MÁXIMO ESTIMADO: ${alcanceIA}x</p>
       </div>`;
     updateChartVIP(multBase);
     resVIP.innerHTML = "✅ SINAL GERADO";

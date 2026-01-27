@@ -26,52 +26,42 @@
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 bg-black">
     <h1 class="text-5xl text-red-600 font-black mb-2">WillBoot-PRO</h1>
-    <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">Inteligência Artificial de Elite</p>
+    <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">IA PREMIUM ATIVA</p>
     <div class="glass p-10 w-full max-w-md neon-red">
-      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-4 rounded-xl bg-black border border-gray-800 outline-none focus:border-red-600 text-white">
-      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-4 rounded-xl bg-black border border-gray-800 outline-none focus:border-red-600 text-white">
-      <button class="btn-red w-full" onclick="loginMain()">ENTRAR NO SISTEMA</button>
+      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-4 rounded-xl bg-black border border-gray-800 text-white">
+      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-4 rounded-xl bg-black border border-gray-800 text-white">
+      <button class="btn-red w-full" onclick="loginMain()">ENTRAR</button>
     </div>
 </div>
 
 <div id="page2" class="hidden py-12 px-6 max-w-5xl mx-auto">
   <div id="clock2" class="clock-display text-red-600 text-6xl mb-8">00:00:00</div>
-  
   <div class="flex justify-center gap-4 mb-10">
-    <button class="btn-red neon-red px-12" onclick="analyzeHistory()">📊 ANALISAR AGORA</button>
+    <button class="btn-red neon-red px-12" onclick="analyzeHistory()">📊 ANALISAR</button>
     <button class="btn-gray" onclick="logoutMain()">SAIR</button>
   </div>
-
   <div class="glass p-8 border-red-600/20 mb-10 max-w-2xl">
-      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500 block mx-auto cursor-pointer">
+      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500 block mx-auto">
       <p id="historyResult" class="mt-4 text-xs font-black text-red-500 uppercase"></p>
   </div>
-
   <div id="signalsPage2" class="flex flex-col items-center mb-12 min-h-[180px]"></div>
-
   <div class="grid md:grid-cols-2 gap-8 mb-12">
-    <div class="glass p-8 text-center">
-      <canvas id="chartPage2" height="140"></canvas>
-    </div>
+    <div class="glass p-8 text-center"><canvas id="chartPage2" height="140"></canvas></div>
     <div class="glass p-8 flex flex-col justify-center text-left">
-      <h3 class="text-red-500 font-black mb-4 text-sm uppercase">Monitor de Aprendizado</h3>
-      <p id="iaStatusMsg" class="text-xs text-gray-400 italic mb-4">"IA rastreando padrões de Seed..."</p>
+      <h3 class="text-red-500 font-black mb-4 text-sm uppercase">Monitor IA</h3>
       <div class="bg-black/40 p-3 rounded-lg border border-white/5 text-[10px]">
           <p>CICLO: <span id="cycleStatus" class="text-white font-bold">---</span></p>
           <p>TENDÊNCIA: <span class="text-green-500 font-bold">ATIVA</span></p>
       </div>
     </div>
   </div>
-
   <div class="glass p-10 border-red-600/30 max-w-md">
-    <h2 class="text-2xl font-black text-red-600 mb-6 italic">💎 ACESSO VIP ROSA</h2>
-    <div id="vipInitial">
-        <button class="btn-red neon-red w-full" onclick="showVipForm()">DESBLOQUEAR PAINEL ROSA</button>
-    </div>
+    <h2 class="text-2xl font-black text-red-600 mb-6 italic">💎 VIP ROSA</h2>
+    <div id="vipInitial"><button class="btn-red neon-red w-full" onclick="showVipForm()">LOGIN VIP</button></div>
     <div id="vipForm" class="hidden space-y-4">
         <input id="vipUser" placeholder="Usuário VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white">
         <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white">
-        <button class="btn-red w-full" onclick="loginVIP()">ENTRAR NO VIP</button>
+        <button class="btn-red w-full" onclick="loginVIP()">ACESSAR</button>
         <button class="text-gray-500 text-[10px] uppercase font-bold" onclick="hideVipForm()">Fechar</button>
     </div>
   </div>
@@ -79,31 +69,16 @@
 
 <div id="page3" class="hidden py-12 px-6 max-w-5xl mx-auto">
   <div id="clock3" class="clock-display text-pink-500 text-7xl mb-8">00:00:00</div>
-  
   <div class="flex justify-between items-center mb-10 px-6">
     <h1 class="text-4xl font-black text-pink-600 italic">VIP ROSA</h1>
     <button class="btn-gray text-[10px]" onclick="backToP2()">VOLTAR</button>
   </div>
-  
   <div id="signalsVIP" class="flex flex-col items-center mb-12 min-h-[200px]"></div>
-
-  <div class="glass p-8 rounded-3xl border-pink-600/20 mb-10 bg-black/60">
-    <canvas id="chartVIP" height="150"></canvas>
-  </div>
-
+  <div class="glass p-8 rounded-3xl border-pink-600/20 mb-10 bg-black/60"><canvas id="chartVIP" height="150"></canvas></div>
   <div class="glass p-12 border-pink-600/20 max-w-2xl mb-12 neon-pink">
     <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-8 block mx-auto text-xs">
-    <button class="btn-red w-full mb-6 py-5 text-xl" onclick="analyzeHistoryVIP()">GERAR SINAL ROSA PREMIUM</button>
+    <button class="btn-red w-full mb-6 py-5 text-xl" onclick="analyzeHistoryVIP()">SINAL ROSA PREMIUM</button>
     <p id="historyResultVIP" class="text-xs font-bold text-pink-500 uppercase"></p>
-  </div>
-
-  <div class="glass p-8 border-pink-900/30 max-w-2xl text-left">
-    <h4 class="text-pink-500 font-black text-xs mb-4 uppercase">📜 Dicas Estratégicas VIP:</h4>
-    <ul class="text-[11px] text-gray-400 space-y-2 list-disc ml-4">
-      <li>O sistema deteta volumes de Seed a cada minuto.</li>
-      <li>Retire o valor de entrada em 2.0x por segurança.</li>
-      <li>Velas rosas têm maior frequência após ciclos de 3 azuis.</li>
-    </ul>
   </div>
 </div>
 
@@ -141,85 +116,48 @@ let chart2, chartV;
 function updateChartPage2(val) {
   const ctx = document.getElementById("chartPage2").getContext("2d");
   if(chart2) chart2.destroy();
-  chart2 = new Chart(ctx, {
-    type: 'line',
-    data: { labels:['','','','',''], datasets:[{ data:[1.5, 3.8, 2.2, 5.1, val], borderColor:'#dc2626', tension:0.5, fill:true, backgroundColor:'rgba(220,38,38,0.05)' }] },
-    options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} }
-  });
+  chart2 = new Chart(ctx, { type: 'line', data: { labels:['','','','',''], datasets:[{ data:[1.5, 3.8, 2.2, 5.1, val], borderColor:'#dc2626', tension:0.5, fill:true, backgroundColor:'rgba(220,38,38,0.05)' }] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
 }
 
 function updateChartVIP(val) {
   const ctx = document.getElementById("chartVIP").getContext("2d");
   if(chartV) chartV.destroy();
-  chartV = new Chart(ctx, {
-    type: 'line',
-    data: { labels:['','','','','',''], datasets:[{ data:[2, 8, 4, 18, 10, val], borderColor:'#db2777', borderWidth: 4, tension:0.5, fill:true, backgroundColor:'rgba(219,39,119,0.05)' }] },
-    options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} }
-  });
+  chartV = new Chart(ctx, { type: 'line', data: { labels:['','','','','',''], datasets:[{ data:[2, 8, 4, 18, 10, val], borderColor:'#db2777', borderWidth: 4, tension:0.5, fill:true, backgroundColor:'rgba(219,39,119,0.05)' }] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
 }
 
-// LÓGICA DE ALCANCE COM MINUTOS E SEGUNDOS PREVISTOS
 function getAlcanceHTML(mult) {
     const now = new Date();
-    // Previsão de minutos e segundos baseada no multiplicador e tempo atual
-    let predMin = now.getMinutes() + Math.floor(Math.random() * 2) + 1;
-    let predSec = Math.floor(Math.random() * 59);
-    if(predMin >= 60) predMin = 0;
-    
-    const timeStr = `${predMin.toString().padStart(2,'0')}:${predSec.toString().padStart(2,'0')}`;
-
-    return `
-        <div class="alcance-box">
-            <p class="text-[9px] text-gray-500 uppercase font-black">Previsão IA p/ Horário: ${timeStr}s</p>
-            <div class="flex justify-between mt-1">
-                <span class="text-white text-[10px]">Alvo Segurança: <b class="text-green-500">${(mult * 0.85).toFixed(2)}x</b></span>
-                <span class="text-white text-[10px]">Alvo Máximo: <b class="text-red-500">${(mult * 1.5).toFixed(2)}x</b></span>
-            </div>
-        </div>`;
+    let pMin = now.getMinutes() + Math.floor(Math.random() * 2) + 1;
+    let pSec = Math.floor(Math.random() * 59);
+    if(pMin >= 60) pMin = 0;
+    const timeStr = `${pMin.toString().padStart(2,'0')}:${pSec.toString().padStart(2,'0')}`;
+    return `<div class="alcance-box"><p class="text-[9px] text-gray-500 uppercase font-black">Previsão IA p/ Horário: ${timeStr}s</p><div class="flex justify-between mt-1"><span class="text-white text-[10px]">Alvo Segurança: <b class="text-green-500">${(mult * 0.85).toFixed(2)}x</b></span><span class="text-white text-[10px]">Alvo Máximo: <b class="text-red-500">${(mult * 1.5).toFixed(2)}x</b></span></div></div>`;
 }
 
 async function analyzeHistory(){
   const resText = document.getElementById("historyResult");
   const signalsDiv = document.getElementById("signalsPage2");
-  resText.innerHTML = "🛰️ IA ESCANEANDO HISTÓRICO...";
+  resText.innerHTML = "🛰️ IA ESCANEANDO...";
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
     const mult = data.analysis.mult;
-    signalsDiv.innerHTML = `
-      <div class="signal-card border-red-600 w-full max-w-sm neon-red">
-        <h3 class="text-red-600 font-black text-2xl uppercase">SINAL CONFIRMADO</h3>
-        <div class="text-7xl font-black text-white my-3">×${mult.toFixed(2)}</div>
-        <div class="flex justify-center gap-3 mb-4">
-          <button class="feedback-btn btn-green" onclick="alert('Green!')">GREEN</button>
-          <button class="feedback-btn btn-fail" onclick="alert('Red!')">RED</button>
-        </div>
-        ${getAlcanceHTML(mult)}
-      </div>`;
+    signalsDiv.innerHTML = `<div class="signal-card border-red-600 w-full max-w-sm neon-red"><h3 class="text-red-600 font-black text-2xl uppercase">SINAL GERADO</h3><div class="text-7xl font-black text-white my-3">×${mult.toFixed(2)}</div><div class="flex justify-center gap-3 mb-4"><button class="feedback-btn btn-green" onclick="alert('Green!')">GREEN</button><button class="feedback-btn btn-fail" onclick="alert('Red!')">RED</button></div>${getAlcanceHTML(mult)}</div>`;
     document.getElementById("cycleStatus").innerHTML = mult >= 2 ? "ALTA" : "BAIXA";
     updateChartPage2(mult);
-    resText.innerHTML = "✅ ANÁLISE CONCLUÍDA";
+    resText.innerHTML = "✅ CONCLUÍDO";
   } catch(e) { resText.innerHTML = "⚠️ ERRO SERVIDOR"; }
 }
 
 async function analyzeHistoryVIP(){
   const resVIP = document.getElementById("historyResultVIP");
   const signalsVIP = document.getElementById("signalsVIP");
-  resVIP.innerHTML = "💠 RASTREANDO SEED ROSA...";
+  resVIP.innerHTML = "💠 RASTREANDO ROSA...";
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
     let mult = data.analysis.mult >= 10 ? data.analysis.mult : (12.50 + Math.random() * 15);
-    signalsVIP.innerHTML = `
-      <div class="signal-card border-pink-500 bg-pink-950/20 w-full max-w-md neon-pink">
-        <h2 class="text-pink-500 font-black text-2xl mb-2 italic">ROSA DETECTADO</h2>
-        <div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div>
-        <div class="flex justify-center gap-4 mt-5 mb-5">
-          <button class="feedback-btn btn-green px-8" onclick="alert('Green VIP!')">GREEN</button>
-          <button class="feedback-btn btn-fail px-8" onclick="alert('Red VIP!')">RED</button>
-        </div>
-        ${getAlcanceHTML(mult)}
-      </div>`;
+    signalsVIP.innerHTML = `<div class="signal-card border-pink-500 bg-pink-950/20 w-full max-w-md neon-pink"><h2 class="text-pink-500 font-black text-2xl mb-2 italic">ROSA DETECTADO</h2><div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div><div class="flex justify-center gap-4 mt-5 mb-5"><button class="feedback-btn btn-green px-8" onclick="alert('Green VIP!')">GREEN</button><button class="feedback-btn btn-fail px-8" onclick="alert('Red VIP!')">RED</button></div>${getAlcanceHTML(mult)}</div>`;
     updateChartVIP(mult);
     resVIP.innerHTML = "✅ SINAL PREMIUM GERADO";
   } catch(e){ resVIP.innerHTML = "ERRO VIP"; }

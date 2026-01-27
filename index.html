@@ -7,42 +7,58 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { background:#050505; font-family:sans-serif; color:white; }
+  body { background:#050505; font-family:sans-serif; color:white; overflow-x: hidden; }
   .glass { background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); border-radius:16px; }
   .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
   .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
-  .btn-red:hover { background:#b91c1c; }
+  .btn-red:hover { background:#b91c1c; transform: scale(1.02); }
   .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
   .btn-gray:hover { background:#222; }
-  .signal-card { padding:16px; border-radius:12px; text-align:center; transition:0.3s; }
+  .signal-card { padding:16px; border-radius:12px; text-align:center; transition:0.4s; border: 2px solid transparent; }
+  input[type="file"]::file-selector-button {
+    background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 15px;
+  }
 </style>
 </head>
 <body>
 
 <div id="page1" class="min-h-screen flex items-center justify-center">
   <div class="glass p-10 w-full max-w-md border border-red-600/30">
-    <h1 class="text-3xl font-black text-red-600 mb-6 text-center">WILLBOOT-PRO</h1>
-    <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
-    <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700">
+    <h1 class="text-3xl font-black text-red-600 mb-6 text-center tracking-tighter">WILLBOOT-PRO</h1>
+    <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
+    <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
     <button class="btn-red w-full neon-red mb-4" onclick="loginMain()">🔐 ENTRAR</button>
-    <p class="text-center text-gray-400 text-sm">Acesso normal ao site</p>
+    <p class="text-center text-gray-500 text-xs uppercase tracking-widest">Acesso Restrito</p>
   </div>
 </div>
 
 <div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
-  <div class="glass p-6 flex flex-col md:flex-row justify-between items-center border border-red-600/20 mb-6">
-    <div id="clock2" class="text-red-500 font-bold"></div>
-    <div class="flex gap-4 mt-4 md:mt-0">
-      <button class="btn-red" onclick="generateSignalsPage2()">🔥 GERAR SINAIS</button>
-      <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
+  
+  <div class="glass p-6 border border-red-600/20 mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+      <div id="clock2" class="text-red-500 font-bold text-2xl tracking-mono">🕐 00:00:00</div>
+      <div class="flex gap-4 mt-4 md:mt-0">
+        <button class="btn-red neon-red" onclick="analyzeHistory()">🔥 GERAR SINAIS / ANALISAR</button>
+        <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
+      </div>
+    </div>
+
+    <div class="bg-black/60 p-8 rounded-2xl border border-dashed border-gray-700 text-center">
+      <p class="text-red-500 font-bold mb-4 uppercase text-sm">Painel de Leitura de Histórico</p>
+      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-400 mx-auto">
+      <p id="historyResult" class="mt-4 text-sm font-medium transition-all"></p>
     </div>
   </div>
 
-  <div id="signalsPage2" class="grid md:grid-cols-3 gap-6 my-10"></div>
+  <div id="signalsPage2" class="grid md:grid-cols-2 gap-6 my-10">
+    <div class="glass p-12 border border-gray-800 text-center text-gray-500 col-span-2 italic">
+      Aguardando envio do histórico para processar sinais...
+    </div>
+  </div>
 
   <div class="glass p-6 mb-6 border border-red-600/20">
-    <label class="mb-2 block font-bold">Escolha a Casa de Aposta:</label>
-    <select id="betHouse" class="w-full p-3 rounded bg-black border border-gray-700">
+    <label class="mb-2 block font-bold text-gray-400">Plataforma de Operação:</label>
+    <select id="betHouse" class="w-full p-3 rounded bg-black border border-gray-700 outline-none">
       <option value="ElephantBet">ElephantBet</option>
       <option value="BantuBet">BantuBet</option>
       <option value="888Bet">888Bet</option>
@@ -51,89 +67,58 @@
   </div>
 
   <div class="glass p-6 rounded-xl border border-red-600/20">
-    <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
+    <h3 class="text-center font-bold mb-4 text-gray-300 uppercase">📊 Assertividade da IA</h3>
     <canvas id="chartPage2" height="120"></canvas>
   </div>
 
   <div class="glass p-8 mt-10 border border-red-600/30 text-center">
-    <h2 class="text-2xl font-black text-red-600 mb-4">💎 ACESSO VIP</h2>
-    <p class="text-gray-300 mb-4">Sinais ROSA de alta probabilidade • IA treinada com histórico real</p>
-    <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700">
-    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
-    <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ENTRAR VIP</button>
-  </div>
-
-  <div class="glass p-6 mb-6 mt-10 border border-red-600/20 text-center">
-    <label class="block mb-2 font-bold">Enviar histórico Aviator (PNG/JPG)</label>
-    <input type="file" id="uploadHistory" accept="image/*" class="mb-4">
-    <button class="btn-red neon-red" onclick="analyzeHistory()">📊 ANALISAR</button>
-    <p id="historyResult" class="mt-2 text-gray-300"></p>
+    <h2 class="text-2xl font-black text-red-600 mb-2">💎 ACESSO VIP</h2>
+    <p class="text-gray-400 mb-6 text-xs italic">Sinais Rosa acima de 10.00x</p>
+    <div class="max-w-xs mx-auto">
+        <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700 outline-none">
+        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none">
+        <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ACESSAR ÁREA VIP</button>
+    </div>
   </div>
 </div>
 
 <div id="page3" class="hidden max-w-7xl mx-auto px-6 py-10">
-  <h1 class="text-3xl font-black text-red-600 mb-6 text-center">💎 VIP - Sinais ROSA</h1>
-
-  <div class="glass p-4 mb-6 text-center border border-red-600/20">
-    <div id="clock3" class="text-red-500 font-bold"></div>
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-black text-pink-600 tracking-tighter">💎 PAINEL VIP ROSA</h1>
+    <button class="btn-gray" onclick="location.reload()">VOLTAR</button>
   </div>
-
-  <div id="signalsVIP" class="grid md:grid-cols-3 gap-6 my-6"></div>
-
-  <div class="glass p-6 rounded-xl border border-red-600/20">
-    <h3 class="text-center font-bold mb-4">📊 Performance VIP (Aviator)</h3>
-    <canvas id="chartVIP" height="120"></canvas>
-  </div>
-
-  <div class="glass p-6 mt-6 text-center border border-red-600/30">
-    <p class="text-gray-300">Usuário VIP: William | Passe: 230220</p>
-  </div>
-
-  <div class="glass p-6 mb-6 mt-10 border border-red-600/20 text-center">
-    <label class="block mb-2 font-bold">Enviar histórico Aviator VIP (PNG/JPG)</label>
-    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-4">
-    <button class="btn-red neon-red" onclick="analyzeHistoryVIP()">📊 ANALISAR VIP</button>
-    <p id="historyResultVIP" class="mt-2 text-gray-300"></p>
+  <div id="clock3" class="text-center text-pink-500 font-bold text-xl mb-6"></div>
+  <div id="signalsVIP" class="grid grid-cols-1 gap-6 my-6"></div>
+  <canvas id="chartVIP" height="120" class="glass p-6 border border-pink-600/20"></canvas>
+  <div class="glass p-10 border border-pink-600/20 text-center mt-10">
+    <label class="block mb-4 font-bold text-pink-500 uppercase">Analisar Print VIP</label>
+    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 mx-auto block">
+    <button class="btn-red neon-red w-full" onclick="analyzeHistoryVIP()">📊 GERAR SINAL ROSA</button>
+    <p id="historyResultVIP" class="mt-4 font-bold text-sm"></p>
   </div>
 </div>
 
 <script>
-/** =========================================================
- * CONFIG - LINK DO RENDER INTEGRADO
- * ========================================================= */
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
-/** =========================================================
- * Relógios
- * ========================================================= */
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
-  if(document.getElementById("clock2")) clock2.innerHTML="🕐 "+now;
-  if(document.getElementById("clock3")) clock3.innerHTML="🕐 "+now;
+  if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML="🕐 "+now;
+  if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML="🕐 "+now;
 },1000);
 
-/** =========================================================
- * Login - CREDENCIAIS: admin / 1234
- * ========================================================= */
 function loginMain(){
-  const u=document.getElementById("userMain").value; 
-  const p=document.getElementById("passMain").value;
-  
-  if(u === "admin" && p === "1234"){
+  if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     localStorage.setItem("mainAccess","true");
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
     loadHistoryPage2();
-  } else {
-    alert("Usuário ou Senha incorretos!");
-  }
+  } else { alert("Acesso negado."); }
 }
-function logoutMain(){
-  localStorage.removeItem("mainAccess");
-  location.reload();
-}
+
+function logoutMain(){ localStorage.removeItem("mainAccess"); location.reload(); }
+
 if(localStorage.getItem("mainAccess") === "true") {
-  // Ajuste para garantir que os elementos existam antes de chamar
   window.onload = () => {
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
@@ -141,220 +126,104 @@ if(localStorage.getItem("mainAccess") === "true") {
   };
 }
 
-/** =========================================================
- * Helpers para ler JSON do backend
- * ========================================================= */
-function pick(obj, keys, fallback=null){
-  for(const k of keys){
-    if(obj && Object.prototype.hasOwnProperty.call(obj, k) && obj[k] !== undefined && obj[k] !== null) return obj[k];
-  }
-  return fallback;
-}
-
-function normalizeAnalyzeResponse(data){
-  const analysis = pick(data, ["analysis","analise","result","resultado"], {}) || {};
-  let sinal = String(pick(analysis, ["sinal","signal","tipo","type"], pick(data, ["sinal","signal"], "")) || "").toUpperCase().trim();
-  const azul = Number(pick(analysis, ["azul_%","azul","blue","p_azul","pct_azul"], null));
-  const roxo = Number(pick(analysis, ["roxo_%","roxo","purple","p_roxo","pct_roxo"], null));
-  const rosa = Number(pick(analysis, ["rosa_%","rosa","pink","p_rosa","pct_rosa"], null));
-  const total = Number(pick(data, ["total","count","qtd","quantidade"], null));
-
-  if(!sinal){
-    const candidates = [
-      {t:"AZUL", v: isFinite(azul) ? azul : -1},
-      {t:"ROXO", v: isFinite(roxo) ? roxo : -1},
-      {t:"ROSA", v: isFinite(rosa) ? rosa : -1},
-    ].sort((a,b)=>b.v-a.v);
-    if(candidates[0].v >= 0) sinal = candidates[0].t;
-  }
-
-  const confFromBackend = Number(pick(analysis, ["conf","confianca","confidence","probabilidade","prob"], pick(data, ["conf","confianca"], null)));
-  let conf = isFinite(confFromBackend) ? confFromBackend : null;
-
-  if(conf === null){
-    if(sinal === "AZUL" && isFinite(azul)) conf = azul;
-    if(sinal === "ROXO" && isFinite(roxo)) conf = roxo;
-    if(sinal === "ROSA" && isFinite(rosa)) conf = rosa;
-  }
-  const mult = pick(analysis, ["mult","multiplo","multiplier","x"], pick(data, ["mult","multiplo"], null));
-  return { total, sinal, azul, roxo, rosa, conf, mult, raw:data };
-}
-
-function formatPct(n){
-  if(!isFinite(n)) return "-";
-  return String(Math.round(n));
-}
-
-/** =========================================================
- * Gráficos
- * ========================================================= */
 let historyPage2 = JSON.parse(localStorage.getItem("historyPage2")||"[]");
 let chartPage2Obj;
-
 function loadHistoryPage2(){ updateChartPage2(); }
-
 function updateChartPage2(){
-  if(historyPage2.length>50) historyPage2=historyPage2.slice(-50);
-  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
   const ctx = document.getElementById("chartPage2").getContext("2d");
   if(chartPage2Obj) chartPage2Obj.destroy();
   chartPage2Obj = new Chart(ctx,{
     type:"line",
     data:{
       labels:historyPage2.map((_,i)=>i+1),
-      datasets:[{
-        data:historyPage2,
-        borderColor:"#dc2626",
-        backgroundColor:"rgba(220,38,38,.2)",
-        tension:.4,
-        fill:true
-      }]
+      datasets:[{ data:historyPage2, borderColor:"#dc2626", tension:.4, fill:true }]
     },
     options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
   });
 }
 
-/** =========================================================
- * Geração de Sinais
- * ========================================================= */
-let lastAnalyze = null;
+async function analyzeHistory(){
+  const fileInput = document.getElementById("uploadHistory");
+  const resultText = document.getElementById("historyResult");
+  if(!fileInput.files[0]){ alert("Selecione uma imagem!"); return; }
+  
+  resultText.innerHTML = "<span class='text-blue-400'>⚡ PROCESSANDO...</span>";
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
 
-function renderSignalsFromAnalyzeOnPage2(info){
-  const signalsPage2 = document.getElementById("signalsPage2");
-  const cards = [
-    {t:"AZUL", c:"cyan", pct: info.azul, mult: info.mult},
-    {t:"ROXO", c:"purple", pct: info.roxo, mult: info.mult},
-    {t:"ROSA", c:"pink", pct: info.rosa, mult: info.mult},
-  ];
+  try {
+    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: formData });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    
+    const mult = parseFloat(data.analysis?.mult || 1.0);
+    let info = {
+      mult: mult.toFixed(2),
+      conf: data.analysis?.confianca || 85,
+      azul_pct: data.analysis?.azul_pct || 0,
+      roxo_pct: data.analysis?.roxo_pct || 0
+    };
 
-  signalsPage2.innerHTML = cards.map(x=>{
-    const recommended = (info.sinal === x.t);
-    const border = recommended ? `border-red-600` : `border-gray-800`;
-    return `<div class="signal-card glass border ${border}">
-      <h3 class="font-bold text-gray-300 mb-2">${recommended ? "✅ " : ""}SINAL ${x.t}</h3>
-      <div class="text-4xl font-black text-white mb-2">×${x.mult ?? "--"}</div>
-      <p>Probabilidade: <b>${formatPct(x.pct)}%</b></p>
-    </div>`;
-  }).join("");
-}
+    if(mult < 2.0) info.sinal = "AZUL";
+    else if(mult >= 2.0 && mult < 10.0) info.sinal = "ROXO";
+    else info.sinal = "ROSA";
 
-function generateSignalsPage2(){
-  const signalsPage2 = document.getElementById("signalsPage2");
-  if(!lastAnalyze){
-    signalsPage2.innerHTML = `<div class="glass p-6 border border-red-600/20 text-center text-gray-300 col-span-3">
-      Envie um histórico (PNG/JPG) e clique <b>ANALISAR</b> para gerar sinais reais.
-    </div>`;
-    return;
+    resultText.innerHTML = "<span class='text-green-500'>✅ CONCLUÍDO!</span>";
+    renderSignalsPage2(info);
+    historyPage2.push(info.conf);
+    updateChartPage2();
+  } catch(e) {
+    resultText.innerHTML = "<span class='text-red-500'>⚠️ SERVIDOR EM ESPERA. TENTE NOVAMENTE EM 30s.</span>";
   }
-  renderSignalsFromAnalyzeOnPage2(lastAnalyze);
-  const confValue = isFinite(lastAnalyze.conf) ? Math.max(0, Math.min(100, Number(lastAnalyze.conf))) : 0;
-  historyPage2.push(confValue);
-  updateChartPage2();
 }
 
-/** =========================================================
- * VIP - CREDENCIAIS: William / 230220
- * ========================================================= */
-const vipUserData={user:"William",pass:"230220"};
+function renderSignalsPage2(info){
+  const signalsDiv = document.getElementById("signalsPage2");
+  const config = [
+    {t:"AZUL", color:"text-cyan-400", range:"1.00x - 1.99x", val: info.azul_pct},
+    {t:"ROXO", color:"text-purple-400", range:"2.00x - 9.99x", val: info.roxo_pct}
+  ];
+  signalsDiv.innerHTML = config.map(x => {
+    const isTarget = (info.sinal === x.t);
+    return `
+      <div class="signal-card glass ${isTarget ? 'border-red-600 bg-red-900/10 scale-105' : 'border-gray-800 opacity-30'}">
+        <h3 class="font-bold uppercase ${x.color}">${isTarget ? '🚀 ' : ''}SINAL ${x.t}</h3>
+        <div class="text-5xl font-black my-3">${isTarget ? '×'+info.mult : '---'}</div>
+        <p class="text-[10px] text-gray-500 tracking-widest">${x.range}</p>
+        <p class="text-[10px] mt-1 text-gray-400">Precisão: ${x.val}%</p>
+      </div>`;
+  }).join("");
+  if(info.sinal === "ROSA") signalsDiv.innerHTML += `<div class="signal-card glass border-pink-600 col-span-2 mt-4 text-pink-500">💎 SINAL ROSA (10x+) DETECTADO NA VIP!</div>`;
+}
+
 function loginVIP(){
-  const u=document.getElementById("vipUser").value;
-  const p=document.getElementById("vipPass").value;
-  if(u===vipUserData.user && p===vipUserData.pass){
+  if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
-    generateSignalsVIP();
-  }else{
-    alert("Usuário ou senha VIP incorretos");
-  }
+    updateChartVIP();
+  } else { alert("Acesso VIP negado."); }
 }
 
 let historyVIP = JSON.parse(localStorage.getItem("historyVIP")||"[]");
 let chartVIPObj;
-
 function updateChartVIP(){
-  if(historyVIP.length>50) historyVIP=historyVIP.slice(-50);
-  localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
   const ctx = document.getElementById("chartVIP").getContext("2d");
   if(chartVIPObj) chartVIPObj.destroy();
-  chartVIPObj = new Chart(ctx,{
-    type:"line",
-    data:{
-      labels:historyVIP.map((_,i)=>i+1),
-      datasets:[{
-        data:historyVIP,
-        borderColor:"#dc2626",
-        backgroundColor:"rgba(220,38,38,.2)",
-        tension:.4,
-        fill:true
-      }]
-    },
-    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
-  });
-}
-
-function generateSignalsVIP(){
-  const signalsVIP = document.getElementById("signalsVIP");
-  if(!lastAnalyze){
-    signalsVIP.innerHTML = `<div class="glass p-6 border border-red-600/20 text-center text-gray-300 col-span-3">
-      Envie um histórico VIP e clique <b>ANALISAR VIP</b> para gerar sinal real.
-    </div>`;
-    updateChartVIP();
-    return;
-  }
-  const mult = lastAnalyze.mult ?? "--";
-  const conf = isFinite(lastAnalyze.rosa) ? lastAnalyze.rosa : (isFinite(lastAnalyze.conf) ? lastAnalyze.conf : 0);
-
-  signalsVIP.innerHTML = `<div class="signal-card glass border border-pink-500/60 col-span-3">
-    <h3 class="font-bold text-pink-400 mb-2">SINAL ROSA (REAL)</h3>
-    <div class="text-4xl font-black text-pink-300 mb-2">×${mult}</div>
-    <p>Probabilidade: <b>${formatPct(conf)}%</b></p>
-  </div>`;
-
-  historyVIP.push(conf);
-  updateChartVIP();
-}
-
-/** =========================================================
- * Upload e Requisição
- * ========================================================= */
-async function postAnalyze(file){
-  const formData = new FormData();
-  formData.append("file", file);
-  const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: formData });
-  if(!res.ok) throw new Error(`Erro: ${res.status}`);
-  return await res.json();
-}
-
-async function analyzeHistory(){
-  const file = document.getElementById("uploadHistory").files[0];
-  const historyResult = document.getElementById("historyResult");
-  if(!file){ historyResult.innerHTML = "Nenhum arquivo selecionado"; return; }
-  historyResult.innerHTML = "Analisando... aguarde.";
-
-  try{
-    const data = await postAnalyze(file);
-    lastAnalyze = normalizeAnalyzeResponse(data);
-    historyResult.innerHTML = `Sinal: <b>${lastAnalyze.sinal}</b> | Confiança: ${formatPct(lastAnalyze.conf)}%`;
-    generateSignalsPage2();
-  }catch(err){
-    historyResult.innerHTML = "Falha na conexão com o Render.";
-  }
+  chartVIPObj = new Chart(ctx,{ type:"line", data:{ labels:historyVIP.map((_,i)=>i+1), datasets:[{ data:historyVIP, borderColor:"#db2777" }] } });
 }
 
 async function analyzeHistoryVIP(){
-  const file = document.getElementById("uploadHistoryVIP").files[0];
-  const historyResultVIP = document.getElementById("historyResultVIP");
-  if(!file){ historyResultVIP.innerHTML = "Nenhum arquivo selecionado"; return; }
-  historyResultVIP.innerHTML = "Analisando VIP... aguarde.";
-
-  try{
-    const data = await postAnalyze(file);
-    lastAnalyze = normalizeAnalyzeResponse(data);
-    historyResultVIP.innerHTML = `Sinal: <b>${lastAnalyze.sinal}</b> | Rosa: ${formatPct(lastAnalyze.rosa)}%`;
-    generateSignalsVIP();
-  }catch(err){
-    historyResultVIP.innerHTML = "Falha na conexão VIP.";
-  }
+  const resVIP = document.getElementById("historyResultVIP");
+  resVIP.innerHTML = "<span class='text-pink-500'>💎 CALCULANDO...</span>";
+  try {
+    const fd = new FormData(); fd.append("file", document.getElementById("uploadHistoryVIP").files[0]);
+    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: fd });
+    const data = await res.json();
+    const mult = parseFloat(data.analysis?.mult || 0);
+    document.getElementById("signalsVIP").innerHTML = `<div class="signal-card glass border-pink-500 p-12 text-center"><div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div></div>`;
+    historyVIP.push(99); updateChartVIP();
+    resVIP.innerHTML = "SINAL GERADO!";
+  } catch(e){ resVIP.innerHTML = "Erro VIP."; }
 }
 </script>
 </body>

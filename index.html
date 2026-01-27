@@ -111,14 +111,23 @@
 </div>
 
 <script>
-// ========================= Relógios =========================
+/** =========================================================
+ *  CONFIG
+ *  ========================================================= */
+const BACKEND_URL = "COLE_AQUI_SEU_URL_DO_RENDER"; // ex: https://meuapp.onrender.com
+
+/** =========================================================
+ *  Relógios
+ *  ========================================================= */
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
   if(document.getElementById("clock2")) clock2.innerHTML="🕐 "+now;
   if(document.getElementById("clock3")) clock3.innerHTML="🕐 "+now;
 },1000);
 
-// ========================= Página 1: Login =========================
+/** =========================================================
+ *  Login
+ *  ========================================================= */
 function loginMain(){
   const u=userMain.value, p=passMain.value;
   if(u && p){
@@ -134,31 +143,67 @@ function logoutMain(){
 }
 if(localStorage.getItem("mainAccess")) loginMain();
 
-// ========================= Página 2: Sinais =========================
+/** =========================================================
+ *  Helpers para ler JSON do backend (compatível com chaves diferentes)
+ *  ========================================================= */
+function pick(obj, keys, fallback=null){
+  for(const k of keys){
+    if(obj && Object.prototype.hasOwnProperty.call(obj, k) && obj[k] !== undefined && obj[k] !== null) return obj[k];
+  }
+  return fallback;
+}
+
+function normalizeAnalyzeResponse(data){
+  // tenta achar o "analysis" em vários formatos possíveis
+  const analysis = pick(data, ["analysis","analise","result","resultado"], {}) || {};
+
+  // sinal (AZUL/ROXO/ROSA) pode vir em vários nomes
+  let sinal = String(pick(analysis, ["sinal","signal","tipo","type"], pick(data, ["sinal","signal"], "")) || "").toUpperCase().trim();
+
+  // percentuais podem vir com ou sem % no nome
+  const azul = Number(pick(analysis, ["azul_%","azul","blue","p_azul","pct_azul"], null));
+  const roxo = Number(pick(analysis, ["roxo_%","roxo","purple","p_roxo","pct_roxo"], null));
+  const rosa = Number(pick(analysis, ["rosa_%","rosa","pink","p_rosa","pct_rosa"], null));
+
+  // total
+  const total = Number(pick(data, ["total","count","qtd","quantidade"], null));
+
+  // fallback: se não veio sinal, decide pelo maior percentual (se existir)
+  if(!sinal){
+    const candidates = [
+      {t:"AZUL", v: isFinite(azul) ? azul : -1},
+      {t:"ROXO", v: isFinite(roxo) ? roxo : -1},
+      {t:"ROSA", v: isFinite(rosa) ? rosa : -1},
+    ].sort((a,b)=>b.v-a.v);
+    if(candidates[0].v >= 0) sinal = candidates[0].t;
+  }
+
+  // confiabilidade: se existir, usa; se não, usa o percentual do sinal como "conf"
+  const confFromBackend = Number(pick(analysis, ["conf","confianca","confidence","probabilidade","prob"], pick(data, ["conf","confianca"], null)));
+  let conf = isFinite(confFromBackend) ? confFromBackend : null;
+
+  if(conf === null){
+    if(sinal === "AZUL" && isFinite(azul)) conf = azul;
+    if(sinal === "ROXO" && isFinite(roxo)) conf = roxo;
+    if(sinal === "ROSA" && isFinite(rosa)) conf = rosa;
+  }
+
+  // multiplo (se o backend mandar)
+  const mult = pick(analysis, ["mult","multiplo","multiplier","x"], pick(data, ["mult","multiplo"], null));
+
+  return { total, sinal, azul, roxo, rosa, conf, mult, raw:data };
+}
+
+function formatPct(n){
+  if(!isFinite(n)) return "-";
+  return String(Math.round(n));
+}
+
+/** =========================================================
+ *  Gráficos (histórico real)
+ *  ========================================================= */
 let historyPage2 = JSON.parse(localStorage.getItem("historyPage2")||"[]");
 let chartPage2Obj;
-
-function IApage2(tipo){
-  let mult, conf;
-  if(tipo==="azul"){ mult=(1+Math.random()*0.99).toFixed(2); conf=Math.floor(60+Math.random()*35);}
-  if(tipo==="roxo"){ mult=(2+Math.random()*7.99).toFixed(2); conf=Math.floor(60+Math.random()*35);}
-  return {mult, conf};
-}
-
-function generateSignalsPage2(){
-  const tipos=[{t:"AZUL",c:"cyan"},{t:"ROXO",c:"purple"}];
-  signalsPage2.innerHTML = tipos.map(x=>{
-    let r = IApage2(x.t.toLowerCase());
-    historyPage2.push(r.conf);
-    return `<div class="signal-card glass border border-${x.c}-500/40">
-      <h3 class="font-bold text-${x.c}-400 mb-2">SINAL ${x.t}</h3>
-      <div class="text-4xl font-black text-${x.c}-300 mb-2">×${r.mult}</div>
-      <p>Probabilidade: <b>${r.conf}%</b></p>
-    </div>`;
-  }).join("");
-  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
-  updateChartPage2();
-}
 
 function loadHistoryPage2(){ updateChartPage2(); }
 
@@ -168,12 +213,65 @@ function updateChartPage2(){
   if(chartPage2Obj) chartPage2Obj.destroy();
   chartPage2Obj = new Chart(chartPage2.getContext("2d"),{
     type:"line",
-    data:{labels:historyPage2.map((_,i)=>i+1), datasets:[{data:historyPage2,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.2)",tension:.4,fill:true}]},
-    options:{plugins:{legend:{display:false}}, scales:{y:{min:60,max:100}}}
+    data:{
+      labels:historyPage2.map((_,i)=>i+1),
+      datasets:[{
+        data:historyPage2,
+        borderColor:"#dc2626",
+        backgroundColor:"rgba(220,38,38,.2)",
+        tension:.4,
+        fill:true
+      }]
+    },
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
   });
 }
 
-// ========================= VIP =========================
+/** =========================================================
+ *  PASSO 3 — Sinais reais (substitui simulação)
+ *  - Agora "GERAR SINAIS" usa o último resultado do /analyze
+ *  ========================================================= */
+let lastAnalyze = null;
+
+function renderSignalsFromAnalyzeOnPage2(info){
+  // cria 3 cards (AZUL/ROXO/ROSA) com percentuais, e destaca o sinal recomendado
+  const cards = [
+    {t:"AZUL", c:"cyan", pct: info.azul, mult: info.mult},
+    {t:"ROXO", c:"purple", pct: info.roxo, mult: info.mult},
+    {t:"ROSA", c:"pink", pct: info.rosa, mult: info.mult},
+  ];
+
+  signalsPage2.innerHTML = cards.map(x=>{
+    const recommended = (info.sinal === x.t);
+    const border = recommended ? `border-${x.c}-500/80` : `border-${x.c}-500/30`;
+    const glow = recommended ? `style="box-shadow:0 0 25px rgba(220,38,38,.15);"` : "";
+    return `<div class="signal-card glass border ${border}" ${glow}>
+      <h3 class="font-bold text-${x.c}-400 mb-2">${recommended ? "✅ " : ""}SINAL ${x.t}</h3>
+      <div class="text-4xl font-black text-${x.c}-300 mb-2">×${x.mult ?? "--"}</div>
+      <p>Probabilidade: <b>${formatPct(x.pct)}%</b></p>
+    </div>`;
+  }).join("");
+}
+
+function generateSignalsPage2(){
+  if(!lastAnalyze){
+    signalsPage2.innerHTML = `<div class="glass p-6 border border-red-600/20 text-center text-gray-300">
+      Envie um histórico (PNG/JPG) e clique <b>ANALISAR</b> para gerar sinais reais.
+    </div>`;
+    return;
+  }
+  renderSignalsFromAnalyzeOnPage2(lastAnalyze);
+
+  // Atualiza gráfico com "conf" (0-100). Se não existir, usa 0.
+  const confValue = isFinite(lastAnalyze.conf) ? Math.max(0, Math.min(100, Number(lastAnalyze.conf))) : 0;
+  historyPage2.push(confValue);
+  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
+  updateChartPage2();
+}
+
+/** =========================================================
+ *  VIP — Reutiliza o mesmo /analyze, mas exibe apenas ROSA e atualiza chart VIP
+ *  ========================================================= */
 const vipUserData={user:"William",pass:"230220"};
 function loginVIP(){
   const u=vipUser.value,p=vipPass.value;
@@ -189,45 +287,117 @@ function loginVIP(){
 let historyVIP = JSON.parse(localStorage.getItem("historyVIP")||"[]");
 let chartVIPObj;
 
-function IA_VIP(){
-  let mult=(10+Math.random()*100).toFixed(2);
-  let conf=Math.floor(80+Math.random()*19); // sempre ≥80%
-  return {mult, conf};
-}
-
-function generateSignalsVIP(){
-  signalsVIP.innerHTML = "";
-  let r = IA_VIP();
-  historyVIP.push(r.conf);
-  signalsVIP.innerHTML = `<div class="signal-card glass border border-pink-500/40">
-    <h3 class="font-bold text-pink-400 mb-2">SINAL ROSA</h3>
-    <div class="text-4xl font-black text-pink-300 mb-2">×${r.mult}</div>
-    <p>Probabilidade: <b>${r.conf}%</b></p>
-  </div>`;
-  localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
-  updateChartVIP();
-}
-
 function updateChartVIP(){
   if(historyVIP.length>50) historyVIP=historyVIP.slice(-50);
   localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
   if(chartVIPObj) chartVIPObj.destroy();
   chartVIPObj = new Chart(chartVIP.getContext("2d"),{
     type:"line",
-    data:{labels:historyVIP.map((_,i)=>i+1), datasets:[{data:historyVIP,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.2)",tension:.4,fill:true}]},
-    options:{plugins:{legend:{display:false}}, scales:{y:{min:60,max:100}}}
+    data:{
+      labels:historyVIP.map((_,i)=>i+1),
+      datasets:[{
+        data:historyVIP,
+        borderColor:"#dc2626",
+        backgroundColor:"rgba(220,38,38,.2)",
+        tension:.4,
+        fill:true
+      }]
+    },
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
   });
 }
 
-// ========================= Upload Simulado =========================
-function analyzeHistory(){
-  const file=document.getElementById("uploadHistory").files[0];
-  if(file){historyResult.innerHTML="Simulação: chance de acerto 70%";}else{historyResult.innerHTML="Nenhum arquivo selecionado";}
+function generateSignalsVIP(){
+  if(!lastAnalyze){
+    signalsVIP.innerHTML = `<div class="glass p-6 border border-red-600/20 text-center text-gray-300">
+      Envie um histórico VIP e clique <b>ANALISAR VIP</b> para gerar sinal real.
+    </div>`;
+    updateChartVIP();
+    return;
+  }
+
+  const mult = lastAnalyze.mult ?? "--";
+  const conf = isFinite(lastAnalyze.rosa) ? lastAnalyze.rosa : (isFinite(lastAnalyze.conf) ? lastAnalyze.conf : 0);
+
+  signalsVIP.innerHTML = `<div class="signal-card glass border border-pink-500/60">
+    <h3 class="font-bold text-pink-400 mb-2">SINAL ROSA (REAL)</h3>
+    <div class="text-4xl font-black text-pink-300 mb-2">×${mult}</div>
+    <p>Probabilidade: <b>${formatPct(conf)}%</b></p>
+  </div>`;
+
+  const confValue = isFinite(conf) ? Math.max(0, Math.min(100, Number(conf))) : 0;
+  historyVIP.push(confValue);
+  localStorage.setItem("historyVIP",JSON.stringify(historyVIP));
+  updateChartVIP();
 }
-function analyzeHistoryVIP(){
-  const file=document.getElementById("uploadHistoryVIP").files[0];
-  if(file){historyResultVIP.innerHTML="Simulação VIP: chance de acerto 90%";}else{historyResultVIP.innerHTML="Nenhum arquivo selecionado";}
+
+/** =========================================================
+ *  Upload real (Render/FastAPI) + tratamento de erros
+ *  ========================================================= */
+async function postAnalyze(file){
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${BACKEND_URL}/analyze`, {
+    method: "POST",
+    body: formData
+  });
+
+  if(!res.ok){
+    const txt = await res.text().catch(()=> "");
+    throw new Error(`HTTP ${res.status} - ${txt || "Erro ao chamar /analyze"}`);
+  }
+  return await res.json();
+}
+
+async function analyzeHistory(){
+  const file = document.getElementById("uploadHistory").files[0];
+  if(!file){ historyResult.innerHTML = "Nenhum arquivo selecionado"; return; }
+
+  historyResult.innerHTML = "Analisando... aguarde.";
+
+  try{
+    const data = await postAnalyze(file);
+    const info = normalizeAnalyzeResponse(data);
+    lastAnalyze = info;
+
+    historyResult.innerHTML = `
+      Total: ${info.total ?? "-"} <br>
+      Sinal (backend): <b>${info.sinal || "-"}</b> <br>
+      Azul: ${formatPct(info.azul)}%, Roxo: ${formatPct(info.roxo)}%, Rosa: ${formatPct(info.rosa)}%
+    `;
+
+    // após analisar, já gera sinais reais e atualiza gráfico
+    generateSignalsPage2();
+
+  }catch(err){
+    historyResult.innerHTML = `Falha: ${err.message}<br><span class="text-gray-400">Dica: isso costuma ser CORS ou URL errado.</span>`;
+  }
+}
+
+async function analyzeHistoryVIP(){
+  const file = document.getElementById("uploadHistoryVIP").files[0];
+  if(!file){ historyResultVIP.innerHTML = "Nenhum arquivo selecionado"; return; }
+
+  historyResultVIP.innerHTML = "Analisando VIP... aguarde.";
+
+  try{
+    const data = await postAnalyze(file);
+    const info = normalizeAnalyzeResponse(data);
+    lastAnalyze = info;
+
+    historyResultVIP.innerHTML = `
+      Total: ${info.total ?? "-"} <br>
+      Sinal (backend): <b>${info.sinal || "-"}</b> <br>
+      Azul: ${formatPct(info.azul)}%, Roxo: ${formatPct(info.roxo)}%, Rosa: ${formatPct(info.rosa)}%
+    `;
+
+    generateSignalsVIP();
+
+  }catch(err){
+    historyResultVIP.innerHTML = `Falha: ${err.message}<br><span class="text-gray-400">Dica: isso costuma ser CORS ou URL errado.</span>`;
+  }
 }
 </script>
 </body>
-    </html>
+      </html>

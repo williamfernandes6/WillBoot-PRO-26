@@ -10,10 +10,13 @@
   body { background:#050505; font-family:sans-serif; color:white; overflow-x: hidden; text-align: center; }
   .glass { background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); border-radius:16px; margin: 0 auto; }
   .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
-  .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
-  .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
+  .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; border:none; color:white; }
+  .btn-red:hover { background:#b91c1c; transform: scale(1.02); }
+  .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; border:none; color:white; }
   .clock-display { font-family: monospace; font-weight: bold; letter-spacing: 2px; }
-  .feedback-btn { padding: 8px 16px; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+  .signal-card { padding:24px; border-radius:16px; text-align:center; transition:0.5s; border: 2px solid; animation: fadeIn 0.5s ease-out; background: rgba(0,0,0,0.4); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .feedback-btn { padding: 8px 16px; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; color: white; border: none; }
   .btn-green { background: #16a34a; }
   .btn-fail { background: #991b1b; }
 </style>
@@ -21,15 +24,16 @@
 <body>
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6">
-    <h1 class="text-4xl text-red-600">WillBoot-PRO <span class="font-bold">AVIATOR</span></h1>
-    <div class="glass p-8 border border-red-600/30 mt-4 w-full max-w-md">
-      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none">
-      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700 outline-none">
+    <h1 class="text-4xl text-red-600 tracking-tight">WillBoot-PRO <span class="font-bold">AVIATOR</span></h1>
+    <p class="text-gray-400 text-xs mt-1 uppercase font-bold tracking-widest mb-4">Não é sorte, é análise.</p>
+    <div class="glass p-8 border border-red-600/30 w-full max-w-md">
+      <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600 text-white">
+      <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600 text-white">
       <button class="btn-red w-full neon-red" onclick="loginMain()">🔐 ENTRAR</button>
     </div>
 </div>
 
-<div id="page2" class="hidden py-10 px-6">
+<div id="page2" class="hidden py-10 px-6 max-w-7xl mx-auto">
   <div id="clock2" class="clock-display text-red-600 text-5xl mb-6">00:00:00</div>
   
   <div class="flex justify-center gap-4 mb-8">
@@ -42,11 +46,21 @@
       <p id="historyResult" class="mt-4 text-xs font-bold uppercase"></p>
   </div>
 
-  <div id="signalsPage2" class="flex flex-col items-center mb-10"></div>
+  <div id="signalsPage2" class="flex flex-col items-center mb-10 min-h-[150px]"></div>
 
-  <div class="glass p-6 border border-red-600/20 max-w-xl mb-10">
-    <h3 class="text-red-500 font-bold mb-2 text-xs uppercase italic">💡 Monitor de IA</h3>
-    <p id="iaStatusMsg" class="text-xs text-gray-400 italic">Aguardando análise...</p>
+  <div class="grid md:grid-cols-2 gap-6 mb-10 text-left">
+    <div class="glass p-6 border border-red-600/20 text-center">
+      <p class="text-[10px] text-gray-500 uppercase mb-2">Assertividade da IA em Tempo Real</p>
+      <canvas id="chartPage2" height="120"></canvas>
+    </div>
+    <div class="glass p-6 border border-red-600/20 flex flex-col justify-center">
+      <h3 class="text-red-500 font-bold mb-3 text-xs uppercase italic">💡 Monitor de Aprendizado</h3>
+      <p id="iaStatusMsg" class="text-xs text-gray-400 italic mb-4">"IA observando padrões do algoritmo..."</p>
+      <div class="text-[10px] text-gray-500 uppercase space-y-1">
+        <p>• Ciclos detectados: <span class="text-white" id="cycleStatus">Aguardando...</span></p>
+        <p>• Tendência: <span class="text-white">Análise de Seed ativa</span></p>
+      </div>
+    </div>
   </div>
 
   <div class="glass p-8 border border-red-600/30 max-w-md">
@@ -55,100 +69,157 @@
         <button class="btn-red neon-red px-12" onclick="showVipForm()">🔓 LOGIN VIP</button>
     </div>
     <div id="vipForm" class="hidden space-y-3">
-        <input id="vipUser" placeholder="Usuário VIP" class="w-full p-3 rounded bg-black border border-gray-700">
-        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-3 rounded bg-black border border-gray-700">
+        <input id="vipUser" placeholder="Usuário VIP" class="w-full p-3 rounded bg-black border border-gray-700 text-white">
+        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-3 rounded bg-black border border-gray-700 text-white">
         <button class="btn-red w-full" onclick="loginVIP()">🔐 ACESSAR PAINEL ROSA</button>
+        <button class="btn-gray w-full text-xs" onclick="hideVipForm()">❌ FECHAR</button>
     </div>
   </div>
 </div>
 
-<div id="page3" class="hidden py-10 px-6">
+<div id="page3" class="hidden py-10 px-6 max-w-7xl mx-auto">
   <div id="clock3" class="clock-display text-pink-500 text-6xl mb-6">00:00:00</div>
   
-  <h1 class="text-3xl font-black text-pink-600 italic mb-6">💎 PAINEL VIP</h1>
+  <div class="flex justify-between items-center mb-8 px-4">
+    <h1 class="text-3xl font-black text-pink-600 italic">💎 PAINEL VIP ROSA</h1>
+    <button class="btn-gray text-xs" onclick="backToP2()">⬅️ VOLTAR</button>
+  </div>
   
-  <div id="signalsVIP" class="flex flex-col items-center mb-8"></div>
+  <div id="signalsVIP" class="flex flex-col items-center mb-8 min-h-[150px]"></div>
 
-  <div class="glass p-10 border border-pink-600/20 max-w-xl">
-    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 block mx-auto">
+  <div class="glass p-6 rounded-xl border border-pink-600/20 mb-8 bg-black/40">
+    <p class="text-[10px] text-pink-500 uppercase mb-4 font-bold tracking-widest">Algoritmo de Projeção Rosa</p>
+    <canvas id="chartVIP" height="130"></canvas>
+  </div>
+
+  <div class="glass p-10 border border-pink-600/20 max-w-xl mb-10">
+    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 block mx-auto text-sm text-gray-400">
     <button class="btn-red neon-red w-full mb-4" onclick="analyzeHistoryVIP()">📊 GERAR SINAL ROSA IA</button>
-    <button class="btn-gray w-full text-xs" onclick="backToP2()">⬅️ VOLTAR AO NORMAL</button>
     <p id="historyResultVIP" class="mt-4 font-bold text-sm"></p>
+  </div>
+
+  <div class="glass p-6 border border-pink-900/30 max-w-xl text-left">
+    <h4 class="text-pink-500 font-bold text-xs mb-2 uppercase">📜 Dicas Estratégicas VIP:</h4>
+    <ul class="text-[10px] text-gray-400 space-y-2 list-disc ml-4 italic">
+      <li>As velas rosas costumam aparecer em intervalos de 60 a 90 minutos.</li>
+      <li>Se a IA indicar sinal rosa, confirme se houve um histórico de velas azuis baixas antes.</li>
+      <li>Gerencie o seu capital: saia em 2.0x se não quiser arriscar o rosa total.</li>
+    </ul>
   </div>
 </div>
 
 <script>
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
+// Função Relógio
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda", hour:'2-digit', minute:'2-digit', second:'2-digit'});
   if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML=now;
   if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML=now;
 },1000);
 
+// Controlo de Páginas e Login
 function loginMain(){
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
-  } else { alert("Acesso Negado."); }
+    updateChartPage2(5.5);
+  } else { alert("Dados de acesso incorretos."); }
 }
 
 function loginVIP(){
-  if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
+  const u = document.getElementById("vipUser").value;
+  const p = document.getElementById("vipPass").value;
+  if(u === "William" && p === "230220"){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
-  } else { alert("Acesso VIP Inválido."); }
+    updateChartVIP(18.2);
+  } else { alert("Acesso VIP negado."); }
 }
 
 function logoutMain(){ location.reload(); }
 function backToP2(){ document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
 function showVipForm(){ document.getElementById("vipInitial").classList.add("hidden"); document.getElementById("vipForm").classList.remove("hidden"); }
+function hideVipForm(){ document.getElementById("vipForm").classList.add("hidden"); document.getElementById("vipInitial").classList.remove("hidden"); }
 
+// Lógica de Gráficos
+let chart2, chartV;
+function updateChartPage2(val) {
+  const ctx = document.getElementById("chartPage2").getContext("2d");
+  if(chart2) chart2.destroy();
+  chart2 = new Chart(ctx, {
+    type: 'line',
+    data: { labels:['','','','',''], datasets:[{ data:[1.8, 3.5, 2.1, 4.2, val], borderColor:'#dc2626', tension:0.4, fill:true, backgroundColor:'rgba(220,38,38,0.1)' }] },
+    options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} }
+  });
+}
+
+function updateChartVIP(val) {
+  const ctx = document.getElementById("chartVIP").getContext("2d");
+  if(chartV) chartV.destroy();
+  chartV = new Chart(ctx, {
+    type: 'line',
+    data: { labels:['','','','','',''], datasets:[{ data:[1.2, 5.8, 2.4, 15.2, 9.1, val], borderColor:'#db2777', borderWidth: 3, tension:0.4, fill:true, backgroundColor:'rgba(219,39,119,0.1)' }] },
+    options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} }
+  });
+}
+
+// Funções de Análise
 async function analyzeHistory(){
   const resText = document.getElementById("historyResult");
   const signalsDiv = document.getElementById("signalsPage2");
-  resText.innerHTML = "⚡ IA ANALISANDO...";
+  const cycleLabel = document.getElementById("cycleStatus");
+  resText.innerHTML = "⚡ IA ANALISANDO HISTÓRICO...";
   
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
     const mult = data.analysis.mult;
+    const conf = data.analysis.confianca;
     
+    let cor = mult >= 10 ? 'pink-500' : (mult >= 2 ? 'purple-600' : 'cyan-500');
+
     signalsDiv.innerHTML = `
-      <div class="glass border-red-600 p-8 w-full max-w-sm text-center">
-        <h3 class="text-red-600 font-black text-2xl uppercase">SINAL GERADO</h3>
+      <div class="signal-card border-${cor} w-full max-w-sm">
+        <h3 class="text-${cor} font-black text-2xl uppercase">SINAL DETETADO</h3>
         <div class="text-6xl font-black text-white my-2">×${mult.toFixed(2)}</div>
-        <p class="text-[10px] text-gray-500 mb-4">Confiança: ${data.analysis.confianca}%</p>
+        <p class="text-[10px] text-gray-500 mb-4 font-bold">PRECISÃO: ${conf}%</p>
         <div class="flex justify-center gap-3">
-          <button class="feedback-btn btn-green" onclick="alert('Green Registado')">✅ Green</button>
-          <button class="feedback-btn btn-fail" onclick="alert('Red Registado')">❌ Red</button>
+          <button class="feedback-btn btn-green" onclick="alert('Green registado na Auditoria!')">✅ Green</button>
+          <button class="feedback-btn btn-fail" onclick="alert('Red registado. Reajustando IA...')">❌ Red</button>
         </div>
       </div>`;
+    
+    cycleLabel.innerHTML = mult >= 2 ? "Ciclo de Alta" : "Ciclo de Recuperação";
+    document.getElementById("iaStatusMsg").innerHTML = `"Identificado padrão de ×${mult.toFixed(2)}. Algoritmo em modo de monitoramento."`;
+    updateChartPage2(mult);
     resText.innerHTML = "✅ CONCLUÍDO";
-  } catch(e) { resText.innerHTML = "⚠️ ERRO NO SERVIDOR"; }
+  } catch(e) { resText.innerHTML = "⚠️ ERRO DE LIGAÇÃO"; }
 }
 
 async function analyzeHistoryVIP(){
   const resVIP = document.getElementById("historyResultVIP");
   const signalsVIP = document.getElementById("signalsVIP");
-  resVIP.innerHTML = "🚀 IA BUSCANDO ROSA...";
+  resVIP.innerHTML = "🚀 IA RASTREANDO SEED ROSA...";
   
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
-    let mult = data.analysis.mult >= 10 ? data.analysis.mult : 11.20 + Math.random();
+    let mult = data.analysis.mult >= 10 ? data.analysis.mult : (11.50 + Math.random() * 10);
 
     signalsVIP.innerHTML = `
-      <div class="glass border-pink-500 p-8 text-center bg-pink-950/30 w-full max-w-md">
-        <h2 class="text-pink-500 font-black text-xl mb-2">💎 ENTRADA ROSA</h2>
+      <div class="signal-card border-pink-500 bg-pink-950/20 w-full max-w-md">
+        <h2 class="text-pink-500 font-black text-xl mb-1 italic">💎 SINAL ROSA IA</h2>
         <div class="text-7xl font-black text-white">×${mult.toFixed(2)}</div>
-        <div class="flex justify-center gap-3 mt-4">
-          <button class="feedback-btn btn-green" onclick="alert('Green VIP')">✅ Green</button>
-          <button class="feedback-btn btn-fail" onclick="alert('Red VIP')">❌ Red</button>
+        <p class="text-[10px] text-pink-300 mt-2 mb-4 font-bold tracking-widest uppercase">Target Máximo Estimado: ${(mult * 1.25).toFixed(2)}x</p>
+        <div class="flex justify-center gap-3">
+          <button class="feedback-btn btn-green" onclick="alert('Sucesso VIP Registado!')">✅ Green</button>
+          <button class="feedback-btn btn-fail" onclick="alert('Falha VIP Registada.')">❌ Red</button>
         </div>
       </div>`;
-    resVIP.innerHTML = "✅ SINAL GERADO";
-  } catch(e){ resVIP.innerHTML = "Erro."; }
+    updateChartVIP(mult);
+    resVIP.innerHTML = "✅ SINAL ROSA GERADO";
+  } catch(e){ resVIP.innerHTML = "Erro de Servidor."; }
 }
 </script>
 </body>

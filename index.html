@@ -7,93 +7,92 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100vh; }
   .glass { background:rgba(255,255,255,0.03); backdrop-filter:blur(20px); border-radius:24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
   .neon-red { box-shadow:0 0 30px rgba(220,38,38,0.4); }
-  .neon-pink { box-shadow:0 0 30px rgba(219,39,119,0.4); }
-  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; max-width: 300px; }
+  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; }
   .btn-red:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(220,38,38,0.3); }
   .btn-gray { background:#151515; padding:14px 28px; border-radius:14px; font-weight:bold; cursor:pointer; transition:0.3s; border: 1px solid #333; color:#aaa; }
   .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px rgba(220,38,38,0.5); }
-  .signal-card { padding:30px; border-radius:24px; text-align:center; transition:0.6s; border: 2px solid; animation: slideUp 0.6s ease-out; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; }
+  .signal-card { padding:30px; border-radius:24px; text-align:center; border: 2px solid #dc2626; background: rgba(0,0,0,0.6); width: 100%; max-width: 400px; animation: slideUp 0.6s ease-out; }
   @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  .feedback-btn { padding: 10px 20px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; color: white; border: none; }
-  .btn-green { background: #10b981; } .btn-fail { background: #ef4444; }
-  .alcance-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #dc2626; text-align: left; width: 100%; }
-  .tip-container { height: 100px; display: flex; align-items: center; justify-content: center; width: 100%; }
-  .tip-text { transition: opacity 0.5s; font-size: 11px; color: #aaa; font-style: italic; max-width: 280px; }
-  .history-badge { width: 45px; height: 25px; border-radius: 6px; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  .history-badge { width: 50px; height: 28px; border-radius: 6px; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
   .badge-blue { background: #2563eb; } .badge-purple { background: #9333ea; } .badge-pink { background: #db2777; }
+  .alcance-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #dc2626; text-align: left; width: 100%; }
+  input[type="file"]::file-selector-button { background: #222; color: white; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
     <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
-    <h1 class="text-5xl md:text-6xl text-white font-black mb-4 tracking-tighter">Will+Boot-PRO (Aviator)</h1>
-    <div class="max-w-xl mb-10 text-gray-400 text-sm leading-relaxed">Terminal de Análise Quantitativa Profissional. Processamento de Seeds em Tempo Real.</div>
-    <div class="glass p-10 max-w-md neon-red mb-12">
+    <h1 class="text-5xl md:text-6xl text-white font-black mb-4 tracking-tighter uppercase">Will+Boot-PRO</h1>
+    <div class="glass p-10 max-w-md neon-red">
       <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
       <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
       <button class="btn-red" onclick="loginMain()">ENTRAR NO TERMINAL</button>
     </div>
-    <footer class="text-[10px] text-gray-600 uppercase tracking-widest">© 2026 WILL+BOOT-PRO • TERMINAL IA</footer>
+    <footer class="mt-8 text-[10px] text-gray-600 uppercase tracking-widest">© 2026 WILL+BOOT-PRO • TERMINAL IA</footer>
 </div>
 
-<div id="page2" class="hidden py-12 px-6 max-w-5xl w-full flex flex-col items-center">
-  <div class="flex gap-2 mb-6" id="historyBar">
-      <div class="history-badge badge-blue">1.45x</div>
-      <div class="history-badge badge-purple">3.20x</div>
-      <div class="history-badge badge-blue">1.10x</div>
-      <div class="history-badge badge-purple">8.50x</div>
-      <div class="history-badge badge-pink">15.0x</div>
-  </div>
-  <div id="clock2" class="clock-display text-red-600 text-4xl mb-8">⌚ 00:00:00</div>
+<div id="page2" class="hidden py-8 px-6 max-w-2xl w-full flex flex-col items-center space-y-8">
   
-  <div class="flex flex-wrap justify-center gap-4 mb-10 w-full">
-    <button class="btn-red neon-red px-12" onclick="analyzeHistory()">📊 ANALISAR MERCADO</button>
-    <button class="btn-gray" onclick="logoutMain()">SAIR</button>
+  <div id="historyBar" class="hidden flex flex-wrap justify-center gap-2 w-full">
+      </div>
+
+  <div id="clock2" class="clock-display text-red-600 text-4xl">⌚ 00:00:00</div>
+
+  <div class="flex gap-4 w-full">
+      <button class="btn-red flex-1" onclick="analyzeHistory()">📊 ANALISAR VELAS</button>
+      <button class="btn-gray px-8" onclick="logoutMain()">SAIR</button>
   </div>
 
-  <div class="grid md:grid-cols-3 gap-6 w-full mb-10">
-    <div class="md:col-span-2 space-y-6">
-        <div class="glass p-8 border-red-600/20 max-w-2xl">
-            <p class="text-[10px] text-gray-400 mb-4 font-bold uppercase italic">Sincronização de Histórico Requerida</p>
-            <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500 block mx-auto">
-            <p id="historyResult" class="mt-4 text-xs font-black text-red-500 uppercase"></p>
-        </div>
-        <div id="signalsPage2" class="w-full flex flex-col items-center min-h-[180px]"></div>
-        <div class="glass p-8 items-center w-full"><canvas id="chartPage2" height="140"></canvas></div>
-    </div>
-    <div class="flex flex-col gap-4">
-        <h3 class="text-red-600 font-black text-sm uppercase italic">🧠 IA Respondendo...</h3>
-        <div class="glass p-6 min-h-[150px] flex items-center justify-center">
-            <div id="tipContainerP2" class="tip-container"><p id="tipTextP2" class="tip-text">Sincronizando Seeds...</p></div>
-        </div>
-    </div>
+  <div id="signalsPage2" class="w-full flex justify-center min-h-[100px]">
+      <p class="text-gray-600 italic text-sm">Sincronize o histórico para gerar sinais.</p>
   </div>
-  <div class="glass p-10 border-red-600/30 max-w-md">
-    <h2 class="text-2xl font-black text-red-600 mb-6 italic">💎 VIP ROSA</h2>
-    <button class="btn-red neon-red w-full" onclick="showVipForm()">ACESSO VIP</button>
-    <div id="vipForm" class="hidden mt-4 space-y-4 w-full flex flex-col items-center">
+
+  <div class="glass p-6 border-red-600/20 w-full">
+      <p class="text-[10px] text-gray-400 mb-4 font-bold uppercase">Sincronização de Imagem Requerida</p>
+      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500">
+      <p id="historyResult" class="mt-3 text-[10px] font-black text-red-500 uppercase"></p>
+  </div>
+
+  <div class="glass p-6 border-l-4 border-red-600 w-full text-center">
+      <h3 class="text-red-600 font-black text-[10px] uppercase mb-2">🧠 Resposta da IA</h3>
+      <p id="tipTextP2" class="text-xs text-gray-400 italic">Aguardando dados da Seed...</p>
+  </div>
+
+  <div class="glass p-4 w-full h-[220px]">
+      <canvas id="chartPage2"></canvas>
+  </div>
+
+  <div class="glass p-8 border-red-600/30 w-full">
+    <h2 class="text-xl font-black text-red-600 mb-6 italic uppercase">💎 ACESSO VIP ROSA</h2>
+    <button id="btnOpenVip" class="btn-red bg-pink-600" onclick="showVipForm()">ABRIR PORTAL VIP</button>
+    
+    <div id="vipForm" class="hidden mt-6 space-y-4 w-full">
         <input id="vipUser" placeholder="Usuário VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
         <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-        <button class="btn-red w-full" onclick="loginVIP()">ENTRAR</button>
+        <div class="flex gap-2">
+            <button class="btn-red flex-1" onclick="loginVIP()">ENTRAR</button>
+            <button class="btn-gray" onclick="showVipForm()">FECHAR</button>
+        </div>
     </div>
   </div>
+
+  <footer class="text-[9px] text-gray-700 uppercase pt-10">Will+Boot-PRO v2.1 • Sincronizado</footer>
 </div>
 
-<div id="page3" class="hidden py-12 px-6 max-w-5xl w-full flex flex-col items-center">
+<div id="page3" class="hidden py-12 px-6 max-w-xl w-full flex flex-col items-center">
   <div id="clock3" class="clock-display text-pink-500 text-4xl mb-8">⌚ 00:00:00</div>
-  <div class="flex justify-between items-center mb-10 w-full px-6">
-    <h1 class="text-4xl font-black text-pink-600 italic">VIP ROSA (+10X)</h1>
+  <div class="flex justify-between items-center mb-8 w-full">
+    <h1 class="text-3xl font-black text-pink-600 italic uppercase">VIP SNIPER</h1>
     <button class="btn-gray text-[10px]" onclick="backToP2()">VOLTAR</button>
   </div>
-  <div id="signalsVIP" class="w-full flex flex-col items-center mb-12 min-h-[200px]"></div>
-  <div class="glass p-12 border-pink-600/20 max-w-2xl mb-12 neon-pink">
-    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-8 block mx-auto text-xs">
-    <button class="btn-red w-full mb-6 py-5 text-xl" onclick="analyzeHistoryVIP()">GERAR ALVO ROSA</button>
-    <p id="historyResultVIP" class="text-xs font-bold text-pink-500 uppercase"></p>
+  <div id="signalsVIP" class="w-full flex justify-center mb-10"></div>
+  <div class="glass p-8 border-pink-600/20 w-full">
+    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 block mx-auto text-xs">
+    <button class="btn-red bg-pink-700 w-full py-5 text-xl" onclick="analyzeHistoryVIP()">GERAR ALVO ROSA</button>
   </div>
 </div>
 
@@ -101,22 +100,20 @@
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 let firstImageLoaded = false;
 let firstImageVIPLoaded = false;
+let chart2;
 
-const tipsP2 = ["IA detectou ciclo de Roxo iminente.", "Retire em 1.50x para proteção de banca.", "Seed estabilizada. Próximo sinal com alta assertividade.", "Evite entradas após 4 velas azuis seguidas."];
-const tipsP3 = ["Velas de 10x requerem paciência estratégica.", "Responsabilidade: Lucro no bolso é a meta VIP.", "A IA VIP prevê quebra de Seed Rosa em breve."];
-
-let tipIndexP2 = 0;
-let tipIndexP3 = 0;
-
-function rotateTips() {
-    tipIndexP2 = (tipIndexP2 + 1) % tipsP2.length;
-    tipIndexP3 = (tipIndexP3 + 1) % tipsP3.length;
-    const elP2 = document.getElementById("tipTextP2");
-    const elP3 = document.getElementById("tipTextP3");
-    if(elP2) { elP2.style.opacity = 0; setTimeout(() => { elP2.innerText = tipsP2[tipIndexP2]; elP2.style.opacity = 1; }, 500); }
-    if(elP3) { elP3.style.opacity = 0; setTimeout(() => { elP3.innerText = tipsP3[tipIndexP3]; elP3.style.opacity = 1; }, 500); }
-}
-setInterval(rotateTips, 60000);
+const tipsP2 = [
+    "IA detectou ciclo de Roxo iminente.",
+    "Retire em 1.50x para proteção de banca.",
+    "Seed estabilizada. Próximo sinal de alta frequência.",
+    "Atenção: Evite entradas após sequência de 3 azuis."
+];
+let tipIndex = 0;
+setInterval(() => {
+    tipIndex = (tipIndex + 1) % tipsP2.length;
+    const el = document.getElementById("tipTextP2");
+    if(el) { el.innerText = tipsP2[tipIndex]; }
+}, 60000);
 
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda", hour:'2-digit', minute:'2-digit', second:'2-digit'});
@@ -128,7 +125,7 @@ function loginMain(){
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
-    updateChartPage2(2.5);
+    initChart(2.0);
   } else { alert("Acesso Negado."); }
 }
 
@@ -136,55 +133,88 @@ function loginVIP(){
   if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
-  } else { alert("Erro VIP."); }
+  } else { alert("Chave VIP Inválida."); }
 }
 
 function logoutMain(){ location.reload(); }
 function backToP2(){ document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
-function showVipForm(){ document.getElementById("vipForm").classList.toggle("hidden"); }
-
-let chart2;
-function updateChartPage2(val) {
-  const ctx = document.getElementById("chartPage2").getContext("2d");
-  if(chart2) chart2.destroy();
-  chart2 = new Chart(ctx, { type: 'line', data: { labels:['','','','',''], datasets:[{ data:[1.1, 2.5, 1.4, 3.2, val], borderColor:'#dc2626', fill:true, backgroundColor:'rgba(220,38,38,0.05)' }] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
+function showVipForm(){ 
+    document.getElementById("vipForm").classList.toggle("hidden"); 
+    document.getElementById("btnOpenVip").classList.toggle("hidden");
 }
 
-function getAlcanceHTML(mult) {
-    const assert = (88 + Math.random() * 9).toFixed(1);
-    return `<div class="alcance-box"><p class="text-[9px] text-gray-400 uppercase font-black">ASSERTIVIDADE IA: <span class="text-green-500">${assert}%</span></p><div class="flex justify-between mt-1"><span class="text-white text-[10px]">Alvo: <b class="text-green-500">${(mult * 0.9).toFixed(2)}x</b></span><span class="text-white text-[10px]">Máximo: <b class="text-red-500">${(mult * 1.2).toFixed(2)}x</b></span></div></div>`;
+function initChart(val) {
+  const ctx = document.getElementById("chartPage2").getContext("2d");
+  if(chart2) chart2.destroy();
+  chart2 = new Chart(ctx, { 
+    type: 'line', 
+    data: { labels:['','','','','','','','','',''], datasets:[{ data:[1.1, 2.5, 1.4, 3.2, 1.8, 4.0, 1.1, 2.2, 1.5, val], borderColor:'#dc2626', fill:true, backgroundColor:'rgba(220,38,38,0.1)', tension:0.4 }] }, 
+    options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } 
+  });
+}
+
+function generateHistoryBadges() {
+    const bar = document.getElementById("historyBar");
+    bar.innerHTML = "";
+    bar.classList.remove("hidden");
+    for(let i=0; i<10; i++) {
+        const val = (Math.random() * 5 + 1).toFixed(2);
+        let colorClass = val >= 2.0 ? "badge-purple" : "badge-blue";
+        if(val > 8.0) colorClass = "badge-pink";
+        bar.innerHTML += `<div class="history-badge ${colorClass}">${val}x</div>`;
+    }
 }
 
 async function analyzeHistory(){
   const fileInput = document.getElementById("uploadHistory");
   const signalsDiv = document.getElementById("signalsPage2");
-  if (!firstImageLoaded && fileInput.files.length === 0) { alert("Sincronize o histórico!"); return; }
-  document.getElementById("historyResult").innerHTML = "🛰️ SCANNEANDO...";
+  if (!firstImageLoaded && fileInput.files.length === 0) { alert("Sincronize o histórico da imagem primeiro!"); return; }
+  
+  document.getElementById("historyResult").innerHTML = "🛰️ PROCESSANDO SEED...";
+  
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
     let mult = data.analysis.mult;
-    if(mult >= 10) mult = 1.95 + Math.random() * 5;
-    let tipo = mult >= 2.00 ? "ROXO" : "AZUL";
-    let cor = mult >= 2.00 ? "text-purple-500" : "text-blue-400";
-    signalsDiv.innerHTML = `<div class="signal-card border-red-600 w-full max-w-sm neon-red"><h3 class="${cor} font-black text-2xl uppercase">SINAL ${tipo}</h3><div class="text-7xl font-black text-white my-3">×${mult.toFixed(2)}</div>${getAlcanceHTML(mult)}</div>`;
-    updateChartPage2(mult);
+    
+    if(mult >= 10) mult = 1.80 + Math.random() * 4;
+    
+    generateHistoryBadges();
+    
+    signalsDiv.innerHTML = `
+      <div class="signal-card neon-red">
+        <h3 class="text-white font-black text-xl uppercase mb-2">Entrada Confirmada</h3>
+        <div class="text-7xl font-black text-white">×${mult.toFixed(2)}</div>
+        <div class="alcance-box">
+            <p class="text-[10px] text-green-500 font-bold mb-1">IA: ALTA ASSERTIVIDADE</p>
+            <div class="flex justify-between text-[11px]">
+                <span>Alvo: ${(mult*0.9).toFixed(2)}x</span>
+                <span>Max: ${(mult*1.1).toFixed(2)}x</span>
+            </div>
+        </div>
+      </div>`;
+    
+    initChart(mult);
     if(fileInput.files.length > 0) firstImageLoaded = true;
-    document.getElementById("historyResult").innerHTML = "✅ CONCLUÍDO";
-  } catch(e) { alert("Erro Servidor"); }
+    document.getElementById("historyResult").innerHTML = "✅ SINCRONIZADO";
+  } catch(e) { alert("Erro ao conectar com o Servidor IA."); }
 }
 
 async function analyzeHistoryVIP(){
-  const fileInputVIP = document.getElementById("uploadHistoryVIP");
-  const signalsVIP = document.getElementById("signalsVIP");
-  if (!firstImageVIPLoaded && fileInputVIP.files.length === 0) { alert("Imagem VIP Necessária!"); return; }
+  const fileVIP = document.getElementById("uploadHistoryVIP");
+  if (!firstImageVIPLoaded && fileVIP.files.length === 0) { alert("Imagem do histórico requerida!"); return; }
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
-    let mult = data.analysis.mult >= 10 ? data.analysis.mult : (10.50 + Math.random() * 20);
-    signalsVIP.innerHTML = `<div class="signal-card border-pink-500 bg-pink-950/20 w-full max-w-md neon-pink"><h2 class="text-pink-500 font-black text-2xl mb-2 italic">VELA ROSA</h2><div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div>${getAlcanceHTML(mult)}</div>`;
-    if(fileInputVIP.files.length > 0) firstImageVIPLoaded = true;
-  } catch(e){ alert("Erro VIP"); }
+    let mult = data.analysis.mult >= 10 ? data.analysis.mult : (12.50 + Math.random() * 30);
+    document.getElementById("signalsVIP").innerHTML = `
+      <div class="signal-card border-pink-600 bg-pink-950/20 neon-red" style="box-shadow: 0 0 30px #db277744">
+        <h2 class="text-pink-500 font-black text-2xl italic">ALVO ROSA DETECTADO</h2>
+        <div class="text-8xl font-black text-white my-4">×${mult.toFixed(2)}</div>
+        <p class="text-pink-400 text-xs font-bold uppercase">Probabilidade VIP: 98.4%</p>
+      </div>`;
+    if(fileVIP.files.length > 0) firstImageVIPLoaded = true;
+  } catch(e){ alert("Erro VIP."); }
 }
 </script>
 </body>

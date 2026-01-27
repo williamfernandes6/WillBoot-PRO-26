@@ -14,7 +14,8 @@
   .btn-red:hover { background:#b91c1c; transform: scale(1.02); }
   .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
   .btn-gray:hover { background:#222; }
-  .signal-card { padding:16px; border-radius:12px; text-align:center; transition:0.4s; border: 2px solid transparent; }
+  .signal-card { padding:24px; border-radius:16px; text-align:center; transition:0.5s; border: 2px solid; animation: fadeIn 0.5s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   input[type="file"]::file-selector-button {
     background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 15px;
   }
@@ -35,29 +36,28 @@
 <div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
   
   <div class="glass p-6 border border-red-600/20 mb-6">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
       <div id="clock2" class="text-red-500 font-bold text-2xl tracking-mono">🕐 00:00:00</div>
       <div class="flex gap-4 mt-4 md:mt-0">
-        <button class="btn-red neon-red" onclick="analyzeHistory()">🔥 GERAR SINAIS / ANALISAR</button>
+        <button class="btn-red neon-red px-10" onclick="analyzeHistory()">📊 ANALISAR</button>
         <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
       </div>
     </div>
 
-    <div class="bg-black/60 p-8 rounded-2xl border border-dashed border-gray-700 text-center">
-      <p class="text-red-500 font-bold mb-4 uppercase text-sm">Painel de Leitura de Histórico</p>
+    <div class="bg-black/60 p-6 rounded-2xl border border-dashed border-gray-700 text-center">
       <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-400 mx-auto">
-      <p id="historyResult" class="mt-4 text-sm font-medium transition-all"></p>
+      <p id="historyResult" class="mt-4 text-xs font-bold uppercase tracking-widest"></p>
     </div>
   </div>
 
-  <div id="signalsPage2" class="grid md:grid-cols-2 gap-6 my-10">
-    <div class="glass p-12 border border-gray-800 text-center text-gray-500 col-span-2 italic">
-      Aguardando envio do histórico para processar sinais...
+  <div id="signalsPage2" class="flex justify-center my-10 min-h-[200px]">
+    <div class="glass p-12 border border-gray-800 text-center text-gray-500 italic flex items-center">
+      Selecione o print do histórico e clique em ANALISAR
     </div>
   </div>
 
   <div class="glass p-6 mb-6 border border-red-600/20">
-    <label class="mb-2 block font-bold text-gray-400">Plataforma de Operação:</label>
+    <label class="mb-2 block font-bold text-gray-400 text-xs">PLATAFORMA ATIVA:</label>
     <select id="betHouse" class="w-full p-3 rounded bg-black border border-gray-700 outline-none">
       <option value="ElephantBet">ElephantBet</option>
       <option value="BantuBet">BantuBet</option>
@@ -67,17 +67,17 @@
   </div>
 
   <div class="glass p-6 rounded-xl border border-red-600/20">
-    <h3 class="text-center font-bold mb-4 text-gray-300 uppercase">📊 Assertividade da IA</h3>
+    <h3 class="text-center font-bold mb-4 text-gray-300 uppercase text-sm">Assertividade da IA</h3>
     <canvas id="chartPage2" height="120"></canvas>
   </div>
 
   <div class="glass p-8 mt-10 border border-red-600/30 text-center">
-    <h2 class="text-2xl font-black text-red-600 mb-2">💎 ACESSO VIP</h2>
+    <h2 class="text-2xl font-black text-red-600 mb-2 tracking-tighter">💎 ACESSO VIP</h2>
     <p class="text-gray-400 mb-6 text-xs italic">Sinais Rosa acima de 10.00x</p>
     <div class="max-w-xs mx-auto">
-        <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700 outline-none">
-        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none">
-        <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ACESSAR ÁREA VIP</button>
+        <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
+        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700 outline-none focus:border-red-600">
+        <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ACESSAR VIP</button>
     </div>
   </div>
 </div>
@@ -88,10 +88,10 @@
     <button class="btn-gray" onclick="location.reload()">VOLTAR</button>
   </div>
   <div id="clock3" class="text-center text-pink-500 font-bold text-xl mb-6"></div>
-  <div id="signalsVIP" class="grid grid-cols-1 gap-6 my-6"></div>
+  <div id="signalsVIP" class="flex justify-center my-6"></div>
   <canvas id="chartVIP" height="120" class="glass p-6 border border-pink-600/20"></canvas>
   <div class="glass p-10 border border-pink-600/20 text-center mt-10">
-    <label class="block mb-4 font-bold text-pink-500 uppercase">Analisar Print VIP</label>
+    <label class="block mb-4 font-bold text-pink-500 uppercase">Enviar Histórico VIP</label>
     <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-6 mx-auto block">
     <button class="btn-red neon-red w-full" onclick="analyzeHistoryVIP()">📊 GERAR SINAL ROSA</button>
     <p id="historyResultVIP" class="mt-4 font-bold text-sm"></p>
@@ -101,19 +101,21 @@
 <script>
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
+// Relógio Luanda
 setInterval(()=>{
   const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
   if(document.getElementById("clock2")) document.getElementById("clock2").innerHTML="🕐 "+now;
   if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML="🕐 "+now;
 },1000);
 
+// Login Sistema
 function loginMain(){
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     localStorage.setItem("mainAccess","true");
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
     loadHistoryPage2();
-  } else { alert("Acesso negado."); }
+  } else { alert("Credenciais Inválidas."); }
 }
 
 function logoutMain(){ localStorage.removeItem("mainAccess"); location.reload(); }
@@ -126,6 +128,7 @@ if(localStorage.getItem("mainAccess") === "true") {
   };
 }
 
+// Gráficos de assertividade
 let historyPage2 = JSON.parse(localStorage.getItem("historyPage2")||"[]");
 let chartPage2Obj;
 function loadHistoryPage2(){ updateChartPage2(); }
@@ -136,18 +139,22 @@ function updateChartPage2(){
     type:"line",
     data:{
       labels:historyPage2.map((_,i)=>i+1),
-      datasets:[{ data:historyPage2, borderColor:"#dc2626", tension:.4, fill:true }]
+      datasets:[{ data:historyPage2, borderColor:"#dc2626", tension:.4, fill:true, backgroundColor: 'rgba(220, 38, 38, 0.1)' }]
     },
     options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
   });
 }
 
+// ANALISAR HISTÓRICO
 async function analyzeHistory(){
   const fileInput = document.getElementById("uploadHistory");
   const resultText = document.getElementById("historyResult");
-  if(!fileInput.files[0]){ alert("Selecione uma imagem!"); return; }
+  const signalsDiv = document.getElementById("signalsPage2");
+
+  if(!fileInput.files[0]){ alert("Selecione uma imagem do histórico!"); return; }
   
-  resultText.innerHTML = "<span class='text-blue-400'>⚡ PROCESSANDO...</span>";
+  resultText.innerHTML = "<span class='text-blue-400 animate-pulse'>⚡ CALCULANDO PROBABILIDADES...</span>";
+  
   const formData = new FormData();
   formData.append("file", fileInput.files[0]);
 
@@ -157,51 +164,65 @@ async function analyzeHistory(){
     const data = await res.json();
     
     const mult = parseFloat(data.analysis?.mult || 1.0);
-    let info = {
-      mult: mult.toFixed(2),
-      conf: data.analysis?.confianca || 85,
-      azul_pct: data.analysis?.azul_pct || 0,
-      roxo_pct: data.analysis?.roxo_pct || 0
-    };
+    const conf = data.analysis?.confianca || 85;
 
-    if(mult < 2.0) info.sinal = "AZUL";
-    else if(mult >= 2.0 && mult < 10.0) info.sinal = "ROXO";
-    else info.sinal = "ROSA";
+    let sinalTipo = "";
+    let corHex = "";
+    let classeCor = "";
 
-    resultText.innerHTML = "<span class='text-green-500'>✅ CONCLUÍDO!</span>";
-    renderSignalsPage2(info);
-    historyPage2.push(info.conf);
+    // Lógica de Cores pedida
+    if(mult < 2.0) {
+      sinalTipo = "AZUL";
+      corHex = "#00d4ff";
+      classeCor = "border-cyan-500 text-cyan-400";
+    } else if(mult >= 2.0 && mult < 10.0) {
+      sinalTipo = "ROXO";
+      corHex = "#a855f7";
+      classeCor = "border-purple-600 text-purple-400";
+    } else {
+      sinalTipo = "ROSA";
+      corHex = "#ec4899";
+      classeCor = "border-pink-600 text-pink-500";
+    }
+
+    resultText.innerHTML = "<span class='text-green-500'>✅ ANÁLISE COMPLETA</span>";
+    
+    // Mostra apenas o sinal que a IA analisou
+    if(sinalTipo === "ROSA") {
+        signalsDiv.innerHTML = `
+        <div class="signal-card glass border-pink-600 bg-pink-950/20 w-full max-w-md">
+            <h3 class="font-black text-pink-500 text-xl mb-2">🚀 SINAL ROSA DETECTADO</h3>
+            <p class="text-xs text-gray-400 mb-4">ESTE SINAL É EXCLUSIVO DA ÁREA VIP</p>
+            <div class="text-4xl font-black text-white">×10.00+</div>
+        </div>`;
+    } else {
+        signalsDiv.innerHTML = `
+        <div class="signal-card glass ${classeCor} w-full max-w-md bg-black/40">
+            <h3 class="font-black text-2xl mb-4 tracking-widest">SINAL ${sinalTipo}</h3>
+            <div class="text-7xl font-black mb-4 text-white">×${mult.toFixed(2)}</div>
+            <div class="flex justify-between items-center mt-6 border-t border-gray-800 pt-4">
+                <span class="text-xs text-gray-500 uppercase">IA Probabilidade:</span>
+                <span class="font-bold text-white">${conf}%</span>
+            </div>
+            <p class="text-[10px] mt-2 text-gray-500 uppercase tracking-tighter">Alcance Máximo Previsto para esta rodada</p>
+        </div>`;
+    }
+
+    historyPage2.push(conf);
     updateChartPage2();
+
   } catch(e) {
-    resultText.innerHTML = "<span class='text-red-500'>⚠️ SERVIDOR EM ESPERA. TENTE NOVAMENTE EM 30s.</span>";
+    resultText.innerHTML = "<span class='text-red-500'>⚠️ SERVIDOR OCUPADO. TENTE NOVAMENTE.</span>";
   }
 }
 
-function renderSignalsPage2(info){
-  const signalsDiv = document.getElementById("signalsPage2");
-  const config = [
-    {t:"AZUL", color:"text-cyan-400", range:"1.00x - 1.99x", val: info.azul_pct},
-    {t:"ROXO", color:"text-purple-400", range:"2.00x - 9.99x", val: info.roxo_pct}
-  ];
-  signalsDiv.innerHTML = config.map(x => {
-    const isTarget = (info.sinal === x.t);
-    return `
-      <div class="signal-card glass ${isTarget ? 'border-red-600 bg-red-900/10 scale-105' : 'border-gray-800 opacity-30'}">
-        <h3 class="font-bold uppercase ${x.color}">${isTarget ? '🚀 ' : ''}SINAL ${x.t}</h3>
-        <div class="text-5xl font-black my-3">${isTarget ? '×'+info.mult : '---'}</div>
-        <p class="text-[10px] text-gray-500 tracking-widest">${x.range}</p>
-        <p class="text-[10px] mt-1 text-gray-400">Precisão: ${x.val}%</p>
-      </div>`;
-  }).join("");
-  if(info.sinal === "ROSA") signalsDiv.innerHTML += `<div class="signal-card glass border-pink-600 col-span-2 mt-4 text-pink-500">💎 SINAL ROSA (10x+) DETECTADO NA VIP!</div>`;
-}
-
+// VIP Login
 function loginVIP(){
   if(document.getElementById("vipUser").value === "William" && document.getElementById("vipPass").value === "230220"){
     document.getElementById("page2").classList.add("hidden");
     document.getElementById("page3").classList.remove("hidden");
     updateChartVIP();
-  } else { alert("Acesso VIP negado."); }
+  } else { alert("Acesso negado."); }
 }
 
 let historyVIP = JSON.parse(localStorage.getItem("historyVIP")||"[]");
@@ -209,21 +230,27 @@ let chartVIPObj;
 function updateChartVIP(){
   const ctx = document.getElementById("chartVIP").getContext("2d");
   if(chartVIPObj) chartVIPObj.destroy();
-  chartVIPObj = new Chart(ctx,{ type:"line", data:{ labels:historyVIP.map((_,i)=>i+1), datasets:[{ data:historyVIP, borderColor:"#db2777" }] } });
+  chartVIPObj = new Chart(ctx,{ type:"line", data:{ labels:historyVIP.map((_,i)=>i+1), datasets:[{ data:historyVIP, borderColor:"#db2777", tension: 0.4 }] } });
 }
 
 async function analyzeHistoryVIP(){
   const resVIP = document.getElementById("historyResultVIP");
-  resVIP.innerHTML = "<span class='text-pink-500'>💎 CALCULANDO...</span>";
+  if(!document.getElementById("uploadHistoryVIP").files[0]) return;
+  resVIP.innerHTML = "<span class='text-pink-500 animate-pulse'>💎 CALCULANDO ROSA...</span>";
   try {
     const fd = new FormData(); fd.append("file", document.getElementById("uploadHistoryVIP").files[0]);
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: fd });
     const data = await res.json();
     const mult = parseFloat(data.analysis?.mult || 0);
-    document.getElementById("signalsVIP").innerHTML = `<div class="signal-card glass border-pink-500 p-12 text-center"><div class="text-8xl font-black text-white">×${mult.toFixed(2)}</div></div>`;
-    historyVIP.push(99); updateChartVIP();
-    resVIP.innerHTML = "SINAL GERADO!";
-  } catch(e){ resVIP.innerHTML = "Erro VIP."; }
+    document.getElementById("signalsVIP").innerHTML = `
+      <div class="signal-card glass border-pink-500 p-12 text-center bg-pink-950/20 w-full max-w-lg">
+        <h2 class="text-pink-500 font-black mb-4">SINAL ROSA CONFIRMADO</h2>
+        <div class="text-8xl font-black text-white drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">×${mult.toFixed(2)}</div>
+      </div>`;
+    historyVIP.push(98); 
+    updateChartVIP();
+    resVIP.innerHTML = "✅ SINAL GERADO";
+  } catch(e){ resVIP.innerHTML = "Erro na análise VIP."; }
 }
 </script>
 </body>

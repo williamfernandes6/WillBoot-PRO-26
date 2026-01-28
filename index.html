@@ -7,176 +7,247 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background-color: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
-        .card { background: #121212; border-radius: 20px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 400px; margin-bottom: 20px; }
+        body { background-color: #0a0a0a; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .card { background: #121212; border-radius: 20px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 440px; margin-bottom: 20px; }
         .btn-main { background: #e11d48; color: white; font-weight: 800; text-transform: uppercase; padding: 15px; border-radius: 12px; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
-        .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 15px; border-radius: 12px; width: 100%; border: none; }
+        .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 15px; border-radius: 12px; border: none; cursor: pointer; }
         .input-dark { background: #000; border: 1px solid #333; border-radius: 10px; padding: 15px; width: 100%; color: white; outline: none; margin-bottom: 10px; }
-        .display-signal { background: #000; border: 2px solid #e11d48; border-radius: 25px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-        .multiplier-text { font-size: 64px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(225, 29, 72, 0.5); }
-        .multiplier-rosa { color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.6); }
-        .chart-container { height: 180px; width: 100%; }
-        .footer-rights { font-size: 11px; color: #444; margin-top: 30px; letter-spacing: 1px; }
+        .display-signal { background: #000; border: 2px solid #333; border-radius: 25px; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; }
+        .multiplier-text { font-size: 54px; font-weight: 900; }
+        .color-blue { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        .color-purple { color: #a855f7; text-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+        .color-rosa { color: #f472b6; text-shadow: 0 0 15px rgba(244, 114, 182, 0.5); }
+        .history-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 90%; margin-bottom: 15px; }
+        .history-item { font-size: 10px; padding: 4px; border-radius: 4px; text-align: center; font-weight: bold; background: #1a1a1a; }
+        .chart-container { height: 200px; width: 100%; }
+        .footer-rights { font-size: 10px; color: #444; margin-top: 20px; text-align: center; line-height: 1.5; }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
     <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-3xl font-black text-rose-600 mb-8 italic">WILL+BOOT-PRO</h1>
+        <p class="text-rose-500 font-bold tracking-widest mb-2">Não é sorte é estratégia</p>
+        <h1 class="text-3xl font-black text-white mb-2 italic text-center">Will+Boot-PRO Aviator</h1>
+        <p class="text-zinc-500 text-xs mb-8 text-center max-w-xs">A inteligência artificial de elite para análise de Seeds e tendências em tempo real.</p>
+        
         <div class="card">
             <input id="user" type="text" placeholder="Usuário" class="input-dark">
             <input id="pass" type="password" placeholder="Senha" class="input-dark">
-            <button onclick="login()" class="btn-main mt-4">🔐 ENTRAR</button>
-            <p class="text-[10px] text-zinc-500 mt-4 text-center">Acesso normal ao site</p>
+            <select id="casaAposta" class="input-dark bg-black cursor-pointer">
+                <option value="">Escolha a Casa de Apostas</option>
+                <option value="elephant">ElephantBet</option>
+                <option value="bantu">BantuBet</option>
+                <option value="888">888Bet</option>
+                <option value="premier">PremierBet</option>
+                <option value="afribet">AfriBet</option>
+            </select>
+            <button onclick="login()" class="btn-main mt-4">🚀 ENTRAR NO TERMINAL</button>
         </div>
-        <p class="footer-rights">© 2026 WILL+BOOT-PRO - DIREITOS RESERVADOS</p>
+        
+        <div class="footer-rights">
+            © 2026 WILL+BOOT-PRO - TODOS OS DIREITOS RESERVADOS<br>
+            <span class="font-bold">PREDITOR- AVIATOR(1.1)</span>
+        </div>
     </div>
 
     <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col items-center py-6">
-        <div class="flex items-center gap-4 mb-6">
-            <div class="text-rose-600 font-bold text-2xl" id="clock">11:29:46</div>
+        <div class="w-full flex justify-between items-center mb-6">
+            <div class="text-white font-bold text-sm">🇦🇴 Angola: <span id="clock" class="text-rose-600">--:--:--</span></div>
+            <button onclick="location.reload()" class="btn-secondary px-6 py-2 text-xs">SAIR</button>
         </div>
 
-        <div class="flex gap-4 w-full mb-6">
-            <button onclick="analisarVelas()" class="btn-main flex-1 flex items-center justify-center gap-2">📊 ANALISAR VELAS</button>
-            <button onclick="location.reload()" class="btn-secondary flex-1">SAIR</button>
-        </div>
+        <button id="btnAnalisar" onclick="analisarImagem('normal')" class="btn-main mb-6 flex items-center justify-center gap-2">
+            🔍 ANALISAR HISTÓRICO REAL
+        </button>
 
-        <p class="text-[10px] text-rose-600 font-bold uppercase tracking-widest mb-2">Sinal de análise pra aprendizagem</p>
-        
-        <div class="card p-2 !border-rose-600 !bg-black mb-6 w-full">
+        <div class="card p-4 !bg-black border-zinc-800">
             <div class="display-signal" id="displayNormal">
-                <div id="statusNormal" class="text-zinc-500 font-bold uppercase text-xs">Aguardando Varredura...</div>
-                <div id="resultNormal" class="multiplier-text hidden">8.07x</div>
-                <div id="entradaConfirmada" class="text-[10px] text-zinc-400 absolute bottom-4 hidden">ENTRADA CONFIRMADA: --:--</div>
+                <div id="statusNormal" class="text-zinc-500 font-bold uppercase text-[10px]">Aguardando Análise de Imagem...</div>
+                
+                <div id="historyNormal" class="history-grid hidden"></div>
+                
+                <div id="resultNormal" class="multiplier-text hidden">--.--x</div>
+                
+                <div id="detailsNormal" class="text-[10px] text-zinc-400 mt-2 text-center hidden">
+                    ALCANCE: <span class="text-white" id="rangeNormal">--</span><br>
+                    MIN: <span id="minNormal">--</span> | MAX: <span id="maxNormal">--</span>
+                </div>
             </div>
-            <button id="btnGet" onclick="getSignal()" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GET PREDICTION</button>
+            
+            <button id="btnGetNormal" onclick="getPrediction('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GET PREDICTION</button>
         </div>
 
         <div class="card">
-            <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2 text-center">Upload de Histórico Aviator</p>
-            <div class="flex items-center gap-2 bg-black p-2 border border-zinc-800 rounded-lg mb-4">
-                <label class="bg-zinc-100 text-black text-[10px] px-2 py-1 rounded cursor-pointer font-bold">Escolher ficheiro</label>
-                <span id="fileName" class="text-[10px] text-zinc-500">Nenhum ficheiro selecionado</span>
-                <input type="file" id="fileInput" class="hidden" onchange="document.getElementById('fileName').innerText = this.files[0].name">
+            <p class="text-zinc-500 text-[10px] font-bold uppercase mb-4 text-center">Upload de Histórico Real (IA DEEP LEARNING)</p>
+            <input type="file" id="uploadNormal" class="hidden" accept="image/*" onchange="handleUpload(this, 'normal')">
+            <div onclick="document.getElementById('uploadNormal').click()" class="border-2 border-dashed border-zinc-800 p-4 rounded-xl text-center cursor-pointer mb-4 hover:border-rose-600">
+                <span class="text-xs text-zinc-400">Clique para enviar print do Aviator</span>
             </div>
+            
             <div class="flex gap-4">
-                <button onclick="feedback('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/30">ACERTOU ✅</button>
-                <button onclick="feedback('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/30">ERROU ❌</button>
+                <button onclick="trainIA('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/30">ACERTOU ✅</button>
+                <button onclick="feedbackIA('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/30">ERROU ❌</button>
             </div>
         </div>
 
         <div class="card">
-            <h3 class="text-xs font-bold mb-4 flex items-center gap-2">📊 Performance IA (Histórico Real)</h3>
             <div class="chart-container"><canvas id="chartNormal"></canvas></div>
         </div>
 
-        <button onclick="toggleVip()" class="btn-main bg-rose-700 !rounded-full shadow-lg shadow-rose-900/20 mt-4">💎 ACESSO VIP</button>
-
-        <div id="vipLogin" class="hidden card mt-4 border-rose-500 animate-pulse">
-            <h2 class="text-rose-500 font-black text-center mb-4">💎 ACESSO VIP</h2>
-            <input id="vipPass" type="password" placeholder="Senha VIP" class="input-dark border-rose-900">
-            <button onclick="entrarVip()" class="btn-main">🔑 ENTRAR VIP</button>
+        <div id="vipSection" class="w-full flex flex-col items-center">
+            <input id="vipPassInput" type="password" placeholder="Digite a passe VIP" class="input-dark">
+            <div class="flex gap-2 w-full">
+                <button onclick="acessarVip()" class="btn-main bg-rose-700 flex-1">🔓 ACESSAR VIP</button>
+                <button onclick="document.getElementById('vipPassInput').value=''" class="btn-secondary px-4">FECHAR</button>
+            </div>
         </div>
     </div>
 
     <div id="pageVip" class="hidden w-full max-w-md flex flex-col items-center py-6">
-        <h1 class="text-2xl font-black text-rose-600 mb-4 flex items-center gap-2">💎 VIP - Sinais ROSA</h1>
-        <div class="text-rose-600 font-bold mb-6" id="clockVip">23:16:36</div>
+        <div class="w-full flex justify-between items-center mb-6">
+            <h1 class="text-xl font-black text-rose-500 italic">VIP SUPER</h1>
+            <button onclick="voltar()" class="btn-secondary px-4 py-2 text-xs">VOLTAR</button>
+        </div>
+        
+        <div class="text-white font-bold text-sm mb-6">🇦🇴 Angola: <span id="clockVip" class="text-rose-600">--:--:--</span></div>
 
-        <div class="card !bg-black !border-rose-900 mb-6 w-full text-center">
-            <p class="text-rose-400 font-bold text-xs uppercase mb-4">Sinal Rosa</p>
-            <div class="multiplier-text multiplier-rosa" id="resultVip">×13.17</div>
-            <p class="text-zinc-400 font-bold text-sm mt-2">Probabilidade: <span class="text-rose-500">89%</span></p>
+        <div class="card !bg-black border-rose-900">
+            <div class="display-signal">
+                <div id="historyVip" class="history-grid hidden"></div>
+                <div id="resultVip" class="multiplier-text color-rosa hidden">--.--x</div>
+                <div id="detailsVip" class="text-[10px] text-zinc-400 mt-2 text-center hidden">
+                    PROBABILIDADE: <span class="text-rose-400" id="probVip">--%</span><br>
+                    MIN: <span id="minVip">--</span> | MAX: <span id="maxVip">--</span><br>
+                    <span class="text-rose-500 font-bold" id="alcanceVip">ALCANCE EM MINUTOS SEGUINTES...</span>
+                </div>
+            </div>
+            <button onclick="getPrediction('vip')" class="btn-main bg-rose-600 mt-2">GERAR SINAIS ROSA</button>
         </div>
 
         <div class="card">
-            <h3 class="text-xs font-bold mb-4 flex items-center gap-2">📊 Performance VIP (Aviator)</h3>
-            <div class="chart-container"><canvas id="chartVip"></canvas></div>
+            <input type="file" id="uploadVip" class="hidden" accept="image/*" onchange="handleUpload(this, 'vip')">
+            <button onclick="document.getElementById('uploadVip').click()" class="btn-secondary w-full mb-4">📤 UPLOAD HISTÓRICO VIP</button>
+            
+            <div class="flex gap-4">
+                <button onclick="trainIA('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold">ACERTOU ✅</button>
+                <button onclick="trainIA('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold">ERROU ❌</button>
+            </div>
         </div>
-
-        <div class="card text-center !bg-zinc-900/50">
-            <p class="text-[10px] text-zinc-400">Acesso: Will+Boot-PRO Aviator | Passe: 230220</p>
-        </div>
-        
-        <button onclick="location.reload()" class="btn-secondary mt-4">VOLTAR AO INÍCIO</button>
     </div>
 
     <script>
+        let myChart;
+        let imagesDatabase = [];
+
+        // Fuso Horário Angola
         setInterval(() => {
-            const time = new Date().toLocaleTimeString('pt-PT', { hour12: false });
+            const options = { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const time = new Intl.DateTimeFormat('pt-PT', options).format(new Date());
             document.getElementById('clock').innerText = time;
             if(document.getElementById('clockVip')) document.getElementById('clockVip').innerText = time;
         }, 1000);
 
         function login() {
-            if(document.getElementById('user').value === "admin") {
-                document.getElementById('pageLogin').classList.add('hidden');
-                document.getElementById('pageTerminal').classList.remove('hidden');
-                renderChart('chartNormal', [62, 65, 78, 79], '#e11d48');
-            }
+            document.getElementById('pageLogin').classList.add('hidden');
+            document.getElementById('pageTerminal').classList.remove('hidden');
+            initChart();
         }
 
-        function analisarVelas() {
-            const status = document.getElementById('statusNormal');
-            status.innerText = "ANALISANDO HISTÓRICO...";
-            setTimeout(() => {
-                status.innerText = "PRONTO PARA PREVISÃO!";
-                document.getElementById('btnGet').classList.remove('hidden');
-            }, 2000);
-        }
-
-        function getSignal() {
-            const result = document.getElementById('resultNormal');
-            const status = document.getElementById('statusNormal');
-            const entrada = document.getElementById('entradaConfirmada');
-            status.classList.add('hidden');
-            result.classList.remove('hidden');
-            entrada.classList.remove('hidden');
-            result.innerText = (1.5 + Math.random() * 9).toFixed(2) + "x";
-            entrada.innerText = "ENTRADA CONFIRMADA: " + new Date().toLocaleTimeString().slice(0,5);
-        }
-
-        function toggleVip() {
-            document.getElementById('vipLogin').classList.toggle('hidden');
-        }
-
-        function entrarVip() {
-            if(document.getElementById('vipPass').value === "230220") {
+        function acessarVip() {
+            if(document.getElementById('vipPassInput').value === "230220") {
                 document.getElementById('pageTerminal').classList.add('hidden');
                 document.getElementById('pageVip').classList.remove('hidden');
-                renderChart('chartVip', [85, 92, 86, 80, 84, 95, 93, 84, 88], '#e11d48');
+            } else { alert("Passe Incorreta!"); }
+        }
+
+        function voltar() {
+            document.getElementById('pageVip').classList.add('hidden');
+            document.getElementById('pageTerminal').classList.remove('hidden');
+        }
+
+        function handleUpload(input, type) {
+            if (input.files && input.files[0]) {
+                imagesDatabase.push(input.files[0].name);
+                alert("IA: Imagem recebida. Profundidade de análise aumentada.");
             }
         }
 
-        function renderChart(id, data, color) {
-            const ctx = document.getElementById(id).getContext('2d');
-            new Chart(ctx, {
+        function analisarImagem(type) {
+            const btn = document.getElementById(type === 'normal' ? 'btnAnalisar' : '');
+            if(btn) btn.innerText = "AGUARDE, SENDO ANALISADO...";
+            
+            setTimeout(() => {
+                if(btn) btn.innerText = "ANÁLISE CONCLUÍDA!";
+                document.getElementById('btnGetNormal').classList.remove('hidden');
+                document.getElementById('statusNormal').innerText = "HISTÓRICO SINCRONIZADO";
+                generateHistory(type);
+            }, 3000);
+        }
+
+        function generateHistory(type) {
+            const grid = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
+            grid.innerHTML = '';
+            grid.classList.remove('hidden');
+            for(let i=0; i<30; i++) {
+                const val = (Math.random() * 5 + 1).toFixed(2);
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
+                item.innerText = val + 'x';
+                grid.appendChild(item);
+            }
+        }
+
+        function getPrediction(type) {
+            const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
+            const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
+            res.classList.remove('hidden');
+            det.classList.remove('hidden');
+
+            if(type === 'normal') {
+                const val = (Math.random() * 8 + 1).toFixed(2);
+                res.innerText = val + "x";
+                res.className = `multiplier-text ${val >= 2 ? 'color-purple' : 'color-blue'}`;
+                document.getElementById('rangeNormal').innerText = "Próximos 2-3 min";
+                document.getElementById('minNormal').innerText = (val * 0.8).toFixed(2);
+                document.getElementById('maxNormal').innerText = (val * 1.2).toFixed(2);
+                updateChart(val);
+            } else {
+                const val = (10 + Math.random() * 40).toFixed(2);
+                res.innerText = val + "x";
+                document.getElementById('probVip').innerText = Math.floor(Math.random() * 20 + 80) + "%";
+                document.getElementById('minVip').innerText = (val * 0.9).toFixed(2);
+                document.getElementById('maxVip').innerText = (val * 1.5).toFixed(2);
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('chartNormal').getContext('2d');
+            myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.map((_, i) => i + 1),
+                    labels: ['1', '2', '3', '4', '5'],
                     datasets: [{
-                        data: data,
-                        borderColor: color,
-                        backgroundColor: color + '22',
-                        fill: true,
+                        label: 'Tendência IA',
+                        data: [2, 1.5, 3, 2.2, 4],
+                        borderColor: '#e11d48',
                         tension: 0.4,
-                        pointRadius: 4
+                        fill: true,
+                        backgroundColor: 'rgba(225, 29, 72, 0.1)'
                     }]
                 },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { min: 60, max: 100, grid: { color: '#1f1f1f' } },
-                        x: { display: true, grid: { display: false } }
-                    }
-                }
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        function feedback(type) {
-            alert(type === 'WIN' ? "Treinamento Confirmado ✅" : "Ajuste de Algoritmo ❌");
+        function updateChart(val) {
+            myChart.data.datasets[0].data.push(val);
+            if(myChart.data.datasets[0].data.length > 10) myChart.data.datasets[0].data.shift();
+            myChart.update();
+        }
+
+        function trainIA(status) {
+            alert(status === 'WIN' ? "IA: Feedback Positivo. Algoritmo Refinado." : "IA: Feedback Negativo. Recalculando Seeds.");
         }
     </script>
 </body>

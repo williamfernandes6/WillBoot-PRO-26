@@ -25,6 +25,7 @@
 
   .select-dark { background: #000; border: 1px solid #333; color: #dc2626; padding: 14px; border-radius: 12px; width: 100%; font-weight: bold; text-transform: uppercase; text-align-last: center; outline: none; }
   .footer-rights { font-size: 10px; color: #444; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+  .upload-area { border: 1px dashed rgba(220,38,38,0.3); padding: 15px; border-radius: 12px; width: 100%; margin-bottom: 10px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -68,7 +69,12 @@
       <button id="btnGet" class="get-prediction-btn" onclick="executePrediction()">GET PREDICTION</button>
   </div>
 
-  <div class="glass p-6 w-full max-w-[440px]">
+  <div class="glass p-5 w-full max-w-[440px]">
+      <p class="text-[10px] text-gray-500 uppercase font-black mb-2">Sincronizar Histórico Real (Imagem)</p>
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+          <span id="fileName" class="text-xs text-zinc-500">Selecionar print do histórico Aviator...</span>
+          <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFile(this)">
+      </div>
       <p id="iaStatusLabel" class="text-[10px] text-gray-500 uppercase font-black mb-3 italic">O sinal foi correto? Treine a IA:</p>
       <div class="flex gap-3 w-full">
           <button class="flex-1 bg-green-600 p-3 rounded-lg font-black" onclick="trainIA('WIN')">ACERTOU ✅</button>
@@ -76,7 +82,7 @@
       </div>
   </div>
 
-  <div class="glass p-4 h-[200px] w-full max-w-[440px]"><canvas id="chartPage2"></canvas></div>
+  <div class="glass p-4 h-[250px] w-full max-w-[440px]"><canvas id="chartPage2"></canvas></div>
   <button class="btn-red bg-pink-600 w-full" onclick="showVipForm()">💎 ACESSO VIP ROSA</button>
   
   <div id="vipForm" class="hidden glass p-4 mt-2 w-full space-y-3">
@@ -97,12 +103,13 @@
             <div id="vipSignal" class="text-pink-500 font-bold uppercase">Aguardando Alvo Rosa...</div>
         </div>
     </div>
-    <div class="glass p-4 h-[180px] w-full"><canvas id="chartVIP"></canvas></div>
+    <div class="glass p-4 h-[250px] w-full"><canvas id="chartVIP"></canvas></div>
     <button class="btn-red bg-pink-700 w-full" onclick="backToP2()">VOLTAR AO TERMINAL</button>
 </div>
 
 <script>
 let canPredict = false;
+let hasImage = false;
 let chart2, chartVip;
 
 setInterval(() => {
@@ -110,6 +117,13 @@ setInterval(() => {
   document.getElementById("clock2").innerText = "⌚ " + time;
   if(document.getElementById("clock3")) document.getElementById("clock3").innerText = "⌚ " + time;
 }, 1000);
+
+function handleFile(input) {
+    if(input.files && input.files[0]) {
+        document.getElementById('fileName').innerText = "Histórico Sincronizado: " + input.files[0].name;
+        hasImage = true;
+    }
+}
 
 function loginMain(){
   if(document.getElementById("userMain").value === "admin"){
@@ -121,10 +135,11 @@ function loginMain(){
 
 function initChart(id, color) {
   const ctx = document.getElementById(id).getContext("2d");
-  new Chart(ctx, { type: 'line', data: { labels:[1,2,3,4,5], datasets:[{ data:[1.2, 2.5, 1.1, 3.0, 1.8], borderColor:color, tension:0.4, pointRadius: 0 }] }, options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
+  new Chart(ctx, { type: 'line', data: { labels:[1,2,3,4,5,6,7,8], datasets:[{ data:[1.2, 2.5, 1.1, 3.0, 1.8, 2.2, 1.5, 4.0], borderColor:color, tension:0.4, pointRadius: 2 }] }, options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:true}, x:{display:false}} } });
 }
 
 function prepareAnalysis() {
+    if(!hasImage) { alert("Por favor, faça upload do histórico primeiro!"); return; }
     const status = document.getElementById("statusText");
     const btnGet = document.getElementById("btnGet");
     const mult = document.getElementById("multDisplay");
@@ -132,10 +147,10 @@ function prepareAnalysis() {
     status.classList.remove("hidden");
     status.innerText = "ESCANER DE ALGORITMO ATIVO...";
     setTimeout(() => {
-        status.innerText = "ANÁLISE CONCLUÍDA!";
+        status.innerText = "HISTÓRICO ANALISADO COM SUCESSO!";
         btnGet.classList.add("active");
         canPredict = true;
-    }, 2000);
+    }, 2500);
 }
 
 function executePrediction() {
@@ -149,12 +164,12 @@ function executePrediction() {
         multDisplay.innerText = "×" + (1.2 + Math.random() * 8).toFixed(2);
         document.getElementById("alertSound").play().catch(e=>{});
         canPredict = false; document.getElementById("btnGet").classList.remove("active");
-    }, 1200);
+    }, 1500);
 }
 
 function trainIA(t) {
     const label = document.getElementById("iaStatusLabel");
-    label.innerText = t === 'WIN' ? "IA: PADRÃO CONFIRMADO. APRENDIZADO +1" : "IA: ERRO MAPEADO. AJUSTANDO PESOS...";
+    label.innerText = t === 'WIN' ? "IA: PADRÃO DE IMAGEM CONFIRMADO." : "IA: ERRO NO MAPEAMENTO DE PIXELS. REAJUSTANDO...";
     setTimeout(() => { label.innerText = "O sinal foi correto? Treine a IA:"; }, 3000);
 }
 

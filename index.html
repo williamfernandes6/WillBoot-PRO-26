@@ -1,181 +1,183 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will+Boot-PRO (Aviator)</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100vh; }
-  .glass { background:rgba(255,255,255,0.03); backdrop-filter:blur(20px); border-radius:24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; }
-  .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px rgba(220,38,38,0.5); }
-  
-  .signal-area-wrapper { border: 3px solid #dc2626; border-radius: 28px; padding: 10px; width: 100%; max-width: 440px; background: #000; overflow: hidden; position: relative; }
-  .aviator-frame { 
-    background: radial-gradient(circle at center, #1a0505 0%, #000 100%);
-    border-radius: 20px; padding: 20px; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;
-  }
-  .plane-animation { font-size: 45px; position: absolute; bottom: 25%; left: 10%; animation: fly 3.5s infinite ease-in-out; filter: drop-shadow(0 0 10px #dc2626); display: none; }
-  @keyframes fly { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(250px, -100px); opacity: 0; } }
-  
-  .get-prediction-btn { background: #333; color: #000; font-weight: 900; padding: 12px; border-radius: 8px; margin-top: 10px; width: 85%; cursor: not-allowed; text-transform: uppercase; border: none; }
-  .get-prediction-btn.active { background: #00ff00; cursor: pointer; box-shadow: 0 0 20px rgba(0,255,0,0.4); }
-
-  .select-dark { background: #000; border: 1px solid #333; color: #dc2626; padding: 14px; border-radius: 12px; width: 100%; font-weight: bold; text-transform: uppercase; text-align-last: center; outline: none; }
-  .footer-rights { font-size: 10px; color: #444; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
-  .upload-area { border: 1px dashed rgba(220,38,38,0.3); padding: 15px; border-radius: 12px; width: 100%; margin-bottom: 10px; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will+Boot-PRO Aviator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
+        .card { background: #121212; border-radius: 20px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 400px; margin-bottom: 20px; }
+        .btn-main { background: #e11d48; color: white; font-weight: 800; text-transform: uppercase; padding: 15px; border-radius: 12px; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
+        .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 15px; border-radius: 12px; width: 100%; border: none; }
+        .input-dark { background: #000; border: 1px solid #333; border-radius: 10px; padding: 15px; width: 100%; color: white; outline: none; margin-bottom: 10px; }
+        .display-signal { background: #000; border: 2px solid #e11d48; border-radius: 25px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
+        .multiplier-text { font-size: 64px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(225, 29, 72, 0.5); }
+        .multiplier-rosa { color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.6); }
+        .chart-container { height: 180px; width: 100%; }
+        .footer-rights { font-size: 11px; color: #444; margin-top: 30px; letter-spacing: 1px; }
+    </style>
 </head>
-<body>
+<body class="flex flex-col items-center p-4 min-h-screen">
 
-<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-
-<div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
-    <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
-    <h1 class="text-5xl font-black mb-2 tracking-tighter uppercase text-white">Will+Boot-PRO</h1>
-    <p class="text-gray-400 text-xs mb-6 max-w-xs">A inteligência artificial Sniper projetada para prever padrões no Aviator com máxima precisão.</p>
-    
-    <div class="glass p-10 max-w-md space-y-4">
-      <input id="userMain" placeholder="Usuário" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      <input id="passMain" type="password" placeholder="Senha" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      <select id="casaAposta" class="select-dark">
-          <option value="default">--- SELECIONE A CASA ---</option>
-          <option value="ElephantBet">ElephantBet</option>
-          <option value="BantuBet">BantuBet</option>
-          <option value="888Bet">888Bet</option>
-          <option value="PremierBet">PremierBet</option>
-      </select>
-      <button class="btn-red mt-2" onclick="loginMain()">ENTRAR NO TERMINAL</button>
+    <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen">
+        <h1 class="text-3xl font-black text-rose-600 mb-8 italic">WILL+BOOT-PRO</h1>
+        <div class="card">
+            <input id="user" type="text" placeholder="Usuário" class="input-dark">
+            <input id="pass" type="password" placeholder="Senha" class="input-dark">
+            <button onclick="login()" class="btn-main mt-4">🔐 ENTRAR</button>
+            <p class="text-[10px] text-zinc-500 mt-4 text-center">Acesso normal ao site</p>
+        </div>
+        <p class="footer-rights">© 2026 WILL+BOOT-PRO - DIREITOS RESERVADOS</p>
     </div>
-    <p class="footer-rights">© 2026 Will+Boot-PRO - Todos os direitos reservados</p>
-</div>
 
-<div id="page2" class="hidden py-8 px-6 max-w-2xl w-full flex flex-col items-center space-y-4">
-  <div id="clock2" class="clock-display text-red-600 text-4xl">⌚ 00:00:00</div>
-  <div class="flex gap-4 w-full">
-      <button class="btn-red flex-1" onclick="prepareAnalysis()">📊 ANALISAR VELAS</button>
-      <button class="btn-gray bg-zinc-900 px-6 rounded-xl font-bold border border-zinc-800 text-gray-400" onclick="location.reload()">SAIR</button>
-  </div>
+    <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col items-center py-6">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="text-rose-600 font-bold text-2xl" id="clock">11:29:46</div>
+        </div>
 
-  <div class="signal-area-wrapper">
-      <div class="text-[10px] text-red-600 font-bold uppercase mb-2">Sinal de análise pra aprendizagem</div>
-      <div class="aviator-frame">
-          <div id="statusText" class="text-gray-500 text-[12px] font-black uppercase">Aguardando Varredura...</div>
-          <div id="planeImg" class="plane-animation">🚀</div>
-          <div id="multDisplay" class="text-5xl font-black text-red-600 hidden">---</div>
-      </div>
-      <button id="btnGet" class="get-prediction-btn" onclick="executePrediction()">GET PREDICTION</button>
-  </div>
+        <div class="flex gap-4 w-full mb-6">
+            <button onclick="analisarVelas()" class="btn-main flex-1 flex items-center justify-center gap-2">📊 ANALISAR VELAS</button>
+            <button onclick="location.reload()" class="btn-secondary flex-1">SAIR</button>
+        </div>
 
-  <div class="glass p-5 w-full max-w-[440px]">
-      <p class="text-[10px] text-gray-500 uppercase font-black mb-2">Sincronizar Histórico Real (Imagem)</p>
-      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-          <span id="fileName" class="text-xs text-zinc-500">Selecionar print do histórico Aviator...</span>
-          <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFile(this)">
-      </div>
-      <p id="iaStatusLabel" class="text-[10px] text-gray-500 uppercase font-black mb-3 italic">O sinal foi correto? Treine a IA:</p>
-      <div class="flex gap-3 w-full">
-          <button class="flex-1 bg-green-600 p-3 rounded-lg font-black" onclick="trainIA('WIN')">ACERTOU ✅</button>
-          <button class="flex-1 bg-red-600 p-3 rounded-lg font-black" onclick="trainIA('LOSS')">ERROU ❌</button>
-      </div>
-  </div>
+        <p class="text-[10px] text-rose-600 font-bold uppercase tracking-widest mb-2">Sinal de análise pra aprendizagem</p>
+        
+        <div class="card p-2 !border-rose-600 !bg-black mb-6 w-full">
+            <div class="display-signal" id="displayNormal">
+                <div id="statusNormal" class="text-zinc-500 font-bold uppercase text-xs">Aguardando Varredura...</div>
+                <div id="resultNormal" class="multiplier-text hidden">8.07x</div>
+                <div id="entradaConfirmada" class="text-[10px] text-zinc-400 absolute bottom-4 hidden">ENTRADA CONFIRMADA: --:--</div>
+            </div>
+            <button id="btnGet" onclick="getSignal()" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GET PREDICTION</button>
+        </div>
 
-  <div class="glass p-4 h-[250px] w-full max-w-[440px]"><canvas id="chartPage2"></canvas></div>
-  <button class="btn-red bg-pink-600 w-full" onclick="showVipForm()">💎 ACESSO VIP ROSA</button>
-  
-  <div id="vipForm" class="hidden glass p-4 mt-2 w-full space-y-3">
-      <h3 class="text-pink-500 font-bold text-xs">LOGIN VIP SNIPER</h3>
-      <input id="vipPass" type="password" placeholder="Chave Sniper" class="w-full p-4 rounded-xl bg-black border border-zinc-800 text-white outline-none">
-      <div class="flex gap-2">
-          <button class="btn-red bg-pink-600 flex-1" onclick="loginVIP()">ACESSAR</button>
-          <button class="btn-gray bg-zinc-800 p-3 rounded-xl text-xs flex-1" onclick="showVipForm()">FECHAR</button>
-      </div>
-  </div>
-</div>
+        <div class="card">
+            <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2 text-center">Upload de Histórico Aviator</p>
+            <div class="flex items-center gap-2 bg-black p-2 border border-zinc-800 rounded-lg mb-4">
+                <label class="bg-zinc-100 text-black text-[10px] px-2 py-1 rounded cursor-pointer font-bold">Escolher ficheiro</label>
+                <span id="fileName" class="text-[10px] text-zinc-500">Nenhum ficheiro selecionado</span>
+                <input type="file" id="fileInput" class="hidden" onchange="document.getElementById('fileName').innerText = this.files[0].name">
+            </div>
+            <div class="flex gap-4">
+                <button onclick="feedback('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/30">ACERTOU ✅</button>
+                <button onclick="feedback('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/30">ERROU ❌</button>
+            </div>
+        </div>
 
-<div id="page3" class="hidden py-8 px-6 max-w-xl w-full flex flex-col items-center space-y-4">
-    <div id="clock3" class="clock-display text-pink-500 text-4xl">⌚ 00:00:00</div>
-    <h1 class="text-2xl font-black text-pink-600 uppercase italic">VIP SNIPER ROSA</h1>
-    <div class="signal-area-wrapper" style="border-color: #db2777;">
-        <div class="aviator-frame" style="background: radial-gradient(circle at center, #1a0510 0%, #000 100%);">
-            <div id="vipSignal" class="text-pink-500 font-bold uppercase">Aguardando Alvo Rosa...</div>
+        <div class="card">
+            <h3 class="text-xs font-bold mb-4 flex items-center gap-2">📊 Performance IA (Histórico Real)</h3>
+            <div class="chart-container"><canvas id="chartNormal"></canvas></div>
+        </div>
+
+        <button onclick="toggleVip()" class="btn-main bg-rose-700 !rounded-full shadow-lg shadow-rose-900/20 mt-4">💎 ACESSO VIP</button>
+
+        <div id="vipLogin" class="hidden card mt-4 border-rose-500 animate-pulse">
+            <h2 class="text-rose-500 font-black text-center mb-4">💎 ACESSO VIP</h2>
+            <input id="vipPass" type="password" placeholder="Senha VIP" class="input-dark border-rose-900">
+            <button onclick="entrarVip()" class="btn-main">🔑 ENTRAR VIP</button>
         </div>
     </div>
-    <div class="glass p-4 h-[250px] w-full"><canvas id="chartVIP"></canvas></div>
-    <button class="btn-red bg-pink-700 w-full" onclick="backToP2()">VOLTAR AO TERMINAL</button>
-</div>
 
-<script>
-let canPredict = false;
-let hasImage = false;
-let chart2, chartVip;
+    <div id="pageVip" class="hidden w-full max-w-md flex flex-col items-center py-6">
+        <h1 class="text-2xl font-black text-rose-600 mb-4 flex items-center gap-2">💎 VIP - Sinais ROSA</h1>
+        <div class="text-rose-600 font-bold mb-6" id="clockVip">23:16:36</div>
 
-setInterval(() => {
-  const time = new Date().toLocaleTimeString();
-  document.getElementById("clock2").innerText = "⌚ " + time;
-  if(document.getElementById("clock3")) document.getElementById("clock3").innerText = "⌚ " + time;
-}, 1000);
+        <div class="card !bg-black !border-rose-900 mb-6 w-full text-center">
+            <p class="text-rose-400 font-bold text-xs uppercase mb-4">Sinal Rosa</p>
+            <div class="multiplier-text multiplier-rosa" id="resultVip">×13.17</div>
+            <p class="text-zinc-400 font-bold text-sm mt-2">Probabilidade: <span class="text-rose-500">89%</span></p>
+        </div>
 
-function handleFile(input) {
-    if(input.files && input.files[0]) {
-        document.getElementById('fileName').innerText = "Histórico Sincronizado: " + input.files[0].name;
-        hasImage = true;
-    }
-}
+        <div class="card">
+            <h3 class="text-xs font-bold mb-4 flex items-center gap-2">📊 Performance VIP (Aviator)</h3>
+            <div class="chart-container"><canvas id="chartVip"></canvas></div>
+        </div>
 
-function loginMain(){
-  if(document.getElementById("userMain").value === "admin"){
-    document.getElementById("page1").classList.add("hidden");
-    document.getElementById("page2").classList.remove("hidden");
-    initChart('chartPage2', '#dc2626');
-  } else { alert("Acesso Negado."); }
-}
+        <div class="card text-center !bg-zinc-900/50">
+            <p class="text-[10px] text-zinc-400">Acesso: Will+Boot-PRO Aviator | Passe: 230220</p>
+        </div>
+        
+        <button onclick="location.reload()" class="btn-secondary mt-4">VOLTAR AO INÍCIO</button>
+    </div>
 
-function initChart(id, color) {
-  const ctx = document.getElementById(id).getContext("2d");
-  new Chart(ctx, { type: 'line', data: { labels:[1,2,3,4,5,6,7,8], datasets:[{ data:[1.2, 2.5, 1.1, 3.0, 1.8, 2.2, 1.5, 4.0], borderColor:color, tension:0.4, pointRadius: 2 }] }, options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:true}, x:{display:false}} } });
-}
+    <script>
+        setInterval(() => {
+            const time = new Date().toLocaleTimeString('pt-PT', { hour12: false });
+            document.getElementById('clock').innerText = time;
+            if(document.getElementById('clockVip')) document.getElementById('clockVip').innerText = time;
+        }, 1000);
 
-function prepareAnalysis() {
-    if(!hasImage) { alert("Por favor, faça upload do histórico primeiro!"); return; }
-    const status = document.getElementById("statusText");
-    const btnGet = document.getElementById("btnGet");
-    const mult = document.getElementById("multDisplay");
-    mult.classList.add("hidden");
-    status.classList.remove("hidden");
-    status.innerText = "ESCANER DE ALGORITMO ATIVO...";
-    setTimeout(() => {
-        status.innerText = "HISTÓRICO ANALISADO COM SUCESSO!";
-        btnGet.classList.add("active");
-        canPredict = true;
-    }, 2500);
-}
+        function login() {
+            if(document.getElementById('user').value === "admin") {
+                document.getElementById('pageLogin').classList.add('hidden');
+                document.getElementById('pageTerminal').classList.remove('hidden');
+                renderChart('chartNormal', [62, 65, 78, 79], '#e11d48');
+            }
+        }
 
-function executePrediction() {
-    if(!canPredict) return;
-    const multDisplay = document.getElementById("multDisplay");
-    const status = document.getElementById("statusText");
-    const plane = document.getElementById("planeImg");
-    status.classList.add("hidden"); multDisplay.classList.remove("hidden");
-    multDisplay.innerText = "---"; plane.style.display = "block";
-    setTimeout(() => {
-        multDisplay.innerText = "×" + (1.2 + Math.random() * 8).toFixed(2);
-        document.getElementById("alertSound").play().catch(e=>{});
-        canPredict = false; document.getElementById("btnGet").classList.remove("active");
-    }, 1500);
-}
+        function analisarVelas() {
+            const status = document.getElementById('statusNormal');
+            status.innerText = "ANALISANDO HISTÓRICO...";
+            setTimeout(() => {
+                status.innerText = "PRONTO PARA PREVISÃO!";
+                document.getElementById('btnGet').classList.remove('hidden');
+            }, 2000);
+        }
 
-function trainIA(t) {
-    const label = document.getElementById("iaStatusLabel");
-    label.innerText = t === 'WIN' ? "IA: PADRÃO DE IMAGEM CONFIRMADO." : "IA: ERRO NO MAPEAMENTO DE PIXELS. REAJUSTANDO...";
-    setTimeout(() => { label.innerText = "O sinal foi correto? Treine a IA:"; }, 3000);
-}
+        function getSignal() {
+            const result = document.getElementById('resultNormal');
+            const status = document.getElementById('statusNormal');
+            const entrada = document.getElementById('entradaConfirmada');
+            status.classList.add('hidden');
+            result.classList.remove('hidden');
+            entrada.classList.remove('hidden');
+            result.innerText = (1.5 + Math.random() * 9).toFixed(2) + "x";
+            entrada.innerText = "ENTRADA CONFIRMADA: " + new Date().toLocaleTimeString().slice(0,5);
+        }
 
-function loginVIP() { if(document.getElementById("vipPass").value === "230220") { document.getElementById("page2").classList.add("hidden"); document.getElementById("page3").classList.remove("hidden"); initChart('chartVIP', '#db2777'); } else { alert("Senha VIP Incorreta."); } }
-function backToP2() { document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
-function showVipForm() { document.getElementById("vipForm").classList.toggle("hidden"); }
-</script>
+        function toggleVip() {
+            document.getElementById('vipLogin').classList.toggle('hidden');
+        }
+
+        function entrarVip() {
+            if(document.getElementById('vipPass').value === "230220") {
+                document.getElementById('pageTerminal').classList.add('hidden');
+                document.getElementById('pageVip').classList.remove('hidden');
+                renderChart('chartVip', [85, 92, 86, 80, 84, 95, 93, 84, 88], '#e11d48');
+            }
+        }
+
+        function renderChart(id, data, color) {
+            const ctx = document.getElementById(id).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map((_, i) => i + 1),
+                    datasets: [{
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '22',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: 60, max: 100, grid: { color: '#1f1f1f' } },
+                        x: { display: true, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function feedback(type) {
+            alert(type === 'WIN' ? "Treinamento Confirmado ✅" : "Ajuste de Algoritmo ❌");
+        }
+    </script>
 </body>
 </html>

@@ -9,27 +9,33 @@
 <style>
   body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100vh; }
   .glass { background:rgba(255,255,255,0.03); backdrop-filter:blur(20px); border-radius:24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; color:white; text-transform: uppercase; width: 100%; border:none; }
+  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; }
   .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px rgba(220,38,38,0.5); }
   
-  .aviator-monitor { width: 100%; max-width: 380px; background: #121212; border: 2px solid #dc2626; border-radius: 15px; padding: 15px; position: relative; overflow: hidden; }
-  .aviator-screen { background: #000; border-radius: 10px; height: 220px; position: relative; border: 1px solid #333; display: flex; justify-content: center; align-items: center; }
-  .ascent-path { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top right, transparent 40%, rgba(220, 38, 38, 0.4) 40%); clip-path: polygon(0 100%, 100% 40%, 100% 100%, 0 100%); }
-  .plane-icon { position: absolute; top: 35%; right: 5%; width: 40px; filter: drop-shadow(0 0 8px red); transition: all 0.5s ease; }
-  .main-mult { font-size: 52px; font-weight: 900; color: #ff0000; z-index: 10; text-shadow: 2px 2px 0px #000; }
-  .top-history { position: absolute; top: 8px; left: 10px; display: flex; gap: 10px; font-size: 11px; font-weight: bold; }
+  .signal-area-wrapper { border: 3px solid #dc2626; border-radius: 28px; padding: 10px; width: 100%; max-width: 440px; background: #000; overflow: hidden; position: relative; }
+  .aviator-frame { 
+    background: radial-gradient(circle at center, #1a0505 0%, #000 100%);
+    border-radius: 20px; padding: 20px; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;
+  }
+  .plane-animation { font-size: 45px; position: absolute; bottom: 25%; left: 10%; animation: fly 3.5s infinite ease-in-out; filter: drop-shadow(0 0 10px #dc2626); display: none; }
+  @keyframes fly { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(250px, -100px); opacity: 0; } }
+  
+  .get-prediction-btn { background: #333; color: #000; font-weight: 900; padding: 12px; border-radius: 8px; margin-top: 10px; width: 85%; cursor: not-allowed; text-transform: uppercase; border: none; }
+  .get-prediction-btn.active { background: #00ff00; cursor: pointer; box-shadow: 0 0 20px rgba(0,255,0,0.4); }
 
-  .get-prediction-btn { background: #555; color: #000; font-weight: 900; padding: 12px 20px; border-radius: 8px; margin-top: 15px; font-size: 14px; text-transform: uppercase; width: 90%; cursor: not-allowed; border: none; transition: 0.2s; }
-  .get-prediction-btn.active { background: #00ff00; cursor: pointer; }
-
-  .select-dark { background: #0a0a0a; border: 1px solid #333; color: #dc2626; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 13px; outline: none; }
-  .chart-container { width: 100%; max-width: 450px; height: 200px; margin-top: 20px; }
+  .select-dark { background: #000; border: 1px solid #333; color: #dc2626; padding: 14px; border-radius: 12px; width: 100%; font-weight: bold; text-transform: uppercase; text-align-last: center; outline: none; }
+  .footer-rights { font-size: 10px; color: #444; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
 </style>
 </head>
 <body>
 
+<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
-    <h1 class="text-4xl font-black mb-6 uppercase text-white tracking-tighter">Will+Boot-PRO</h1>
+    <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
+    <h1 class="text-5xl font-black mb-2 tracking-tighter uppercase text-white">Will+Boot-PRO</h1>
+    <p class="text-gray-400 text-xs mb-6 max-w-xs">A inteligência artificial Sniper projetada para prever padrões no Aviator com máxima precisão.</p>
+    
     <div class="glass p-10 max-w-md space-y-4">
       <input id="userMain" placeholder="Usuário" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
       <input id="passMain" type="password" placeholder="Senha" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
@@ -37,116 +43,124 @@
           <option value="default">--- SELECIONE A CASA ---</option>
           <option value="ElephantBet">ElephantBet</option>
           <option value="BantuBet">BantuBet</option>
-          <option value="PremierBet">PremierBet</option>
           <option value="888Bet">888Bet</option>
+          <option value="PremierBet">PremierBet</option>
       </select>
-      <button class="btn-red" onclick="loginMain()">ENTRAR NO TERMINAL</button>
+      <button class="btn-red mt-2" onclick="loginMain()">ENTRAR NO TERMINAL</button>
     </div>
+    <p class="footer-rights">© 2026 Will+Boot-PRO - Todos os direitos reservados</p>
 </div>
 
 <div id="page2" class="hidden py-8 px-6 max-w-2xl w-full flex flex-col items-center space-y-4">
-  <div id="clock2" class="clock-display text-red-600 text-4xl">⌚ 11:10:55</div>
-
+  <div id="clock2" class="clock-display text-red-600 text-4xl">⌚ 00:00:00</div>
   <div class="flex gap-4 w-full">
-      <button id="btnAnalisar" class="btn-red flex-1" onclick="iniciarAnalise()">📊 ANALISAR VELAS</button>
-      <button class="btn-gray bg-zinc-900 px-6 rounded-xl font-bold border border-zinc-800" onclick="location.reload()">SAIR</button>
+      <button class="btn-red flex-1" onclick="prepareAnalysis()">📊 ANALISAR VELAS</button>
+      <button class="btn-gray bg-zinc-900 px-6 rounded-xl font-bold border border-zinc-800 text-gray-400" onclick="location.reload()">SAIR</button>
   </div>
 
-  <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest">Sinal de análise pra aprendizagem</p>
+  <div class="signal-area-wrapper">
+      <div class="text-[10px] text-red-600 font-bold uppercase mb-2">Sinal de análise pra aprendizagem</div>
+      <div class="aviator-frame">
+          <div id="statusText" class="text-gray-500 text-[12px] font-black uppercase">Aguardando Varredura...</div>
+          <div id="planeImg" class="plane-animation">🚀</div>
+          <div id="multDisplay" class="text-5xl font-black text-red-600 hidden">---</div>
+      </div>
+      <button id="btnGet" class="get-prediction-btn" onclick="executePrediction()">GET PREDICTION</button>
+  </div>
+
+  <div class="glass p-6 w-full max-w-[440px]">
+      <p id="iaStatusLabel" class="text-[10px] text-gray-500 uppercase font-black mb-3 italic">O sinal foi correto? Treine a IA:</p>
+      <div class="flex gap-3 w-full">
+          <button class="flex-1 bg-green-600 p-3 rounded-lg font-black" onclick="trainIA('WIN')">ACERTOU ✅</button>
+          <button class="flex-1 bg-red-600 p-3 rounded-lg font-black" onclick="trainIA('LOSS')">ERROU ❌</button>
+      </div>
+  </div>
+
+  <div class="glass p-4 h-[200px] w-full max-w-[440px]"><canvas id="chartPage2"></canvas></div>
+  <button class="btn-red bg-pink-600 w-full" onclick="showVipForm()">💎 ACESSO VIP ROSA</button>
   
-  <div class="aviator-monitor">
-      <div class="top-history">
-          <span class="text-blue-400" id="hist1">1.20x</span>
-          <span class="text-purple-500" id="hist2">2.55x</span>
-      </div>
-      <div class="aviator-screen">
-          <div class="ascent-path"></div>
-          <img id="plane" src="https://cdn-icons-png.flaticon.com/512/68/68380.png" class="plane-icon" style="filter: invert(15%) sepia(95%) saturate(6932%) hue-rotate(358deg) brightness(95%) contrast(107%);">
-          <div id="signalVal" class="main-mult">0.00x</div>
-      </div>
-      <button id="btnGet" class="get-prediction-btn" onclick="gerarSinalFinal()">GET PREDICTION</button>
-  </div>
-
-  <div class="glass p-6 w-full max-w-[380px]">
-      <p class="text-[10px] text-gray-500 uppercase font-black mb-3">Treinar IA: O sinal foi correto?</p>
-      <div class="flex gap-3">
-          <button class="flex-1 bg-green-600 p-3 rounded-lg font-bold" onclick="iaFeedback('WIN')">ACERTOU ✅</button>
-          <button class="flex-1 bg-red-600 p-3 rounded-lg font-bold" onclick="iaFeedback('LOSS')">ERROU ❌</button>
+  <div id="vipForm" class="hidden glass p-4 mt-2 w-full space-y-3">
+      <h3 class="text-pink-500 font-bold text-xs">LOGIN VIP SNIPER</h3>
+      <input id="vipPass" type="password" placeholder="Chave Sniper" class="w-full p-4 rounded-xl bg-black border border-zinc-800 text-white outline-none">
+      <div class="flex gap-2">
+          <button class="btn-red bg-pink-600 flex-1" onclick="loginVIP()">ACESSAR</button>
+          <button class="btn-gray bg-zinc-800 p-3 rounded-xl text-xs flex-1" onclick="showVipForm()">FECHAR</button>
       </div>
   </div>
+</div>
 
-  <div class="glass p-4 chart-container"><canvas id="iaChart"></canvas></div>
+<div id="page3" class="hidden py-8 px-6 max-w-xl w-full flex flex-col items-center space-y-4">
+    <div id="clock3" class="clock-display text-pink-500 text-4xl">⌚ 00:00:00</div>
+    <h1 class="text-2xl font-black text-pink-600 uppercase italic">VIP SNIPER ROSA</h1>
+    <div class="signal-area-wrapper" style="border-color: #db2777;">
+        <div class="aviator-frame" style="background: radial-gradient(circle at center, #1a0510 0%, #000 100%);">
+            <div id="vipSignal" class="text-pink-500 font-bold uppercase">Aguardando Alvo Rosa...</div>
+        </div>
+    </div>
+    <div class="glass p-4 h-[180px] w-full"><canvas id="chartVIP"></canvas></div>
+    <button class="btn-red bg-pink-700 w-full" onclick="backToP2()">VOLTAR AO TERMINAL</button>
 </div>
 
 <script>
-let chart;
-const BACKEND_URL = "https://willboot-backend-1.onrender.com";
+let canPredict = false;
+let chart2, chartVip;
 
 setInterval(() => {
-  const now = new Date();
-  document.getElementById("clock2").innerText = "⌚ " + now.toLocaleTimeString();
+  const time = new Date().toLocaleTimeString();
+  document.getElementById("clock2").innerText = "⌚ " + time;
+  if(document.getElementById("clock3")) document.getElementById("clock3").innerText = "⌚ " + time;
 }, 1000);
 
 function loginMain(){
   if(document.getElementById("userMain").value === "admin"){
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
-    initChart();
-  }
+    initChart('chartPage2', '#dc2626');
+  } else { alert("Acesso Negado."); }
 }
 
-function initChart() {
-  const ctx = document.getElementById('iaChart').getContext('2d');
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: { labels: ['', '', '', '', ''], datasets: [{ data: [1.2, 1.9, 1.1, 2.5, 1.5], borderColor: '#dc2626', tension: 0.4, pointRadius: 0 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-  });
+function initChart(id, color) {
+  const ctx = document.getElementById(id).getContext("2d");
+  new Chart(ctx, { type: 'line', data: { labels:[1,2,3,4,5], datasets:[{ data:[1.2, 2.5, 1.1, 3.0, 1.8], borderColor:color, tension:0.4, pointRadius: 0 }] }, options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } });
 }
 
-// FUNCIONALIDADE 1: ANALISAR
-function iniciarAnalise() {
-  const display = document.getElementById("signalVal");
-  const btnGet = document.getElementById("btnGet");
-  
-  display.style.fontSize = "16px";
-  display.innerText = "O sinal está sendo analisado...";
-  
-  setTimeout(() => {
-    display.innerText = "ANÁLISE CONCLUÍDA!";
-    btnGet.classList.add("active");
-    btnGet.style.cursor = "pointer";
-    btnGet.disabled = false;
-  }, 2000);
+function prepareAnalysis() {
+    const status = document.getElementById("statusText");
+    const btnGet = document.getElementById("btnGet");
+    const mult = document.getElementById("multDisplay");
+    mult.classList.add("hidden");
+    status.classList.remove("hidden");
+    status.innerText = "ESCANER DE ALGORITMO ATIVO...";
+    setTimeout(() => {
+        status.innerText = "ANÁLISE CONCLUÍDA!";
+        btnGet.classList.add("active");
+        canPredict = true;
+    }, 2000);
 }
 
-// FUNCIONALIDADE 2: GET PREDICTION (GERAR SINAL)
-async function gerarSinalFinal(){
-  const btnGet = document.getElementById("btnGet");
-  if(!btnGet.classList.contains("active")) return;
-
-  const display = document.getElementById("signalVal");
-  display.style.fontSize = "52px";
-  display.innerText = "---";
-
-  try {
-    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
-    const data = await res.json();
-    let val = data.analysis.mult || (1.5 + Math.random() * 5);
-    
-    display.innerText = val.toFixed(2) + "x";
-    document.getElementById("hist1").innerText = document.getElementById("hist2").innerText;
-    document.getElementById("hist2").innerText = val.toFixed(2) + "x";
-    
-    // Bloqueia novamente para nova análise
-    btnGet.classList.remove("active");
-    btnGet.disabled = true;
-  } catch(e) {
-    display.innerText = (1.5 + Math.random() * 8).toFixed(2) + "x";
-  }
+function executePrediction() {
+    if(!canPredict) return;
+    const multDisplay = document.getElementById("multDisplay");
+    const status = document.getElementById("statusText");
+    const plane = document.getElementById("planeImg");
+    status.classList.add("hidden"); multDisplay.classList.remove("hidden");
+    multDisplay.innerText = "---"; plane.style.display = "block";
+    setTimeout(() => {
+        multDisplay.innerText = "×" + (1.2 + Math.random() * 8).toFixed(2);
+        document.getElementById("alertSound").play().catch(e=>{});
+        canPredict = false; document.getElementById("btnGet").classList.remove("active");
+    }, 1200);
 }
 
-function iaFeedback(status) { alert(status === 'WIN' ? "Padrão memorizado!" : "Erro analisado para correção."); }
+function trainIA(t) {
+    const label = document.getElementById("iaStatusLabel");
+    label.innerText = t === 'WIN' ? "IA: PADRÃO CONFIRMADO. APRENDIZADO +1" : "IA: ERRO MAPEADO. AJUSTANDO PESOS...";
+    setTimeout(() => { label.innerText = "O sinal foi correto? Treine a IA:"; }, 3000);
+}
+
+function loginVIP() { if(document.getElementById("vipPass").value === "230220") { document.getElementById("page2").classList.add("hidden"); document.getElementById("page3").classList.remove("hidden"); initChart('chartVIP', '#db2777'); } else { alert("Senha VIP Incorreta."); } }
+function backToP2() { document.getElementById("page3").classList.add("hidden"); document.getElementById("page2").classList.remove("hidden"); }
+function showVipForm() { document.getElementById("vipForm").classList.toggle("hidden"); }
 </script>
 </body>
 </html>

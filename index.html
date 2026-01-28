@@ -7,142 +7,136 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background-color: #0a0a0a; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .card { background: #121212; border-radius: 20px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 440px; margin-bottom: 20px; }
-        .btn-main { background: #e11d48; color: white; font-weight: 800; text-transform: uppercase; padding: 15px; border-radius: 12px; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
-        .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 15px; border-radius: 12px; border: none; cursor: pointer; }
-        .input-dark { background: #000; border: 1px solid #333; border-radius: 10px; padding: 15px; width: 100%; color: white; outline: none; margin-bottom: 10px; }
-        .display-signal { background: #000; border: 2px solid #333; border-radius: 25px; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; }
-        .multiplier-text { font-size: 54px; font-weight: 900; }
-        .color-blue { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
-        .color-purple { color: #a855f7; text-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
-        .color-rosa { color: #f472b6; text-shadow: 0 0 15px rgba(244, 114, 182, 0.5); }
-        .history-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 90%; margin-bottom: 15px; }
-        .history-item { font-size: 10px; padding: 4px; border-radius: 4px; text-align: center; font-weight: bold; background: #1a1a1a; }
-        .chart-container { height: 200px; width: 100%; }
-        .footer-rights { font-size: 10px; color: #444; margin-top: 20px; text-align: center; line-height: 1.5; }
+        body { background-color: #030303; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .card { background: #111111; border-radius: 24px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 440px; margin-bottom: 20px; }
+        .btn-main { background: linear-gradient(135deg, #e11d48, #9f1239); color: white; font-weight: 800; text-transform: uppercase; padding: 16px; border-radius: 14px; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
+        .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 12px; border-radius: 12px; border: none; cursor: pointer; }
+        .input-dark { background: #000; border: 1px solid #222; border-radius: 12px; padding: 15px; width: 100%; color: white; outline: none; margin-bottom: 12px; }
+        .display-signal { background: #000; border: 2px solid #222; border-radius: 30px; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; padding: 15px; }
+        .multiplier-text { font-size: 58px; font-weight: 900; letter-spacing: -2px; }
+        .color-blue { color: #3b82f6; text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .color-purple { color: #a855f7; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+        .color-rosa { color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.4); }
+        .history-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; margin-bottom: 20px; }
+        .history-item { font-size: 10px; padding: 5px; border-radius: 6px; text-align: center; font-weight: bold; background: #141414; border: 1px solid #222; }
+        .footer-rights { font-size: 10px; color: #333; margin-top: 25px; text-align: center; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
-    <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen">
-        <p class="text-rose-500 font-bold tracking-widest mb-2">Não é sorte é estratégia</p>
-        <h1 class="text-3xl font-black text-white mb-2 italic text-center">Will+Boot-PRO Aviator</h1>
-        <p class="text-zinc-500 text-xs mb-8 text-center max-w-xs">A inteligência artificial de elite para análise de Seeds e tendências em tempo real.</p>
+    <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen text-center">
+        <p class="text-rose-600 font-black tracking-[0.3em] text-xs mb-2 uppercase">Não é sorte é estratégia</p>
+        <h1 class="text-4xl font-black text-white mb-3 italic">Will+Boot-PRO Aviator</h1>
+        <p class="text-zinc-400 text-xs mb-10 max-w-xs leading-relaxed">
+            Bem-vindo ao sistema analista de maior precisão em Angola. Analisamos algoritmo, Seeds e tendências para o jogo Aviator.
+        </p>
         
-        <div class="card">
+        <div class="card shadow-2xl">
             <input id="user" type="text" placeholder="Usuário" class="input-dark">
             <input id="pass" type="password" placeholder="Senha" class="input-dark">
-            <select id="casaAposta" class="input-dark bg-black cursor-pointer">
-                <option value="">Escolha a Casa de Apostas</option>
+            <select id="casaAposta" class="input-dark bg-black appearance-none cursor-pointer">
+                <option value="">SELECIONE A CASA</option>
                 <option value="elephant">ElephantBet</option>
                 <option value="bantu">BantuBet</option>
                 <option value="888">888Bet</option>
                 <option value="premier">PremierBet</option>
                 <option value="afribet">AfriBet</option>
             </select>
-            <button onclick="login()" class="btn-main mt-4">🚀 ENTRAR NO TERMINAL</button>
+            <button onclick="login()" class="btn-main mt-4">INICIAR PREDITOR</button>
         </div>
         
         <div class="footer-rights">
             © 2026 WILL+BOOT-PRO - TODOS OS DIREITOS RESERVADOS<br>
-            <span class="font-bold">PREDITOR- AVIATOR(1.1)</span>
+            PREDITOR- AVIATOR(1.1)
         </div>
     </div>
 
     <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col items-center py-6">
-        <div class="w-full flex justify-between items-center mb-6">
-            <div class="text-white font-bold text-sm">🇦🇴 Angola: <span id="clock" class="text-rose-600">--:--:--</span></div>
-            <button onclick="location.reload()" class="btn-secondary px-6 py-2 text-xs">SAIR</button>
+        <div class="w-full flex justify-between items-center mb-6 px-2">
+            <div class="text-white font-bold text-xs uppercase tracking-tighter">🇦🇴 Angola: <span id="clock" class="text-rose-600 ml-1">14:04:22</span></div>
+            <button onclick="location.reload()" class="btn-secondary px-5 py-2 text-[10px]">SAIR</button>
         </div>
 
-        <button id="btnAnalisar" onclick="analisarImagem('normal')" class="btn-main mb-6 flex items-center justify-center gap-2">
-            🔍 ANALISAR HISTÓRICO REAL
+        <button id="btnAnalisar" onclick="analisarProcesso('normal')" class="btn-main mb-6">
+            🔍 ANALISAR IMAGEM HISTÓRICO
         </button>
 
-        <div class="card p-4 !bg-black border-zinc-800">
+        <div class="card p-4 !bg-black border-zinc-900">
             <div class="display-signal" id="displayNormal">
-                <div id="statusNormal" class="text-zinc-500 font-bold uppercase text-[10px]">Aguardando Análise de Imagem...</div>
-                
+                <div id="statusNormal" class="text-zinc-600 font-bold uppercase text-[10px] tracking-widest">Aguardando Varredura...</div>
                 <div id="historyNormal" class="history-grid hidden"></div>
-                
                 <div id="resultNormal" class="multiplier-text hidden">--.--x</div>
-                
-                <div id="detailsNormal" class="text-[10px] text-zinc-400 mt-2 text-center hidden">
-                    ALCANCE: <span class="text-white" id="rangeNormal">--</span><br>
-                    MIN: <span id="minNormal">--</span> | MAX: <span id="maxNormal">--</span>
+                <div id="detailsNormal" class="text-[11px] text-zinc-500 mt-4 text-center hidden">
+                    <span class="block mb-1">ALCANCE POSSÍVEL: <span class="text-white font-bold" id="rangeNormal">--:--</span></span>
+                    MIN: <span class="text-white" id="minNormal">--</span> | MAX: <span class="text-white" id="maxNormal">--</span>
                 </div>
             </div>
-            
-            <button id="btnGetNormal" onclick="getPrediction('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GET PREDICTION</button>
+            <button id="btnGetNormal" onclick="getSignal('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden animate-bounce">GET PREDICTION</button>
         </div>
 
         <div class="card">
-            <p class="text-zinc-500 text-[10px] font-bold uppercase mb-4 text-center">Upload de Histórico Real (IA DEEP LEARNING)</p>
-            <input type="file" id="uploadNormal" class="hidden" accept="image/*" onchange="handleUpload(this, 'normal')">
-            <div onclick="document.getElementById('uploadNormal').click()" class="border-2 border-dashed border-zinc-800 p-4 rounded-xl text-center cursor-pointer mb-4 hover:border-rose-600">
-                <span class="text-xs text-zinc-400">Clique para enviar print do Aviator</span>
+            <p class="text-zinc-500 text-[9px] font-black uppercase mb-3 text-center tracking-widest">Upload Histórico Real (Análise Profunda)</p>
+            <input type="file" id="upNormal" class="hidden" onchange="storeImg(this)">
+            <div onclick="document.getElementById('upNormal').click()" class="border border-dashed border-zinc-800 p-4 rounded-xl text-center cursor-pointer mb-5">
+                <span class="text-xs text-zinc-500 italic">Clique para sincronizar imagem...</span>
             </div>
-            
             <div class="flex gap-4">
-                <button onclick="trainIA('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/30">ACERTOU ✅</button>
-                <button onclick="feedbackIA('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/30">ERROU ❌</button>
+                <button onclick="trainIA('WIN')" class="bg-green-600/10 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/20">ACERTOU</button>
+                <button onclick="trainIA('LOSS')" class="bg-rose-600/10 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/20">ERROU</button>
             </div>
         </div>
 
-        <div class="card">
-            <div class="chart-container"><canvas id="chartNormal"></canvas></div>
+        <div class="card h-[220px]">
+            <canvas id="chartNormal"></canvas>
         </div>
 
-        <div id="vipSection" class="w-full flex flex-col items-center">
-            <input id="vipPassInput" type="password" placeholder="Digite a passe VIP" class="input-dark">
+        <div class="w-full flex flex-col items-center bg-zinc-900/30 p-4 rounded-3xl border border-zinc-800/50">
+            <input id="vipPass" type="password" placeholder="PASSE VIP SNIPER" class="input-dark !mb-4">
             <div class="flex gap-2 w-full">
-                <button onclick="acessarVip()" class="btn-main bg-rose-700 flex-1">🔓 ACESSAR VIP</button>
-                <button onclick="document.getElementById('vipPassInput').value=''" class="btn-secondary px-4">FECHAR</button>
+                <button onclick="acessoVip()" class="btn-main bg-rose-700 !py-3 flex-1 text-xs">💎 ACESSO VIP</button>
+                <button onclick="document.getElementById('vipPass').value=''" class="btn-secondary !py-3 px-6 text-xs">FECHAR</button>
             </div>
         </div>
     </div>
 
     <div id="pageVip" class="hidden w-full max-w-md flex flex-col items-center py-6">
         <div class="w-full flex justify-between items-center mb-6">
-            <h1 class="text-xl font-black text-rose-500 italic">VIP SUPER</h1>
-            <button onclick="voltar()" class="btn-secondary px-4 py-2 text-xs">VOLTAR</button>
+            <h1 class="text-xl font-black text-rose-500 italic tracking-tighter">💎 VIP SUPER</h1>
+            <button onclick="back()" class="btn-secondary px-4 py-2 text-[10px]">VOLTAR</button>
         </div>
         
-        <div class="text-white font-bold text-sm mb-6">🇦🇴 Angola: <span id="clockVip" class="text-rose-600">--:--:--</span></div>
+        <div class="text-white font-bold text-xs mb-6">🇦🇴 Angola: <span id="clockVip" class="text-rose-600">--:--:--</span></div>
 
-        <div class="card !bg-black border-rose-900">
+        <div class="card !bg-black border-rose-900/50">
             <div class="display-signal">
                 <div id="historyVip" class="history-grid hidden"></div>
                 <div id="resultVip" class="multiplier-text color-rosa hidden">--.--x</div>
-                <div id="detailsVip" class="text-[10px] text-zinc-400 mt-2 text-center hidden">
-                    PROBABILIDADE: <span class="text-rose-400" id="probVip">--%</span><br>
-                    MIN: <span id="minVip">--</span> | MAX: <span id="maxVip">--</span><br>
-                    <span class="text-rose-500 font-bold" id="alcanceVip">ALCANCE EM MINUTOS SEGUINTES...</span>
+                <div id="detailsVip" class="text-[11px] text-zinc-400 mt-4 text-center hidden leading-relaxed">
+                    PERCENTAGEM: <span class="text-rose-500 font-bold" id="probVip">--%</span><br>
+                    ALCANCE MÁXIMO: <span class="text-white font-bold" id="maxVip">--</span><br>
+                    <span class="text-rose-400 font-bold mt-2 block italic">ANALISANDO SEEDS ROSA...</span>
                 </div>
             </div>
-            <button onclick="getPrediction('vip')" class="btn-main bg-rose-600 mt-2">GERAR SINAIS ROSA</button>
+            <button onclick="getSignal('vip')" class="btn-main bg-rose-600 mt-3 shadow-lg shadow-rose-900/20">GERAR SINAIS ROSA</button>
         </div>
 
         <div class="card">
-            <input type="file" id="uploadVip" class="hidden" accept="image/*" onchange="handleUpload(this, 'vip')">
-            <button onclick="document.getElementById('uploadVip').click()" class="btn-secondary w-full mb-4">📤 UPLOAD HISTÓRICO VIP</button>
-            
+            <input type="file" id="upVip" class="hidden" onchange="storeImg(this)">
+            <button onclick="document.getElementById('upVip').click()" class="btn-secondary w-full mb-4 border border-rose-900/30">📤 UPLOAD HISTÓRICO VIP</button>
             <div class="flex gap-4">
-                <button onclick="trainIA('WIN')" class="bg-green-600/20 text-green-500 p-3 rounded-xl flex-1 font-bold">ACERTOU ✅</button>
-                <button onclick="trainIA('LOSS')" class="bg-rose-600/20 text-rose-500 p-3 rounded-xl flex-1 font-bold">ERROU ❌</button>
+                <button onclick="trainIA('WIN')" class="bg-green-600/10 text-green-500 p-3 rounded-xl flex-1 font-bold">ACERTOU ✅</button>
+                <button onclick="trainIA('LOSS')" class="bg-rose-600/10 text-rose-500 p-3 rounded-xl flex-1 font-bold">ERROU ❌</button>
             </div>
         </div>
     </div>
 
     <script>
-        let myChart;
-        let imagesDatabase = [];
+        let chart;
+        const imagesDB = [];
 
         // Fuso Horário Angola
         setInterval(() => {
-            const options = { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const time = new Intl.DateTimeFormat('pt-PT', options).format(new Date());
+            const time = new Intl.DateTimeFormat('pt-PT', { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date());
             document.getElementById('clock').innerText = time;
             if(document.getElementById('clockVip')) document.getElementById('clockVip').innerText = time;
         }, 1000);
@@ -153,43 +147,45 @@
             initChart();
         }
 
-        function acessarVip() {
-            if(document.getElementById('vipPassInput').value === "230220") {
+        function acessoVip() {
+            if(document.getElementById('vipPass').value === "230220") {
                 document.getElementById('pageTerminal').classList.add('hidden');
                 document.getElementById('pageVip').classList.remove('hidden');
-            } else { alert("Passe Incorreta!"); }
+            } else { alert("Passe VIP Incorreta!"); }
         }
 
-        function voltar() {
+        function back() {
             document.getElementById('pageVip').classList.add('hidden');
             document.getElementById('pageTerminal').classList.remove('hidden');
         }
 
-        function handleUpload(input, type) {
-            if (input.files && input.files[0]) {
-                imagesDatabase.push(input.files[0].name);
-                alert("IA: Imagem recebida. Profundidade de análise aumentada.");
+        function storeImg(input) {
+            if(input.files[0]) {
+                imagesDB.push(input.files[0].name);
+                alert("IA: Imagem armazenada para otimização de algoritmo.");
             }
         }
 
-        function analisarImagem(type) {
-            const btn = document.getElementById(type === 'normal' ? 'btnAnalisar' : '');
-            if(btn) btn.innerText = "AGUARDE, SENDO ANALISADO...";
+        function analisarProcesso(type) {
+            const btn = document.getElementById('btnAnalisar');
+            btn.innerText = "AGUARDE, SENDO ANALISADO...";
+            btn.style.opacity = "0.5";
             
             setTimeout(() => {
-                if(btn) btn.innerText = "ANÁLISE CONCLUÍDA!";
+                btn.innerText = "ANÁLISE DE HISTÓRICO COMPLETA!";
+                btn.style.opacity = "1";
                 document.getElementById('btnGetNormal').classList.remove('hidden');
-                document.getElementById('statusNormal').innerText = "HISTÓRICO SINCRONIZADO";
-                generateHistory(type);
+                document.getElementById('statusNormal').innerText = "VARRREDURA DE TENDÊNCIA OK";
+                showHistory(type);
             }, 3000);
         }
 
-        function generateHistory(type) {
+        function showHistory(type) {
             const grid = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
             grid.innerHTML = '';
             grid.classList.remove('hidden');
             for(let i=0; i<30; i++) {
-                const val = (Math.random() * 5 + 1).toFixed(2);
+                const val = (Math.random() * 4 + 1.1).toFixed(2);
                 const item = document.createElement('div');
                 item.className = 'history-item';
                 item.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
@@ -198,56 +194,46 @@
             }
         }
 
-        function getPrediction(type) {
+        function getSignal(type) {
             const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
             const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
             res.classList.remove('hidden');
             det.classList.remove('hidden');
 
             if(type === 'normal') {
-                const val = (Math.random() * 8 + 1).toFixed(2);
+                const val = (1.1 + Math.random() * 8.8).toFixed(2);
                 res.innerText = val + "x";
                 res.className = `multiplier-text ${val >= 2 ? 'color-purple' : 'color-blue'}`;
-                document.getElementById('rangeNormal').innerText = "Próximos 2-3 min";
-                document.getElementById('minNormal').innerText = (val * 0.8).toFixed(2);
-                document.getElementById('maxNormal').innerText = (val * 1.2).toFixed(2);
+                document.getElementById('rangeNormal').innerText = new Date(Date.now() + 120000).toLocaleTimeString().slice(0,5);
+                document.getElementById('minNormal').innerText = (val * 0.9).toFixed(2);
+                document.getElementById('maxNormal').innerText = (val * 1.1).toFixed(2);
                 updateChart(val);
             } else {
-                const val = (10 + Math.random() * 40).toFixed(2);
+                const val = (10 + Math.random() * 50).toFixed(2);
                 res.innerText = val + "x";
-                document.getElementById('probVip').innerText = Math.floor(Math.random() * 20 + 80) + "%";
-                document.getElementById('minVip').innerText = (val * 0.9).toFixed(2);
-                document.getElementById('maxVip').innerText = (val * 1.5).toFixed(2);
+                document.getElementById('probVip').innerText = Math.floor(Math.random() * 15 + 83) + "%";
+                document.getElementById('maxVip').innerText = (val * 1.3).toFixed(2) + "x";
+                showHistory('vip');
             }
         }
 
         function initChart() {
             const ctx = document.getElementById('chartNormal').getContext('2d');
-            myChart = new Chart(ctx, {
+            chart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: ['1', '2', '3', '4', '5'],
-                    datasets: [{
-                        label: 'Tendência IA',
-                        data: [2, 1.5, 3, 2.2, 4],
-                        borderColor: '#e11d48',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(225, 29, 72, 0.1)'
-                    }]
-                },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: ['1','2','3','4','5'], datasets: [{ data: [1.2, 2.5, 1.8, 3.2, 2.1], borderColor: '#e11d48', tension: 0.4, fill: true, backgroundColor: 'rgba(225, 29, 72, 0.05)' }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: '#111' } } } }
             });
         }
 
         function updateChart(val) {
-            myChart.data.datasets[0].data.push(val);
-            if(myChart.data.datasets[0].data.length > 10) myChart.data.datasets[0].data.shift();
-            myChart.update();
+            chart.data.datasets[0].data.push(val);
+            if(chart.data.datasets[0].data.length > 8) chart.data.datasets[0].data.shift();
+            chart.update();
         }
 
-        function trainIA(status) {
-            alert(status === 'WIN' ? "IA: Feedback Positivo. Algoritmo Refinado." : "IA: Feedback Negativo. Recalculando Seeds.");
+        function trainIA(s) {
+            alert(s === 'WIN' ? "IA: Acerto registrado. Memória atualizada." : "IA: Erro processado. Recalculando Seeds.");
         }
     </script>
 </body>

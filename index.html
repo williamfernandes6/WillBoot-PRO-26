@@ -5,238 +5,202 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Will+Boot-PRO Aviator | IA Sniper Angola</title>
-    <meta name="description" content="Terminal de Inteligência Artificial para análise e renderização de sinais Aviator.">
-    <meta property="og:title" content="Will+Boot-PRO Aviator 🎯">
-    <meta property="og:description" content="IA de Renderização em Tempo Real. Sincronize seu histórico.">
-    <meta property="og:image" content="banner.jpg">
-    <link rel="icon" type="image/png" href="favicon.png">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #e11d48; --accent: #f472b6; --bg: #050505; }
+        :root { --primary: #ff003c; --accent: #ff00ff; --bg: #030303; }
+        
         body { 
-            background-color: var(--bg); 
-            background-image: radial-gradient(circle at 50% 50%, #1a0505 0%, #050505 100%);
-            color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; 
-        }
-        
-        /* Estilo Vidro Moderno */
-        .glass { 
-            background: rgba(15, 15, 15, 0.7); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 28px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at top right, #1a0808, #050505 50%);
+            color: #fff; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; 
         }
 
-        /* Botão Premium com Brilho */
-        .btn-premium {
-            background: linear-gradient(135deg, #e11d48 0%, #701026 100%);
-            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Camada de Vidro Futurista */
+        .glass-ui { 
+            background: rgba(20, 20, 25, 0.6); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Botão Sniper */
+        .btn-sniper {
+            background: linear-gradient(135deg, #ff003c 0%, #a30026 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-        }
-        .btn-premium:active { transform: scale(0.95); box-shadow: 0 0 20px var(--primary); }
-        .btn-premium:disabled { opacity: 0.3; filter: grayscale(1); }
-
-        /* Relógio Digital */
-        .clock-modern {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(35px, 12vw, 48px);
-            background: linear-gradient(to bottom, #fff 0%, #666 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(225, 29, 72, 0.3);
-        }
-
-        /* Display de Sinal "Vivo" */
-        .signal-core {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
             position: relative;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            border: 2px solid #1f1f1f;
-            border-radius: 40px;
             overflow: hidden;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
+        }
+        .btn-sniper:before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg); transition: 0.6s;
+        }
+        .btn-sniper:hover:before { left: 100%; }
+        .btn-sniper:active { transform: scale(0.96); box-shadow: 0 0 30px var(--primary); }
+
+        /* Núcleo do Preditor (Estilo Aviator) */
+        .predictor-core {
+            position: relative;
+            width: 100%; height: 320px;
+            background: radial-gradient(circle, rgba(255, 0, 60, 0.05) 0%, transparent 70%);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
         
-        .multiplier-val {
+        .radar-circle {
+            position: absolute; width: 280px; height: 280px;
+            border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 50%;
+            animation: pulseRadar 3s infinite ease-out;
+        }
+        @keyframes pulseRadar { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.2); opacity: 0; } }
+
+        .multiplier-display {
             font-family: 'Orbitron', sans-serif;
-            font-size: 72px;
-            font-weight: 900;
-            line-height: 1;
-            filter: drop-shadow(0 0 15px currentColor);
+            font-size: 82px; font-weight: 900;
+            background: linear-gradient(to bottom, #fff, #ff003c);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 60, 0.4));
         }
 
-        /* Animação de Varredura */
-        .scan-line {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent, var(--primary), transparent);
-            opacity: 0.1;
-            top: -100%;
-            animation: moveScan 3s infinite linear;
-            display: none;
-        }
-        @keyframes moveScan { 0% { top: -100%; } 100% { top: 100%; } }
+        /* Relógio e Texto */
+        .clock-ui { font-family: 'Orbitron', sans-serif; font-size: 40px; color: #fff; text-shadow: 0 0 15px var(--primary); }
+        .input-ui { background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 20px; padding: 20px; color: #fff; width: 100%; outline: none; transition: 0.3s; }
+        .input-ui:focus { border-color: var(--primary); background: rgba(255,0,60,0.02); }
 
-        /* Grade de Histórico */
-        .history-pill {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 8px 4px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            transition: 0.3s;
-        }
+        /* Console de Logs */
+        .console-box { font-family: 'Courier New', monospace; font-size: 11px; background: rgba(0,0,0,0.8); border-left: 3px solid var(--primary); padding: 12px; border-radius: 12px; color: #00ff41; }
 
-        /* Inputs */
-        .input-premium {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #222;
-            border-radius: 16px;
-            padding: 18px;
-            width: 100%;
-            color: white;
-            transition: 0.3s;
-        }
-        .input-premium:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(225, 29, 72, 0.2); }
+        /* Scanning Line */
+        .scanner { position: absolute; width: 100%; height: 2px; background: var(--primary); box-shadow: 0 0 15px var(--primary); z-index: 10; display: none; animation: scanMove 2s linear infinite; }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="flex flex-col items-center p-5 min-h-screen">
+<body class="flex flex-col items-center p-4 min-h-screen">
 
-    <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen">
-        <div class="text-center mb-10">
-            <span class="text-rose-500 font-bold tracking-[0.5em] text-[10px] uppercase">Quantum Intelligence</span>
-            <h1 class="text-5xl font-black italic tracking-tighter mt-2">Will+Boot<span class="text-rose-600">PRO</span></h1>
+    <div id="pageLogin" class="w-full max-w-sm flex flex-col items-center justify-center min-h-screen">
+        <div class="mb-12 text-center">
+            <div class="inline-block bg-rose-600/10 px-4 py-1 rounded-full text-[10px] font-bold text-rose-500 uppercase tracking-widest border border-rose-600/20 mb-4">Angola Sniper IA</div>
+            <h1 class="text-6xl font-black italic tracking-tighter">WILL<span class="text-rose-600">+</span>BOOT</h1>
+            <p class="text-zinc-500 font-medium tracking-[0.3em] text-[12px] uppercase">Professional Edition</p>
         </div>
         
-        <div class="glass p-8 w-full max-w-[380px]">
+        <div class="glass-ui p-10 w-full">
             <div class="space-y-4">
-                <input id="user" type="text" placeholder="ID DE ACESSO" class="input-premium">
-                <input id="pass" type="password" placeholder="CHAVE DE SEGURANÇA" class="input-premium">
-                <select id="casaAposta" class="input-premium bg-black appearance-none">
-                    <option value="">CASA DE OPERAÇÃO</option>
+                <input id="user" type="text" placeholder="USUÁRIO" class="input-ui">
+                <input id="pass" type="password" placeholder="SENHA" class="input-ui">
+                <select id="casaAposta" class="input-ui appearance-none">
+                    <option value="">CASA DE APOSTA</option>
                     <option value="elephant">ElephantBet</option>
                     <option value="bantu">BantuBet</option>
                     <option value="premier">PremierBet</option>
                 </select>
-                <button onclick="login()" class="btn-premium w-full py-5 rounded-2xl font-black mt-4">INICIAR TERMINAL</button>
+                <button onclick="login()" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 uppercase tracking-widest text-sm">Acessar Terminal</button>
             </div>
         </div>
     </div>
 
     <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col">
-        <div class="text-center py-6">
-            <div id="clock" class="clock-modern">00:00:00</div>
-            <p class="text-[9px] font-bold text-zinc-500 tracking-[0.3em] uppercase">Sincronizado: Luanda / Angola</p>
+        <header class="text-center py-8">
+            <div id="clock" class="clock-ui">00:00:00</div>
+            <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.4em] mt-2">Sincronização Luanda / Angola</p>
+        </header>
+
+        <div class="flex justify-between items-center mb-6 px-2">
+            <div class="flex items-center gap-2">
+                <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
+                <span class="text-[11px] font-black uppercase text-zinc-400 tracking-tighter">IA Server Online</span>
+            </div>
+            <button onclick="location.reload()" class="bg-zinc-900 border border-zinc-800 px-4 py-1.5 rounded-full text-[10px] font-bold text-zinc-500 uppercase hover:text-white transition">Sair</button>
         </div>
 
-        <div class="flex justify-between items-center px-4 mb-6">
-            <div class="flex items-center bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping mr-2"></span>
-                <span class="text-[10px] font-black text-green-500 uppercase">IA Ativa</span>
+        <div class="glass-ui p-6 mb-4">
+            <div id="dropZoneNormal" onclick="document.getElementById('upNormal').click()" class="border-2 border-dashed border-zinc-800 rounded-2xl py-8 text-center cursor-pointer hover:border-rose-600 transition group">
+                <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this, 'normal')">
+                <p id="upTextNormal" class="text-[11px] font-bold text-zinc-500 uppercase tracking-widest group-hover:text-rose-500 transition">Sincronizar Histórico Real</p>
             </div>
-            <button onclick="location.reload()" class="text-zinc-600 font-bold text-[10px] uppercase hover:text-white transition">Desconectar</button>
+            <button id="btnAnalisarNormal" onclick="analisarProcesso('normal')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 text-sm uppercase" disabled>Iniciar Varredura Sniper</button>
         </div>
 
-        <div class="px-2 mb-6">
-            <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this, 'normal')">
-            <div id="dropZoneNormal" onclick="document.getElementById('upNormal').click()" class="glass p-4 text-center border-dashed border-2 border-zinc-800 hover:border-rose-600 transition cursor-pointer">
-                <p id="upTextNormal" class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sincronizar Histórico da Casa</p>
-            </div>
-        </div>
-
-        <button id="btnAnalisarNormal" onclick="analisarProcesso('normal')" class="btn-premium mb-6 py-5 mx-2 rounded-2xl font-black" disabled>ANALISAR PADRÕES SNIPER</button>
-
-        <div class="glass p-4 mx-2 border-zinc-800/50">
-            <div id="consoleNormal" class="bg-black/50 p-3 rounded-xl mb-4 h-16 overflow-hidden border-l-4 border-rose-600">
-                <div id="logTextNormal" class="text-[10px] text-green-400 font-mono leading-tight">> Aguardando dados...</div>
+        <div class="glass-ui p-5 mb-4">
+            <div class="console-box mb-6 h-20 overflow-hidden">
+                <div id="logTextNormal">> Aguardando injeção de dados...</div>
             </div>
 
-            <div class="signal-core min-h-[300px] flex flex-col justify-center items-center p-6" id="displayNormal">
-                <div id="laserNormal" class="scan-line"></div>
-                <div id="statusNormal" class="text-zinc-600 font-black text-[9px] uppercase tracking-widest mb-4">Aguardando Captura</div>
+            <div class="predictor-core" id="displayNormal">
+                <div id="laserNormal" class="scanner"></div>
+                <div class="radar-circle"></div>
+                <div id="statusNormal" class="text-zinc-700 font-bold uppercase text-[10px] tracking-widest absolute">Inativo</div>
                 
-                <div id="historyNormal" class="history-grid hidden w-full mb-6"></div>
+                <div id="historyNormal" class="grid grid-cols-6 gap-2 w-full px-4 hidden"></div>
+                <div id="resultNormal" class="multiplier-display hidden">0.00x</div>
                 
-                <div id="resultNormal" class="multiplier-val hidden">0.00x</div>
-                
-                <div id="detailsNormal" class="w-full mt-6 hidden">
-                    <div class="grid grid-cols-2 gap-4 border-t border-zinc-800 pt-5">
-                        <div class="text-center">
-                            <span class="block text-[8px] text-zinc-500 uppercase font-bold">Mínimo Safety</span>
-                            <span class="text-lg font-black text-white" id="minNormal">--</span>
-                        </div>
-                        <div class="text-center">
-                            <span class="block text-[8px] text-zinc-500 uppercase font-bold">Máximo Peak</span>
-                            <span class="text-lg font-black text-white" id="maxNormal">--</span>
-                        </div>
+                <div id="detailsNormal" class="absolute bottom-6 w-full px-8 hidden">
+                    <div class="flex justify-between border-t border-zinc-800/50 pt-4">
+                        <div class="text-center"><span class="block text-[9px] text-zinc-500 uppercase">Mínimo</span><span id="minNormal" class="text-lg font-black">--</span></div>
+                        <div class="text-center"><span class="block text-[9px] text-zinc-500 uppercase">Máximo</span><span id="maxNormal" class="text-lg font-black">--</span></div>
                     </div>
-                    <div class="mt-4 bg-rose-600/10 py-3 rounded-2xl border border-rose-600/20 text-center">
-                        <p class="text-rose-500 font-black uppercase text-[10px]">Alcance Real: <span id="rangeNormal" class="text-white ml-2">--:--</span></p>
-                    </div>
+                    <div class="mt-4 bg-rose-600/10 py-2 rounded-xl text-center text-[10px] font-black text-rose-500 uppercase">Alcance: <span id="rangeNormal" class="text-white">--</span></div>
                 </div>
             </div>
             
-            <button id="btnGetNormal" onclick="getSignal('normal')" class="btn-premium w-full py-5 rounded-2xl font-black mt-4 hidden bg-green-600">OBTER PRÓXIMO SINAL</button>
+            <button id="btnGetNormal" onclick="getSignal('normal')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 hidden bg-green-600 text-sm uppercase">Gerar Próximo Sinal</button>
         </div>
 
-        <div id="feedbackNormal" class="flex gap-3 px-2 mt-4 hidden">
-            <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/10 border border-green-500/20 py-4 rounded-2xl text-green-500 font-black text-[10px] uppercase">Acertou ✅</button>
-            <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/10 border border-rose-500/20 py-4 rounded-2xl text-rose-500 font-black text-[10px] uppercase">Errou ❌</button>
+        <div id="feedbackNormal" class="flex gap-4 mb-6 px-2 hidden">
+            <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/10 border border-green-500/20 py-4 rounded-2xl text-green-500 font-black text-[11px] uppercase transition hover:bg-green-500/20">Win ✅</button>
+            <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/10 border border-rose-500/20 py-4 rounded-2xl text-rose-500 font-black text-[11px] uppercase transition hover:bg-rose-500/20">Loss ❌</button>
         </div>
 
-        <div class="glass p-4 mx-2 mt-6 h-[180px]">
+        <div class="glass-ui p-4 h-[180px] mb-6">
             <canvas id="chartNormal"></canvas>
         </div>
 
-        <div class="glass p-6 mx-2 mt-6 border-rose-900/20">
-            <input id="vipPass" type="password" placeholder="SENHA DE ACESSO VIP" class="input-premium mb-4">
-            <button onclick="acessoVip()" class="btn-premium w-full py-4 text-xs bg-zinc-900 !from-rose-900 !to-black">DESBLOQUEAR DEEP RENDER VIP</button>
+        <div class="glass-ui p-8 border-rose-900/30">
+            <input id="vipPass" type="password" placeholder="PASSWORD VIP" class="input-ui mb-4 text-center">
+            <button onclick="acessoVip()" class="btn-sniper w-full py-4 text-[10px] font-black !from-zinc-900 !to-black">Acessar Deep Render VIP</button>
         </div>
     </div>
 
     <div id="pageVip" class="hidden w-full max-w-md flex flex-col">
-        <div class="text-center py-6">
-            <div id="clockVip" class="clock-modern" style="text-shadow: 0 0 30px #f472b6;">00:00:00</div>
-            <h2 class="text-rose-400 font-black italic text-xl tracking-tighter">DEEP RENDER VIP</h2>
-        </div>
+        <header class="text-center py-8">
+            <div id="clockVip" class="clock-ui" style="text-shadow: 0 0 20px #ff00ff;">00:00:00</div>
+            <h2 class="text-rose-500 font-black italic text-2xl tracking-tighter mt-2 uppercase">Deep Render VIP</h2>
+        </header>
 
-        <div class="px-2 mb-6 text-center">
+        <div class="glass-ui p-8 mb-6 text-center">
             <input type="file" id="upVip" class="hidden" accept="image/*" onchange="storeImg(this, 'vip')">
-            <div id="dropZoneVip" onclick="document.getElementById('upVip').click()" class="glass p-5 border-dashed border-2 border-rose-900/30">
-                <span id="upTextVip" class="text-[10px] font-black text-rose-500 uppercase tracking-widest">Sincronizar Histórico Rosa</span>
+            <div id="dropZoneVip" onclick="document.getElementById('upVip').click()" class="border-2 border-dashed border-rose-900/40 rounded-3xl py-10 cursor-pointer">
+                <span id="upTextVip" class="text-[11px] font-black text-rose-400 uppercase tracking-widest">Injetar Histórico VIP</span>
             </div>
+            <button id="btnAnalisarVip" onclick="analisarProcesso('vip')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-8 text-sm uppercase" disabled>Varredura de Alta Seed</button>
         </div>
 
-        <button id="btnAnalisarVip" onclick="analisarProcesso('vip')" class="btn-premium bg-rose-600 mb-6 py-5 mx-2 rounded-2xl font-black" disabled>VARREDURA DE ALTA PRECISÃO</button>
-
-        <div class="glass p-4 mx-2 border-rose-500/20">
-            <div class="signal-core min-h-[300px] flex flex-col justify-center items-center p-6 border-rose-500/30">
-                <div id="laserVip" class="scan-line" style="background: var(--accent);"></div>
-                <div id="historyVip" class="history-grid hidden w-full mb-6"></div>
-                <div id="resultVip" class="multiplier-val color-rosa hidden">0.00x</div>
+        <div class="glass-ui p-6 border-rose-500/20">
+            <div class="predictor-core" style="background: radial-gradient(circle, rgba(255, 0, 255, 0.05) 0%, transparent 70%);">
+                <div id="laserVip" class="scanner" style="background: #ff00ff; box-shadow: 0 0 20px #ff00ff;"></div>
+                <div id="historyVip" class="grid grid-cols-6 gap-2 w-full px-4 hidden"></div>
+                <div id="resultVip" class="multiplier-display hidden" style="background: linear-gradient(to bottom, #fff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px #ff00ff);">0.00x</div>
                 
-                <div id="detailsVip" class="w-full mt-6 hidden border-t border-rose-900/30 pt-5 text-center">
-                    <span class="block text-[9px] text-rose-400 uppercase font-bold mb-2 tracking-widest">Previsão de Pico Rosa</span>
-                    <span class="text-3xl font-black text-white" id="maxVip">--</span>
+                <div id="detailsVip" class="absolute bottom-10 w-full text-center hidden">
+                    <span class="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Pico Máximo Estimado</span>
+                    <div class="text-4xl font-black text-white mt-1" id="maxVip">--</div>
                 </div>
             </div>
             
-            <button id="btnGetVip" onclick="getSignal('vip')" class="btn-premium w-full py-6 rounded-2xl font-black mt-4 hidden italic">GERAR SINAL DE ALTA VELOCIDADE</button>
+            <button id="btnGetVip" onclick="getSignal('vip')" class="btn-sniper w-full py-6 rounded-2xl font-black mt-8 text-sm uppercase !from-rose-600 !to-purple-900 hidden">Gerar Multiplicador Rosa</button>
 
-            <div id="feedbackVip" class="flex gap-3 mt-6 hidden">
-                <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/10 border border-green-500/20 py-4 rounded-2xl text-green-400 font-bold text-xs">WIN ✅</button>
-                <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/10 border border-rose-500/20 py-4 rounded-2xl text-rose-400 font-bold text-xs">LOSS ❌</button>
+            <div id="feedbackVip" class="flex gap-4 mt-8 hidden">
+                <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/20 border border-green-500/30 py-4 rounded-2xl text-green-400 font-black text-[11px] uppercase">Win ✅</button>
+                <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/20 border border-rose-500/30 py-4 rounded-2xl text-rose-400 font-black text-[11px] uppercase">Loss ❌</button>
             </div>
 
-            <button onclick="back()" class="w-full mt-8 text-[10px] text-zinc-500 font-black uppercase tracking-[0.4em]">Sair do Deep Render</button>
+            <button onclick="back()" class="w-full mt-10 text-[10px] text-zinc-600 font-black uppercase tracking-[0.5em] text-center">Voltar ao Terminal</button>
         </div>
     </div>
 
@@ -247,7 +211,6 @@
 
         function playSound() { beep.volume = 0.15; beep.play().catch(()=>{}); }
 
-        // Relógio Real
         setInterval(() => {
             const time = new Intl.DateTimeFormat('pt-PT', { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date());
             document.getElementById('clock').innerText = time;
@@ -263,9 +226,9 @@
                 brainData[type] = input.files[0];
                 const zone = document.getElementById(type === 'normal' ? 'dropZoneNormal' : 'dropZoneVip');
                 const btn = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
-                zone.style.borderColor = "#10b981";
+                zone.style.borderColor = "#ff003c";
                 btn.disabled = false;
-                document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip').innerHTML = `> Mídia Injetada: ${input.files[0].name.substring(0,12)}...<br>> Sistema pronto para varredura.`;
+                document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip').innerHTML = `> Mídia Identificada: ${input.files[0].name.substring(0,15)}...<br>> Aguardando processamento.`;
                 playSound();
             }
         }
@@ -277,11 +240,11 @@
             const btn = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
             btn.disabled = true;
             laser.style.display = 'block';
-            log.innerHTML = "> Executando leitura de sub-pixels...<br>> Sincronizando com servidor local...";
+            log.innerHTML = "> Injetando algoritmos de rede neural...<br>> Mapeando seeds da rodada...";
             
             setTimeout(() => {
                 laser.style.display = 'none';
-                log.innerHTML = "> Análise Sniper Concluída.<br>> Renderização finalizada.";
+                log.innerHTML = "> Varredura Concluída.<br>> Renderizador Sniper Pronto.";
                 document.getElementById(type === 'normal' ? 'btnGetNormal' : 'btnGetVip').classList.remove('hidden');
                 showHistory(type);
             }, 3000);
@@ -290,11 +253,11 @@
         function showHistory(type) {
             const grid = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
             grid.innerHTML = ''; grid.classList.remove('hidden');
-            for(let i=0; i<18; i++) {
+            for(let i=0; i<12; i++) {
                 const val = (Math.random() * 3.5 + 1.1).toFixed(2);
                 const item = document.createElement('div');
-                item.className = 'history-pill text-center';
-                item.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
+                item.className = 'bg-zinc-900 border border-zinc-800 rounded-lg text-center py-2 text-[10px] font-bold';
+                item.style.color = val >= 2 ? '#ff00ff' : '#3b82f6';
                 item.innerText = val + 'x';
                 grid.appendChild(item);
             }
@@ -305,12 +268,13 @@
             const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
             const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
             const feed = document.getElementById(type === 'normal' ? 'feedbackNormal' : 'feedbackVip');
-            const status = document.getElementById('statusNormal');
+            const status = document.getElementById(type === 'normal' ? 'statusNormal' : '');
+            const hist = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
             
-            // Limpeza ao clicar
             res.classList.add('hidden');
             det.classList.add('hidden');
             feed.classList.add('hidden');
+            hist.classList.add('hidden');
             if(status) status.classList.remove('hidden');
 
             setTimeout(() => {
@@ -322,26 +286,24 @@
                 if(type === 'normal') {
                     const val = (1.6 + Math.random() * 5).toFixed(2);
                     res.innerText = val + "x";
-                    res.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
                     const rangeTime = new Date(new Date().getTime() + 120000);
                     document.getElementById('rangeNormal').innerText = rangeTime.toLocaleTimeString('pt-PT');
                     document.getElementById('minNormal').innerText = (val * 0.9).toFixed(2) + "x";
                     document.getElementById('maxNormal').innerText = (val * 1.18).toFixed(2) + "x";
                     updateChart(val);
                 } else {
-                    const val = (15 + Math.random() * 35).toFixed(2);
+                    const val = (18 + Math.random() * 40).toFixed(2);
                     res.innerText = val + "x";
-                    res.style.color = '#f472b6';
-                    document.getElementById('maxVip').innerText = (val * 1.2).toFixed(2) + "x";
+                    document.getElementById('maxVip').innerText = (val * 1.25).toFixed(2) + "x";
                 }
-            }, 500);
+            }, 600);
         }
 
         function initChart() {
             const ctx = document.getElementById('chartNormal').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['A','B','C','D','E'], datasets: [{ data: [1.2, 2.8, 1.5, 3.9, 2.1], borderColor: '#e11d48', tension: 0.4, borderWidth: 3, pointRadius: 0 }] },
+                data: { labels: ['','','','',''], datasets: [{ data: [1.2, 2.5, 1.8, 4.2, 2.1], borderColor: '#ff003c', tension: 0.5, borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(255, 0, 60, 0.05)' }] },
                 options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
             });
         }
@@ -352,7 +314,7 @@
             chart.update();
         }
 
-        function trainIA(s) { playSound(); alert(s === 'WIN' ? "SINAL CONFIRMADO: IA CALIBRADA!" : "ERRO REGISTADO: RECALCULANDO..."); }
+        function trainIA(s) { playSound(); alert(s === 'WIN' ? "SINAL CONFIRMADO!" : "AJUSTANDO ALGORITMO..."); }
     </script>
 </body>
 </html>

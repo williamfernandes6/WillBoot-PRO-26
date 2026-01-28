@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Will+Boot-PRO Aviator | IA Sniper Angola</title>
-    <meta name="description" content="Terminal de Inteligência Artificial para análise e renderização de sinais Aviator em tempo real. Precisão Sniper.">
-    <meta name="keywords" content="Aviator, IA, Sinais, Will Boot Pro, Angola, ElephantBet, BantuBet">
-    <meta name="author" content="Will+Boot-PRO">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://seunome.github.io/repositorio/">
+    <meta name="description" content="Terminal de Inteligência Artificial para análise e renderização de sinais Aviator em tempo real.">
     <meta property="og:title" content="Will+Boot-PRO Aviator 🎯">
-    <meta property="og:description" content="IA de Renderização em Tempo Real. Sincronize seu histórico e receba sinais sniper agora.">
-    <meta property="og:image" content="banner.jpg"> <script src="https://cdn.tailwindcss.com"></script>
+    <meta property="og:description" content="IA de Renderização em Tempo Real. Sincronize seu histórico e receba sinais sniper.">
+    <meta property="og:image" content="banner.jpg">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { background-color: #030303; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
@@ -43,7 +41,7 @@
 
     <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen text-center">
         <p class="text-rose-600 font-black tracking-[0.3em] text-[10px] mb-2 uppercase">Não é sorte é estratégia</p>
-        <h1 class="text-4xl font-black text-white mb-6 italic text-center">Will+Boot-PRO</h1>
+        <h1 class="text-4xl font-black text-white mb-6 italic">Will+Boot-PRO</h1>
         <div class="card shadow-2xl">
             <input id="user" type="text" placeholder="USUÁRIO" class="input-dark">
             <input id="pass" type="password" placeholder="SENHA" class="input-dark">
@@ -73,7 +71,7 @@
         <div class="w-full max-w-[440px] mb-4">
             <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this, 'normal')">
             <div id="dropZoneNormal" onclick="document.getElementById('upNormal').click()" class="upload-compact">
-                <p id="upTextNormal" class="text-[10px] font-black text-zinc-400 uppercase tracking-tighter">Sincronizar Histórico Real (Clique Aqui)</p>
+                <p id="upTextNormal" class="text-[10px] font-black text-zinc-400 uppercase tracking-tighter">Sincronizar Histórico Real</p>
             </div>
         </div>
 
@@ -81,27 +79,28 @@
 
         <div class="card p-3 !bg-black border-zinc-900 !mb-2">
             <div id="consoleNormal" class="console-log">
-                <div>> ENGINE_READY: RENDER_LIVE_V1</div>
                 <div id="logTextNormal">> Aguardando captura do histórico...</div>
             </div>
 
             <div class="display-signal" id="displayNormal">
                 <div id="laserNormal" class="laser-scanner"></div>
-                <div id="statusNormal" class="text-zinc-700 font-bold uppercase text-[10px] text-center italic">PENDENTE: PROCESSAMENTO DE IMAGEM</div>
+                <div id="statusNormal" class="text-zinc-700 font-bold uppercase text-[10px] text-center italic">PENDENTE: PROCESSAMENTO</div>
                 <div id="historyNormal" class="history-grid hidden"></div>
                 <div id="resultNormal" class="multiplier-text hidden">--.--x</div>
-                
                 <div id="detailsNormal" class="text-[11px] text-zinc-500 mt-4 text-center hidden w-full">
                     <div class="flex justify-around border-t border-zinc-900 pt-3">
                         <div><p class="text-[9px] uppercase font-bold">Mínimo</p><span class="text-white font-black" id="minNormal">--</span></div>
                         <div><p class="text-[9px] uppercase font-bold">Máximo</p><span class="text-white font-black" id="maxNormal">--</span></div>
                     </div>
-                    <div class="mt-3 bg-rose-900/10 py-2 rounded-lg border border-rose-900/20">
-                        <p class="text-rose-500 font-black italic uppercase">Alcance detectado: <span id="rangeNormal">--:--:--</span></p>
-                    </div>
+                    <p class="mt-3 text-rose-500 font-black uppercase">Alcance: <span id="rangeNormal">--:--:--</span></p>
                 </div>
             </div>
-            <button id="btnGetNormal" onclick="getSignal('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden animate-bounce">OBTER SINAL AGORA</button>
+            <button id="btnGetNormal" onclick="getSignal('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">OBTER NOVO SINAL</button>
+        </div>
+
+        <div id="feedbackNormal" class="flex gap-2 w-full mb-4 hidden">
+            <button onclick="trainIA('WIN')" class="flex-1 bg-green-600/10 text-green-500 border border-green-600/20 py-2 rounded-lg font-bold text-[10px]">ACERTOU ✅</button>
+            <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-600/10 text-rose-500 border border-rose-600/20 py-2 rounded-lg font-bold text-[10px]">ERROU ❌</button>
         </div>
 
         <div class="card h-[160px] !p-2"><canvas id="chartNormal"></canvas></div>
@@ -129,24 +128,27 @@
 
         <div class="card !bg-black border-rose-900/40">
             <div id="consoleVip" class="console-log" style="color:#f472b6;">
-                <div>> VIP_DEEP_LEARNING: ACTIVE</div>
-                <div id="logTextVip">> Pronto para analisar High-Seeds...</div>
+                <div id="logTextVip">> Pronto para High-Seeds...</div>
             </div>
             <div class="display-signal">
                 <div id="laserVip" class="laser-scanner"></div>
                 <div id="historyVip" class="history-grid hidden"></div>
                 <div id="resultVip" class="multiplier-text color-rosa hidden">--.--x</div>
-                
                 <div id="detailsVip" class="text-[11px] text-zinc-400 mt-4 text-center hidden w-full">
                     <div class="flex justify-around border-t border-rose-900/20 pt-3">
                         <div><p class="text-[9px] uppercase font-bold">Base</p><span class="text-white font-black" id="minVip">--</span></div>
                         <div><p class="text-[9px] uppercase font-bold">Pico</p><span class="text-white font-black" id="maxVip">--</span></div>
                     </div>
-                    <p class="mt-3 text-rose-400 font-black uppercase text-[10px] tracking-widest animate-pulse">🎯 ALVO ROSA SINCRONIZADO</p>
                 </div>
             </div>
-            <button id="btnGetVip" onclick="getSignal('vip')" class="btn-main bg-rose-600 mt-2 hidden italic">GERAR VELA ROSA</button>
-            <button onclick="back()" class="btn-secondary w-full mt-4 text-[10px]">VOLTAR AO TERMINAL</button>
+            <button id="btnGetVip" onclick="getSignal('vip')" class="btn-main bg-rose-600 mt-2 hidden italic">GERAR NOVO ROSA</button>
+            
+            <div id="feedbackVip" class="flex gap-2 w-full mt-4 hidden">
+                <button onclick="trainIA('WIN')" class="flex-1 bg-green-600/20 text-green-400 border border-green-500/30 py-3 rounded-xl font-bold text-xs">WIN ✅</button>
+                <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-600/20 text-rose-400 border border-rose-500/30 py-3 rounded-xl font-bold text-xs">LOSS ❌</button>
+            </div>
+
+            <button onclick="back()" class="btn-secondary w-full mt-4 text-[10px]">VOLTAR</button>
         </div>
     </div>
 
@@ -165,19 +167,16 @@
 
         function login() { playSound(); document.getElementById('pageLogin').classList.add('hidden'); document.getElementById('pageTerminal').classList.remove('hidden'); initChart(); }
         function back() { playSound(); document.getElementById('pageVip').classList.add('hidden'); document.getElementById('pageTerminal').classList.remove('hidden'); }
-        function acessoVip() { playSound(); if(document.getElementById('vipPass').value === "230220") { document.getElementById('pageTerminal').classList.add('hidden'); document.getElementById('pageVip').classList.remove('hidden'); } else { alert("ACESSO NEGADO!"); } }
+        function acessoVip() { playSound(); if(document.getElementById('vipPass').value === "230220") { document.getElementById('pageTerminal').classList.add('hidden'); document.getElementById('pageVip').classList.remove('hidden'); } else { alert("NEGADO!"); } }
 
         function storeImg(input, type) {
             if(input.files[0]) {
                 brainData[type] = input.files[0];
                 const zone = document.getElementById(type === 'normal' ? 'dropZoneNormal' : 'dropZoneVip');
-                const text = document.getElementById(type === 'normal' ? 'upTextNormal' : 'upTextVip');
                 const btn = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
                 zone.classList.add('ready');
-                text.innerText = "DADOS RECEBIDOS OK";
-                text.style.color = "#10b981";
                 btn.disabled = false;
-                document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip').innerHTML = `> Imagem detectada.<br>> Pronto para renderizar.`;
+                document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip').innerHTML = `> Imagem Recebida: ${input.files[0].name}`;
                 playSound();
             }
         }
@@ -186,13 +185,11 @@
             playSound();
             const log = document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip');
             const laser = document.getElementById(type === 'normal' ? 'laserNormal' : 'laserVip');
-            const btnAnalisar = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
-            btnAnalisar.disabled = true;
             laser.style.display = 'block';
-            log.innerHTML = "> Extraindo metadados da imagem...<br>> Mapeando seeds de tempo real...";
+            log.innerHTML = "> Analisando pixels e histórico...";
             setTimeout(() => {
                 laser.style.display = 'none';
-                log.innerHTML = "> Renderização de histórico concluída.";
+                log.innerHTML = "> Análise Sniper concluída.";
                 document.getElementById(type === 'normal' ? 'btnGetNormal' : 'btnGetVip').classList.remove('hidden');
                 showHistory(type);
             }, 3000);
@@ -206,7 +203,6 @@
                 const item = document.createElement('div');
                 item.className = 'history-item';
                 item.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
-                item.style.animationDelay = `${i * 0.05}s`;
                 item.innerText = val + 'x';
                 grid.appendChild(item);
             }
@@ -214,36 +210,44 @@
 
         function getSignal(type) {
             playSound();
+            // Lógica de Limpeza ao Clicar Novamente
             const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
             const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
-            res.classList.remove('hidden');
-            det.classList.remove('hidden');
-            if(type === 'normal') {
-                const val = (1.5 + Math.random() * 7).toFixed(2);
-                res.innerText = val + "x";
-                res.className = `multiplier-text ${val >= 2 ? 'color-purple' : 'color-blue'}`;
-                const now = new Date();
-                const rangeTime = new Date(now.getTime() + (Math.random() * 180000) + 60000);
-                document.getElementById('rangeNormal').innerText = rangeTime.toLocaleTimeString('pt-PT');
-                document.getElementById('minNormal').innerText = (val * 0.85).toFixed(2) + "x";
-                document.getElementById('maxNormal').innerText = (val * 1.2).toFixed(2) + "x";
-                updateChart(val);
-            } else {
-                const val = (15 + Math.random() * 35).toFixed(2);
-                res.innerText = val + "x";
-                document.getElementById('minVip').innerText = (val * 0.9).toFixed(2) + "x";
-                document.getElementById('maxVip').innerText = (val * 1.4).toFixed(2) + "x";
-            }
+            const feed = document.getElementById(type === 'normal' ? 'feedbackNormal' : 'feedbackVip');
+            
+            res.classList.add('hidden');
+            det.classList.add('hidden');
+            feed.classList.add('hidden');
+
+            setTimeout(() => {
+                res.classList.remove('hidden');
+                det.classList.remove('hidden');
+                feed.classList.remove('hidden');
+                
+                if(type === 'normal') {
+                    const val = (1.5 + Math.random() * 7).toFixed(2);
+                    res.innerText = val + "x";
+                    res.className = `multiplier-text ${val >= 2 ? 'color-purple' : 'color-blue'}`;
+                    const rangeTime = new Date(new Date().getTime() + 120000);
+                    document.getElementById('rangeNormal').innerText = rangeTime.toLocaleTimeString('pt-PT');
+                    document.getElementById('minNormal').innerText = (val * 0.9).toFixed(2) + "x";
+                    document.getElementById('maxNormal').innerText = (val * 1.1).toFixed(2) + "x";
+                    updateChart(val);
+                } else {
+                    const val = (15 + Math.random() * 30).toFixed(2);
+                    res.innerText = val + "x";
+                    document.getElementById('minVip').innerText = (val * 0.9).toFixed(2) + "x";
+                    document.getElementById('maxVip').innerText = (val * 1.3).toFixed(2) + "x";
+                }
+            }, 500);
         }
 
         function initChart() {
             const ctx = document.getElementById('chartNormal').getContext('2d');
-            const grad = ctx.createLinearGradient(0,0,0,150);
-            grad.addColorStop(0, 'rgba(225,29,72,0.3)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['1','2','3','4','5'], datasets: [{ data: [1.1, 2.5, 1.3, 3.8, 1.9], borderColor: '#e11d48', fill: true, backgroundColor: grad, tension: 0.4 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: '#111' } } } }
+                data: { labels: ['1','2','3','4','5'], datasets: [{ data: [1.1, 2.5, 1.3, 3.8, 1.9], borderColor: '#e11d48', tension: 0.4 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
             });
         }
 
@@ -252,6 +256,8 @@
             chart.data.datasets[0].data.shift();
             chart.update();
         }
+
+        function trainIA(s) { playSound(); alert(s === 'WIN' ? "SINAL CONFIRMADO!" : "IA AJUSTADA!"); }
     </script>
 </body>
 </html>

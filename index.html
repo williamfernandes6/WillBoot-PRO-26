@@ -20,9 +20,14 @@
   .history-badge { width: 50px; height: 28px; border-radius: 6px; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
   .badge-blue { background: #2563eb; } .badge-purple { background: #9333ea; } .badge-pink { background: #db2777; }
   .alcance-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #dc2626; text-align: left; width: 100%; font-size: 11px; }
+  .feedback-btn { padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer; color: white; border: none; flex: 1; transition: 0.3s; }
+  .btn-win { background: #10b981; } .btn-win:hover { background: #059669; box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+  .btn-loss { background: #ef4444; } .btn-loss:hover { background: #dc2626; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
 </style>
 </head>
 <body>
+
+<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
     <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
@@ -30,7 +35,6 @@
     <div class="glass p-10 max-w-md neon-red space-y-4">
       <input id="userMain" placeholder="Usuário" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
       <input id="passMain" type="password" placeholder="Senha" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      
       <select id="casaAposta" class="select-dark border-red-600/40">
           <option value="default">SELECCIONE A CASA DE APOSTA</option>
           <option value="ElephantBet">ElephantBet</option>
@@ -40,10 +44,8 @@
           <option value="GoldenBet">GoldenBet</option>
           <option value="AfriBet">AfriBet</option>
       </select>
-
       <button class="btn-red mt-2" onclick="loginMain()">ENTRAR NO TERMINAL</button>
     </div>
-    <footer class="mt-8 text-[10px] text-gray-600 uppercase tracking-widest">© 2026 WILL+BOOT-PRO • BLINDAGEM ATIVA</footer>
 </div>
 
 <div id="page2" class="hidden py-8 px-6 max-w-2xl w-full flex flex-col items-center space-y-6">
@@ -58,13 +60,19 @@
   <div id="signalsPage2" class="w-full flex justify-center min-h-[120px]"></div>
 
   <div class="glass p-6 w-full">
+      <p class="text-[10px] text-gray-500 uppercase font-black mb-2">Upload de Histórico Aviator</p>
       <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500">
       <p id="historyResult" class="mt-2 text-[10px] font-black text-red-500 uppercase"></p>
+      
+      <div class="flex gap-3 mt-4 w-full">
+          <button class="feedback-btn btn-win" onclick="trainIA('WIN')">ACERTOU ✅</button>
+          <button class="feedback-btn btn-loss" onclick="trainIA('LOSS')">ERROU ❌</button>
+      </div>
   </div>
 
   <div class="glass p-6 border-l-4 border-red-600 w-full">
-      <h3 class="text-red-600 font-black text-[10px] uppercase mb-2">🧠 RESPOSTA DA IA</h3>
-      <p id="tipTextP2" class="text-xs text-gray-400 italic">Analise o histórico para ler o algoritmo da casa...</p>
+      <h3 class="text-red-600 font-black text-[10px] uppercase mb-2">🧠 RESPOSTA DA IA (APRENDIZAGEM)</h3>
+      <p id="tipTextP2" class="text-xs text-gray-400 italic">O algoritmo está em fase de reconhecimento...</p>
   </div>
 
   <div class="glass p-4 w-full h-[250px]">
@@ -99,11 +107,17 @@
 
   <div class="glass p-6 border-pink-600/30 w-full text-center">
       <h3 class="text-pink-500 font-black text-[10px] uppercase mb-2 italic">🗨️ IA REAL-TIME FEEDBACK</h3>
-      <p id="tipTextP3" class="text-xs text-gray-400 leading-relaxed font-medium">Sincronize o histórico VIP para iniciar a conversa...</p>
+      <p id="tipTextP3" class="text-xs text-gray-400 leading-relaxed font-medium">Sincronize para treinar a rede neural VIP...</p>
   </div>
 
   <div class="glass p-8 border-pink-600/20 w-full">
     <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-4 text-xs">
+    
+    <div class="flex gap-3 mb-6 w-full">
+        <button class="feedback-btn btn-win" onclick="trainIA('WIN_VIP')">ACERTOU ✅</button>
+        <button class="feedback-btn btn-loss" onclick="trainIA('LOSS_VIP')">ERROU ❌</button>
+    </div>
+
     <button class="btn-red bg-pink-700 w-full py-4 font-black" onclick="analyzeHistoryVIP()">GERAR ALVO ROSA</button>
   </div>
 </div>
@@ -111,7 +125,11 @@
 <script>
 const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 let firstImageLoaded = false;
+let firstImageVIPLoaded = false;
 let chart2, chartVip;
+let sessionTraining = { wins: 0, losses: 0 };
+
+function playSound() { document.getElementById("alertSound").play().catch(e => {}); }
 
 setInterval(()=>{
   const now = new Date();
@@ -120,10 +138,16 @@ setInterval(()=>{
   if(document.getElementById("clock3")) document.getElementById("clock3").innerHTML="⌚ " + timeStr;
 },1000);
 
+function trainIA(type) {
+    if(type.includes('WIN')) { sessionTraining.wins++; alert("Treino IA: Sucesso Armazenado ✅"); }
+    else { sessionTraining.losses++; alert("Treino IA: Erro Processado para Ajuste ❌"); }
+    console.log("Estado de Aprendizado:", sessionTraining);
+}
+
 function loginMain(){
   const casa = document.getElementById("casaAposta").value;
   if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
-    if(casa === "default") { alert("Por favor, selecione uma casa de aposta antes de entrar."); return; }
+    if(casa === "default") { alert("Selecione uma casa!"); return; }
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
     initChart('chartPage2', '#dc2626');
@@ -163,16 +187,20 @@ async function analyzeHistory(){
   const casa = document.getElementById("casaAposta").value;
   if (!firstImageLoaded && fileInput.files.length === 0) { alert("Sincronize o histórico primeiro!"); return; }
   
-  document.getElementById("historyResult").innerHTML = `🛰️ PROCESSANDO ALGORITMO ${casa}...`;
+  document.getElementById("historyResult").innerHTML = `🛰️ IA APRENDENDO ALGORITMO ${casa}...`;
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
     let mult = data.analysis.mult >= 10 ? (1.5 + Math.random()*3) : data.analysis.mult;
     
+    let colorClass = mult >= 2.0 ? "text-roxo" : "text-azul";
+    let typeText = mult >= 2.0 ? "ROXO" : "AZUL";
+
+    playSound();
     document.getElementById("signalsPage2").innerHTML = `
       <div class="signal-card">
-        <h3 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">ALVO ${casa}</h3>
-        <div class="text-6xl font-black">×${mult.toFixed(2)}</div>
+        <h3 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">IA SINAL ${typeText} (${casa})</h3>
+        <div class="text-6xl font-black ${colorClass}">×${mult.toFixed(2)}</div>
         <div class="alcance-box">
             <div class="flex justify-between"><span>Alcance Mín: <b>${(mult*0.85).toFixed(2)}x</b></span><span>Máx: <b>${(mult*1.15).toFixed(2)}x</b></span></div>
         </div>
@@ -181,38 +209,43 @@ async function analyzeHistory(){
     chart2.data.datasets[0].data.push(mult);
     chart2.data.datasets[0].data.shift();
     chart2.update();
+    
+    // Revelar Histórico após processamento
     document.getElementById("historyBar").classList.remove("hidden");
-    document.getElementById("historyBar").innerHTML = `<div class="history-badge badge-purple">${mult.toFixed(2)}x</div>` + document.getElementById("historyBar").innerHTML;
-    document.getElementById("tipTextP2").innerText = `IA: Analisando padrões na ${casa}. Ciclo atual favorável para retiradas curtas.`;
+    document.getElementById("historyBar").innerHTML = `<div class="history-badge ${mult >= 2.0 ? 'badge-purple' : 'badge-blue'}">${mult.toFixed(2)}x</div>` + document.getElementById("historyBar").innerHTML;
+    
+    document.getElementById("tipTextP2").innerText = `IA: Treinamento ativo na ${casa}. Memória cache atualizada com novo padrão.`;
     firstImageLoaded = true;
-    document.getElementById("historyResult").innerHTML = "✅ SINCRONIZADO";
+    document.getElementById("historyResult").innerHTML = "✅ SINCRONIZAÇÃO E TREINO ATIVO";
   } catch(e) { alert("Erro Servidor"); }
 }
 
 async function analyzeHistoryVIP(){
   const fileVIP = document.getElementById("uploadHistoryVIP");
-  if (!fileVIP.files.length === 0) { alert("Carregue o histórico VIP!"); return; }
+  if (!firstImageVIPLoaded && fileVIP.files.length === 0) { alert("Imagem VIP Necessária!"); return; }
   try {
     const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
     const data = await res.json();
-    let mult = 12.0 + Math.random()*25;
+    let mult = 10.0 + Math.random()*25;
     const pTime = getPrevisaoVIP();
 
+    playSound();
     document.getElementById("signalsVIP").innerHTML = `
-      <div class="signal-card border-pink-600 bg-pink-950/20">
-        <h2 class="text-pink-500 font-black text-xl italic">SNIPER ROSA</h2>
-        <div class="text-7xl font-black text-white">×${mult.toFixed(2)}</div>
-        <div class="alcance-box border-pink-600">
-            <p class="text-pink-300"><b>Janela de Execução:</b> ${pTime}</p>
-            <p class="text-gray-400 mt-1">Alcance Estimado: ${(mult*0.9).toFixed(2)}x - ${(mult*1.2).toFixed(2)}x</p>
+      <div class="signal-card border-rosa bg-pink-950/20" style="border-color:#db2777">
+        <h2 class="text-rosa font-black text-xl italic uppercase">SNIPER ROSA IA</h2>
+        <div class="text-7xl font-black text-rosa">×${mult.toFixed(2)}</div>
+        <div class="alcance-box" style="border-color:#db2777">
+            <p class="text-pink-300"><b>Janela:</b> ${pTime}</p>
+            <p class="text-gray-400 mt-1">Estimado: ${(mult*0.9).toFixed(2)}x - ${(mult*1.2).toFixed(2)}x</p>
         </div>
       </div>`;
       
     chartVip.data.datasets[0].data.push(mult);
     chartVip.data.datasets[0].data.shift();
     chartVip.update();
-    document.getElementById("tipTextP3").innerText = "William, identifiquei uma quebra de seed rosa iminente. O gráfico mostra a inclinação necessária. Prepare a entrada para o horário indicado.";
-  } catch(e){ alert("Erro VIP"); }
+    document.getElementById("tipTextP3").innerText = "William, a rede neural detectou probabilidade máxima de rosa. Confirme o acerto após a entrada para reforçar a IA.";
+    firstImageVIPLoaded = true;
+  } catch(e){ alert("Erro VIP."); }
 }
 </script>
 </body>

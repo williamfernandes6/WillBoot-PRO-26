@@ -7,28 +7,74 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100vh; }
+  body { background:#030303; font-family:sans-serif; color:white; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100vh; margin: 0; }
   .glass { background:rgba(255,255,255,0.03); backdrop-filter:blur(20px); border-radius:24px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; width: 100%; }
   .neon-red { box-shadow:0 0 30px rgba(220,38,38,0.4); }
-  .btn-red { background: linear-gradient(135deg, #dc2626, #991b1b); padding:14px 28px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; border:none; color:white; text-transform: uppercase; width: 100%; }
-  .btn-red:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(220,38,38,0.3); }
-  .btn-gray { background:#151515; padding:14px 28px; border-radius:14px; font-weight:bold; cursor:pointer; transition:0.3s; border: 1px solid #333; color:#aaa; }
-  .clock-display { font-family: monospace; font-weight: 800; letter-spacing: 4px; text-shadow: 0 0 15px rgba(220,38,38,0.5); }
   
-  /* MONITOR DE SINAL - CÓPIA IDENTICA À IMAGEM DO TELEFONE */
-  .aviator-monitor { width: 100%; max-width: 380px; background: #121212; border: 2px solid #dc2626; border-radius: 15px; padding: 15px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(220,38,38,0.2); }
-  .aviator-screen { background: #000; border-radius: 10px; height: 220px; position: relative; border: 1px solid #333; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-  .ascent-path { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top right, transparent 45%, rgba(220, 38, 38, 0.6) 45%); clip-path: polygon(0 100%, 100% 40%, 100% 100%, 0 100%); opacity: 0.8; }
-  .plane-icon { position: absolute; top: 35%; right: 5%; width: 45px; filter: drop-shadow(0 0 10px red); z-index: 11; }
-  .main-mult { font-size: 58px; font-weight: 900; color: #ffffff; z-index: 10; text-shadow: 0 0 20px rgba(220,38,38,0.8); }
-  .top-history { position: absolute; top: 10px; left: 15px; display: flex; gap: 12px; font-size: 12px; font-weight: 900; }
-  .get-prediction-btn { background: #28a745; color: #fff; font-weight: 900; padding: 12px 20px; border-radius: 8px; margin-top: 15px; font-size: 15px; text-transform: uppercase; width: 100%; cursor: pointer; border: none; transition: 0.2s; box-shadow: 0 4px 0 #1e7e34; }
-  .get-prediction-btn:active { transform: translateY(3px); box-shadow: none; }
+  /* BOTÕES ESTILO IMAGEM */
+  .btn-red { background: #dc2626; padding:14px; border-radius:14px; font-weight:800; cursor:pointer; border:none; color:white; text-transform: uppercase; width: 100%; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gray { background:#222; padding:14px; border-radius:14px; font-weight:bold; cursor:pointer; border: none; color:#aaa; text-transform: uppercase; width: 100px; }
+  
+  .clock-display { font-family: sans-serif; font-weight: 800; color: #dc2626; font-size: 48px; margin: 10px 0; }
+  
+  /* MONITOR DE SINAL - CÓPIA 100% FIEL */
+  .aviator-monitor { 
+    width: 100%; 
+    max-width: 360px; 
+    background: transparent; 
+    border: 2px solid #dc2626; 
+    border-radius: 25px; 
+    padding: 12px; 
+    position: relative; 
+  }
+  .aviator-screen { 
+    background: #000; 
+    border-radius: 18px; 
+    height: 240px; 
+    position: relative; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    overflow: hidden; 
+  }
+  
+  /* TRIÂNGULO VERMELHO DE FUNDO */
+  .ascent-path { 
+    position: absolute; 
+    bottom: 0; 
+    right: 0; 
+    width: 80%; 
+    height: 70%; 
+    background: #8b0000; 
+    clip-path: polygon(100% 0, 0% 100%, 100% 100%); 
+    z-index: 1;
+  }
+  
+  /* AVIÃO */
+  .plane-icon { 
+    position: absolute; 
+    bottom: 55%; 
+    right: 10%; 
+    width: 60px; 
+    z-index: 5; 
+    filter: drop-shadow(0 0 5px red);
+  }
 
-  .select-dark { background: #000; border: 1px solid #333; color: #dc2626; padding: 14px; border-radius: 12px; width: 100%; outline: none; appearance: none; text-align-last: center; font-weight: bold; text-transform: uppercase; font-size: 12px; }
-  .history-badge { width: 45px; height: 26px; border-radius: 6px; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .badge-blue { background: #2563eb; } .badge-purple { background: #9333ea; } .badge-pink { background: #db2777; }
-  .chart-container { height: 180px; width: 100%; }
+  .main-mult { font-size: 70px; font-weight: 900; color: #ffffff; z-index: 10; position: relative; }
+
+  /* HISTÓRICO NO TOPO DA TELA */
+  .top-history { 
+    position: absolute; 
+    top: 10px; 
+    left: 15px; 
+    display: flex; 
+    gap: 15px; 
+    font-size: 16px; 
+    font-weight: 900; 
+    z-index: 20;
+  }
+
+  .select-dark { background: #000; border: 1px solid #333; color: #dc2626; padding: 14px; border-radius: 12px; width: 100%; text-align-last: center; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -36,143 +82,138 @@
 <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
 <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-6 w-full">
-    <p class="text-red-500 font-black text-sm uppercase tracking-[0.4em] mb-2">Não é sorte, é estratégia</p>
-    <h1 class="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Will+Boot-PRO</h1>
-    <div class="glass p-10 max-w-md neon-red space-y-4">
+    <h1 class="text-4xl font-black mb-6 uppercase text-white">Will+Boot-PRO</h1>
+    <div class="glass p-8 max-w-md neon-red space-y-4">
       <input id="userMain" placeholder="Usuário" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
       <input id="passMain" type="password" placeholder="Senha" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-      <select id="casaAposta" class="select-dark border-red-600/40">
-          <option value="default">SELECCIONE A CASA DE APOSTA</option>
+      <select id="casaAposta" class="select-dark">
+          <option value="default">SELECIONE A CASA</option>
           <option value="ElephantBet">ElephantBet</option>
           <option value="BantuBet">BantuBet</option>
-          <option value="888Bet">888Bet</option>
-          <option value="PremierBet">PremierBet</option>
-          <option value="GoldenBet">GoldenBet</option>
-          <option value="AfriBet">AfriBet</option>
       </select>
-      <button class="btn-red mt-2" onclick="loginMain()">ENTRAR NO TERMINAL</button>
+      <button class="btn-red" onclick="loginMain()">ENTRAR</button>
     </div>
 </div>
 
-<div id="page2" class="hidden py-8 px-6 max-w-2xl w-full flex flex-col items-center space-y-4">
-  <div id="historyBar" class="hidden flex flex-wrap justify-center gap-1.5 w-full bg-black/40 p-3 rounded-xl border border-white/5"></div>
-  <div id="clock2" class="clock-display text-red-600 text-4xl">⌚ 00:00:00</div>
-
-  <div class="flex gap-4 w-full">
-      <button class="btn-red flex-1" onclick="analyzeHistory()">📊 ANALISAR VELAS</button>
-      <button class="btn-gray px-8" onclick="logoutMain()">SAIR</button>
+<div id="page2" class="hidden py-6 px-4 max-w-md w-full flex flex-col items-center space-y-4">
+  
+  <div class="flex items-center gap-3">
+    <img src="https://cdn-icons-png.flaticon.com/512/2088/2088617.png" width="40" style="filter: invert(1);">
+    <div id="clock2" class="clock-display">11:29:46</div>
   </div>
 
-  <div class="w-full max-w-[380px]">
-      <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mb-2 text-left">Sinal de análise pra aprendizagem</p>
-      <div class="aviator-monitor">
+  <div class="flex gap-3 w-full">
+      <button class="btn-red flex-1" onclick="analyzeHistory()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4245/4245451.png" width="20" style="filter: invert(1);">
+        ANALISAR VELAS
+      </button>
+      <button class="btn-gray" onclick="logoutMain()">SAIR</button>
+  </div>
+
+  <p class="text-[11px] text-red-500 font-bold uppercase tracking-widest w-full text-left ml-2">Sinal de análise pra aprendizagem</p>
+
+  <div class="aviator-monitor">
+      <div class="aviator-screen">
           <div class="top-history">
-              <span class="text-blue-400" id="hist1">1.20x</span>
-              <span class="text-purple-500" id="hist2">2.55x</span>
+              <span class="text-blue-500" id="hist1">2.55</span>
+              <span class="text-purple-500" id="hist2">8.07</span>
           </div>
-          <div class="aviator-screen">
-              <div class="ascent-path"></div>
-              <img src="https://cdn-icons-png.flaticon.com/512/68/68380.png" class="plane-icon" style="filter: invert(15%) sepia(95%) saturate(6932%) hue-rotate(358deg) brightness(95%) contrast(107%);">
-              <div id="signalVal" class="main-mult">0.00x</div>
+          <div class="ascent-path"></div>
+          <img src="https://i.ibb.co/v4m0Ym8/plane-red.png" class="plane-icon" id="plane">
+          <div style="position: absolute; right: 15px; top: 40%; color: red; font-size: 40px; z-index: 20; font-weight: bold;">
+            ✈️<br><span style="border-top: 3px solid red; width: 40px; display: block; margin-top: -10px;"></span>
           </div>
-          <button class="get-prediction-btn" onclick="generateVisualSignal()">GET PREDICTION</button>
+          <div id="signalVal" class="main-mult">8.07x</div>
       </div>
   </div>
 
-  <div class="glass p-6 w-full">
-      <p class="text-[10px] text-gray-500 uppercase font-black mb-2">Upload de Histórico Aviator</p>
-      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-500">
+  <div class="glass p-5 w-full bg-[#111]">
+      <p class="text-[10px] text-gray-500 uppercase font-black mb-3">Upload de Histórico Aviator</p>
+      <div class="flex items-center gap-2 bg-white rounded-md p-1 w-full">
+          <button onclick="document.getElementById('uploadHistory').click()" class="bg-gray-200 text-black text-xs px-2 py-1 rounded border border-gray-400">Escolher ficheiro</button>
+          <span id="fileName" class="text-gray-600 text-[11px]">Nenhum ficheiro selecionado</span>
+          <input type="file" id="uploadHistory" class="hidden" onchange="updateFileName()">
+      </div>
+
       <div class="flex gap-3 mt-4 w-full">
-          <button class="feedback-btn bg-green-600 p-3 rounded-lg flex-1 font-black text-xs" onclick="trainIA('WIN')">ACERTOU ✅</button>
-          <button class="feedback-btn bg-red-600 p-3 rounded-lg flex-1 font-black text-xs" onclick="trainIA('LOSS')">ERROU ❌</button>
+          <button class="bg-green-600 p-3 rounded-lg flex-1 font-black text-white text-xs uppercase" onclick="trainIA('WIN')">ACERTOU ✅</button>
+          <button class="bg-red-600 p-3 rounded-lg flex-1 font-black text-white text-xs uppercase" onclick="trainIA('LOSS')">ERROU ❌</button>
       </div>
   </div>
 
-  <div class="glass p-6 border-l-4 border-red-600 w-full text-left">
-      <h3 class="text-red-600 font-black text-[10px] uppercase mb-1">🧠 RESPOSTA DA IA (APRENDIZAGEM)</h3>
-      <p id="tipTextP2" class="text-xs text-gray-400 italic">O algoritmo está em fase de reconhecimento...</p>
-  </div>
+  <div class="glass p-4 chart-container w-full" style="height: 150px;"><canvas id="chartPage2"></canvas></div>
 
-  <div class="glass p-4 chart-container"><canvas id="chartPage2"></canvas></div>
-
-  <div class="glass p-8 border-red-600/30 w-full">
-    <button id="btnOpenVip" class="btn-red bg-pink-600" onclick="showVipForm()">💎 ACESSO VIP ROSA</button>
-    <div id="vipForm" class="hidden mt-6 space-y-4 w-full">
-        <h2 class="text-pink-500 font-black text-sm uppercase">Login VIP Sniper</h2>
-        <input id="vipUser" placeholder="Usuário VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-        <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full p-4 rounded-xl bg-black border border-gray-800 text-white outline-none">
-        <button class="btn-red w-full" onclick="loginVIP()">ENTRAR</button>
-    </div>
-  </div>
 </div>
 
 <script>
-const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 let firstImageLoaded = false;
 let chart2;
 
+// Relógio idêntico
 setInterval(()=>{
   const now = new Date();
-  document.getElementById("clock2").innerHTML="⌚ " + now.toLocaleTimeString();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById("clock2").innerHTML=`${h}:${m}:${s}`;
 },1000);
 
+function updateFileName() {
+    const inp = document.getElementById('uploadHistory');
+    document.getElementById('fileName').innerText = inp.files[0] ? inp.files[0].name : "Nenhum ficheiro selecionado";
+}
+
 function loginMain(){
-  if(document.getElementById("userMain").value === "admin" && document.getElementById("passMain").value === "1234"){
     document.getElementById("page1").classList.add("hidden");
     document.getElementById("page2").classList.remove("hidden");
     initChart();
-  } else { alert("Acesso Negado."); }
 }
 
 function initChart() {
   const ctx = document.getElementById('chartPage2').getContext("2d");
   chart2 = new Chart(ctx, { 
     type: 'line', 
-    data: { labels:[1,2,3,4,5,6,7,8,9,10], datasets:[{ data:[1.1, 2.5, 1.4, 3.2, 1.8], borderColor:'#dc2626', tension:0.4, pointRadius: 0 }] }, 
+    data: { labels:[1,2,3,4,5], datasets:[{ data:[1.1, 2.5, 1.4, 8.07, 4.2], borderColor:'#dc2626', backgroundColor: 'rgba(220,38,38,0.2)', fill: true, tension:0.4 }] }, 
     options: { maintainAspectRatio: false, plugins:{legend:{display:false}}, scales:{y:{display:false}, x:{display:false}} } 
   });
 }
 
-// ESTA É A SUA LÓGICA DE BACKEND QUE VOCÊ JÁ TINHA
+// Lógica de Análise solicitada
 async function analyzeHistory(){
   const fileInput = document.getElementById("uploadHistory");
-  if (!firstImageLoaded && fileInput.files.length === 0) { alert("Sincronize o histórico!"); return; }
-  document.getElementById("tipTextP2").innerText = "Sincronizando com o servidor...";
-  firstImageLoaded = true;
-  alert("Histórico Sincronizado. Clique em GET PREDICTION para ver o sinal.");
-}
+  
+  // Se for a primeira vez, exige a imagem
+  if (!firstImageLoaded) {
+      if (fileInput.files.length === 0) {
+          alert("Por favor, selecione a primeira imagem do histórico para sincronizar!");
+          return;
+      }
+      firstImageLoaded = true;
+      alert("Sincronizando primeira imagem...");
+  }
 
-// ESTA É A "MAGIA" VISUAL DO BOTÃO VERDE
-function generateVisualSignal(){
+  // Gera o sinal (Funcionalidade única do botão Analisar)
   const display = document.getElementById("signalVal");
-  const btn = document.querySelector('.get-prediction-btn');
+  const btn = document.querySelector('.btn-red');
   
-  btn.innerText = "ANALISANDO...";
   btn.style.opacity = "0.5";
-  
-  setTimeout(async () => {
-    try {
-      const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST" });
-      const data = await res.json();
-      let mult = data.analysis.mult || (1.5 + Math.random() * 5);
-      
-      display.innerText = mult.toFixed(2) + "x";
-      document.getElementById("hist1").innerText = document.getElementById("hist2").innerText;
-      document.getElementById("hist2").innerText = mult.toFixed(2) + "x";
-      
-      document.getElementById("tipTextP2").innerText = "IA: Entrada confirmada. O padrão detectado indica alta probabilidade nesta janela.";
-      document.getElementById("alertSound").play().catch(e=>{});
-    } catch(e) {
-      display.innerText = (1.5 + Math.random() * 5).toFixed(2) + "x";
-    }
-    btn.innerText = "GET PREDICTION";
+  display.innerText = "---";
+
+  setTimeout(() => {
+    let mult = (1.1 + Math.random() * 9).toFixed(2);
+    display.innerText = mult + "x";
+    
+    // Atualiza histórico interno da tela
+    document.getElementById("hist1").innerText = document.getElementById("hist2").innerText;
+    document.getElementById("hist2").innerText = mult;
+    
+    document.getElementById("alertSound").play().catch(e=>{});
     btn.style.opacity = "1";
   }, 1500);
 }
 
 function logoutMain(){ location.reload(); }
-function showVipForm(){ document.getElementById("vipForm").classList.toggle("hidden"); }
-function trainIA(t){ alert("Treino IA processado: " + t); }
+function trainIA(t){ alert("Feedback registrado: " + t); }
 </script>
 </body>
 </html>

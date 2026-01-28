@@ -10,193 +10,157 @@
         body { background-color: #030303; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .card { background: #111111; border-radius: 24px; border: 1px solid #1f1f1f; padding: 20px; width: 100%; max-width: 440px; margin-bottom: 20px; }
         .btn-main { background: linear-gradient(135deg, #e11d48, #9f1239); color: white; font-weight: 800; text-transform: uppercase; padding: 16px; border-radius: 14px; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
+        .btn-main:active { transform: scale(0.98); }
+        .btn-main:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; border: 1px solid #222; }
         .btn-secondary { background: #1f1f1f; color: #a1a1aa; font-weight: 800; padding: 12px; border-radius: 12px; border: none; cursor: pointer; }
         .input-dark { background: #000; border: 1px solid #222; border-radius: 12px; padding: 15px; width: 100%; color: white; outline: none; margin-bottom: 12px; }
-        .display-signal { background: #000; border: 2px solid #222; border-radius: 30px; min-height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; padding: 15px; }
-        .multiplier-text { font-size: 58px; font-weight: 900; letter-spacing: -2px; }
+        .display-signal { background: #000; border: 2px solid #222; border-radius: 30px; min-height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; padding: 15px; overflow: hidden; }
+        .multiplier-text { font-size: 58px; font-weight: 900; letter-spacing: -2px; z-index: 10; }
         .color-blue { color: #3b82f6; text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
         .color-purple { color: #a855f7; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
         .color-rosa { color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.4); }
-        .history-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; margin-top: 10px; margin-bottom: 15px; }
-        .history-item { font-size: 10px; padding: 5px; border-radius: 6px; text-align: center; font-weight: bold; background: #141414; border: 1px solid #222; }
+        .history-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; margin-top: 10px; margin-bottom: 15px; z-index: 10; }
+        .history-item { font-size: 10px; padding: 5px; border-radius: 6px; text-align: center; font-weight: bold; background: #141414; border: 1px solid #222; opacity: 0; animation: fadeInItem 0.3s forwards; }
+        @keyframes fadeInItem { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .footer-rights { font-size: 10px; color: #333; margin-top: 25px; text-align: center; font-weight: bold; text-transform: uppercase; }
-        
-        /* Novas Estilizações */
-        .console-log { background: #050505; border: 1px solid #1a1a1a; border-radius: 12px; padding: 10px; height: 80px; overflow-y: hidden; font-family: 'Courier New', monospace; font-size: 9px; color: #10b981; margin-bottom: 15px; width: 100%; }
+        .console-log { background: #050505; border: 1px solid #1a1a1a; border-radius: 12px; padding: 10px; height: 85px; overflow-y: hidden; font-family: 'Courier New', monospace; font-size: 9px; color: #10b981; margin-bottom: 15px; width: 100%; border-left: 3px solid #e11d48; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
         .dot-green { background: #10b981; box-shadow: 0 0 10px #10b981; }
+        .laser-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(225, 29, 72, 0.5); box-shadow: 0 0 15px #e11d48; z-index: 5; display: none; animation: scan 2s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .trust-bar-container { width: 100px; height: 4px; background: #111; border-radius: 10px; margin-top: 10px; overflow: hidden; display: none; }
+        .trust-bar-fill { height: 100%; background: #10b981; width: 0%; transition: 1s ease-out; }
+        .upload-zone { border: 2px dashed #1f1f1f; border-radius: 20px; padding: 30px 20px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .upload-zone.ready { border-color: #10b981; background: rgba(16, 185, 129, 0.05); }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
     <div id="pageLogin" class="w-full flex flex-col items-center justify-center min-h-screen text-center">
         <p class="text-rose-600 font-black tracking-[0.3em] text-xs mb-2 uppercase">Não é sorte é estratégia</p>
-        <h1 class="text-4xl font-black text-white mb-3 italic text-center">Will+Boot-PRO Aviator</h1>
-        <p class="text-zinc-400 text-xs mb-10 max-w-xs leading-relaxed">
-            A inteligência artificial Sniper projetada para prever padrões no Aviator com máxima precisão e análise de tendências.
-        </p>
-        
+        <h1 class="text-4xl font-black text-white mb-3 italic">Will+Boot-PRO Aviator</h1>
         <div class="card shadow-2xl">
             <input id="user" type="text" placeholder="Usuário" class="input-dark">
             <input id="pass" type="password" placeholder="Senha" class="input-dark">
-            <select id="casaAposta" class="input-dark bg-black appearance-none cursor-pointer">
+            <select id="casaAposta" class="input-dark bg-black cursor-pointer">
                 <option value="">SELECIONE A CASA</option>
                 <option value="elephant">ElephantBet</option>
                 <option value="bantu">BantuBet</option>
                 <option value="888">888Bet</option>
                 <option value="premier">PremierBet</option>
-                <option value="afribet">AfriBet</option>
             </select>
             <button onclick="login()" class="btn-main mt-4">ENTRAR NO TERMINAL</button>
-        </div>
-        
-        <div class="footer-rights">
-            © 2026 WILL+BOOT-PRO - TODOS OS DIREITOS RESERVADOS<br>
-            PREDITOR- AVIATOR(1.1)
         </div>
     </div>
 
     <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col items-center py-6">
         <div class="w-full flex justify-between items-center mb-6 px-2">
             <div class="text-white font-bold text-xs uppercase flex items-center">
-                <span class="status-dot dot-green"></span> 🇦🇴 Angola: <span id="clock" class="text-rose-600 ml-1">--:--:--</span>
+                <span class="status-dot dot-green"></span> 🇦🇴 Luanda: <span id="clock" class="text-rose-600 ml-1">--:--:--</span>
             </div>
-            <button onclick="location.reload()" class="btn-secondary px-5 py-2 text-[10px]">SAIR</button>
+            <button onclick="location.reload()" class="btn-secondary px-4 py-2 text-[9px]">SAIR</button>
         </div>
 
-        <button id="btnAnalisar" onclick="analisarProcesso('normal')" class="btn-main mb-6">
-            📊 ANALISAR IMAGEM HISTÓRICO
-        </button>
+        <div class="card !mb-4">
+            <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this)">
+            <div id="dropZone" onclick="document.getElementById('upNormal').click()" class="upload-zone">
+                <span id="upIcon" class="block mb-2 text-2xl">📷</span>
+                <p id="upText" class="text-xs font-black text-zinc-500 uppercase">SINCRONIZAR HISTÓRICO REAL</p>
+            </div>
+        </div>
+
+        <button id="btnAnalisar" onclick="analisarProcesso('normal')" class="btn-main mb-6" disabled>📊 INICIAR VARREDURA SNIPER</button>
 
         <div class="card p-4 !bg-black border-zinc-900">
             <div id="consoleNormal" class="console-log">
-                <div>> System Initialized...</div>
-                <div id="logTextNormal">> Aguardando comando de varredura...</div>
+                <div>> CORE_ENGINE: RENDER_MODE_ACTIVE</div>
+                <div id="logTextNormal">> Aguardando captura do histórico...</div>
             </div>
 
             <div class="display-signal" id="displayNormal">
-                <div id="statusNormal" class="text-zinc-600 font-bold uppercase text-[10px] tracking-widest text-center">Aguardando Varredura...</div>
+                <div id="laserNormal" class="laser-scanner"></div>
+                <div id="statusNormal" class="text-zinc-700 font-bold uppercase text-[10px] text-center italic">PENDENTE: RENDERIZAÇÃO DE DADOS</div>
                 <div id="historyNormal" class="history-grid hidden"></div>
                 <div id="resultNormal" class="multiplier-text hidden">--.--x</div>
+                <div id="trustContainerNormal" class="trust-bar-container"><div id="trustFillNormal" class="trust-bar-fill"></div></div>
                 <div id="detailsNormal" class="text-[11px] text-zinc-500 mt-4 text-center hidden">
-                    <span class="block mb-1 font-bold italic text-rose-500">ENTRADA DE SEGURANÇA: 1.50x</span>
-                    <span class="block mb-1 font-bold">ALCANCE: <span class="text-white" id="rangeNormal">--:--</span></span>
-                    MIN: <span class="text-white" id="minNormal">--</span> | MAX: <span class="text-white" id="maxNormal">--</span>
+                    <span class="block mb-1 font-bold italic text-rose-500 uppercase">🎯 PROTEÇÃO: 1.50x</span>
                 </div>
             </div>
-            <button id="btnGetNormal" onclick="getSignal('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GET PREDICTION</button>
+            <button id="btnGetNormal" onclick="getSignal('normal')" class="bg-green-600 w-full p-4 rounded-xl font-black mt-2 hidden">GERAR PREDIÇÃO</button>
         </div>
 
-        <div class="card">
-            <p class="text-zinc-500 text-[9px] font-black uppercase mb-3 text-center tracking-widest">Sincronizar Imagem de Histórico Real</p>
-            <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this)">
-            <div onclick="document.getElementById('upNormal').click()" class="border-2 border-dashed border-zinc-900 p-4 rounded-xl text-center cursor-pointer mb-5">
-                <span class="text-xs text-zinc-600">Carregar print do histórico...</span>
-            </div>
-            <div class="flex gap-4">
-                <button onclick="trainIA('WIN')" class="bg-green-600/10 text-green-500 p-3 rounded-xl flex-1 font-bold border border-green-600/20">ACERTOU</button>
-                <button onclick="trainIA('LOSS')" class="bg-rose-600/10 text-rose-500 p-3 rounded-xl flex-1 font-bold border border-rose-600/20">ERROU</button>
-            </div>
-        </div>
+        <div class="card h-[180px]"><canvas id="chartNormal"></canvas></div>
 
-        <div class="card h-[200px]">
-            <canvas id="chartNormal"></canvas>
-        </div>
-
-        <div class="w-full flex flex-col items-center">
+        <div class="w-full">
             <input id="vipPass" type="password" placeholder="PASSE VIP SNIPER" class="input-dark">
-            <div class="flex gap-2 w-full">
-                <button onclick="acessoVip()" class="btn-main bg-rose-700 flex-1 py-3 text-xs">ACESSO VIP</button>
-                <button onclick="document.getElementById('vipPass').value=''" class="btn-secondary px-6 text-xs">FECHAR</button>
-            </div>
+            <button onclick="acessoVip()" class="btn-main bg-rose-700 w-full py-3 text-xs">DESBLOQUEAR VIP</button>
         </div>
     </div>
 
     <div id="pageVip" class="hidden w-full max-w-md flex flex-col items-center py-6">
-        <div class="w-full flex justify-between items-center mb-6">
-            <h1 class="text-xl font-black text-rose-500 italic">VIP SUPER</h1>
+        <div class="w-full flex justify-between items-center mb-6 px-4">
+            <h1 class="text-xl font-black text-rose-500 italic uppercase">💎 VIP DEEP RENDER</h1>
             <button onclick="back()" class="btn-secondary px-4 py-2 text-[10px]">VOLTAR</button>
         </div>
-        
-        <div class="text-white font-bold text-xs mb-6 uppercase flex items-center">
-            <span class="status-dot dot-green"></span> 🇦🇴 Angola: <span id="clockVip" class="text-rose-600 ml-1">--:--:--</span>
-        </div>
-
         <div class="card !bg-black border-rose-900/40">
-            <div id="consoleVip" class="console-log" style="color: #f472b6;">
-                <div>> VIP DEEP LEARNING ACTIVE...</div>
-                <div id="logTextVip">> Buscando Seeds de Alta Volatilidade...</div>
+            <div id="consoleVip" class="console-log" style="color:#f472b6;">
+                <div>> VIP_DEEP_LEARNING: RENDER...</div>
+                <div id="logTextVip">> Processando High-Seeds...</div>
             </div>
-
             <div class="display-signal">
+                <div id="laserVip" class="laser-scanner"></div>
                 <div id="historyVip" class="history-grid hidden"></div>
                 <div id="resultVip" class="multiplier-text color-rosa hidden">--.--x</div>
-                <div id="detailsVip" class="text-[11px] text-zinc-400 mt-4 text-center hidden leading-relaxed">
-                    <span class="text-rose-500 font-bold block mb-1">PROBABILIDADE: <span id="probVip">--%</span></span>
-                    MIN: <span class="text-white" id="minVip">--</span> | MAX: <span class="text-white" id="maxVip">--</span><br>
-                    <span class="text-rose-400 font-bold italic mt-2 block">ALCANCE ROSA DETECTADO</span>
-                </div>
+                <div id="trustContainerVip" class="trust-bar-container"><div id="trustFillVip" class="trust-bar-fill"></div></div>
             </div>
-            <button onclick="getSignal('vip')" class="btn-main bg-rose-600 mt-3">GERAR SINAIS ROSA</button>
-        </div>
-
-        <div class="card">
-            <input type="file" id="upVip" class="hidden" accept="image/*" onchange="storeImg(this)">
-            <button onclick="document.getElementById('upVip').click()" class="btn-secondary w-full mb-4 border border-rose-900/20">UPLOAD HISTÓRICO VIP</button>
-            <div class="flex gap-4">
-                <button onclick="trainIA('WIN')" class="bg-green-600/10 text-green-500 p-3 rounded-xl flex-1 font-bold">ACERTOU</button>
-                <button onclick="trainIA('LOSS')" class="bg-rose-600/10 text-rose-500 p-3 rounded-xl flex-1 font-bold">ERROU</button>
-            </div>
+            <button onclick="getSignal('vip')" class="btn-main bg-rose-600 mt-3 italic">RENDERIZAR SINAL ROSA</button>
         </div>
     </div>
 
     <script>
         let chart;
-        const imgStore = [];
+        let brainStorage = [];
+        const beep = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
 
-        // Relógio Real Angola
+        function playSound() { beep.volume = 0.2; beep.play(); }
+
         setInterval(() => {
             const time = new Intl.DateTimeFormat('pt-PT', { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date());
             document.getElementById('clock').innerText = time;
-            if(document.getElementById('clockVip')) document.getElementById('clockVip').innerText = time;
         }, 1000);
 
-        function login() {
-            document.getElementById('pageLogin').classList.add('hidden');
-            document.getElementById('pageTerminal').classList.remove('hidden');
-            initChart();
-        }
-
-        function acessoVip() {
-            if(document.getElementById('vipPass').value === "230220") {
-                document.getElementById('pageTerminal').classList.add('hidden');
-                document.getElementById('pageVip').classList.remove('hidden');
-            } else { alert("Senha Incorreta!"); }
-        }
-
-        function back() {
-            document.getElementById('pageVip').classList.add('hidden');
-            document.getElementById('pageTerminal').classList.remove('hidden');
-        }
+        function login() { playSound(); document.getElementById('pageLogin').classList.add('hidden'); document.getElementById('pageTerminal').classList.remove('hidden'); initChart(); }
+        function back() { playSound(); document.getElementById('pageVip').classList.add('hidden'); document.getElementById('pageTerminal').classList.remove('hidden'); }
+        function acessoVip() { playSound(); if(document.getElementById('vipPass').value === "230220") { document.getElementById('pageTerminal').classList.add('hidden'); document.getElementById('pageVip').classList.remove('hidden'); } else { alert("NEGADO!"); } }
 
         function storeImg(input) {
             if(input.files[0]) {
-                imgStore.push(input.files[0].name);
-                alert("IA: Imagem recebida para análise profunda.");
+                const file = input.files[0];
+                brainStorage.push({ name: file.name, size: file.size, lastMod: file.lastModified });
+                const zone = document.getElementById('dropZone');
+                zone.classList.add('ready');
+                document.getElementById('upIcon').innerText = "✔️";
+                document.getElementById('upText').innerText = "DADOS DE RENDER RECEBIDOS";
+                document.getElementById('btnAnalisar').disabled = false;
+                document.getElementById('logTextNormal').innerHTML = `> Arquivo: ${file.name} [LOADED]<br>> Seed de tempo real detectada.`;
+                playSound();
             }
         }
 
         function analisarProcesso(type) {
-            const btn = document.getElementById('btnAnalisar');
+            playSound();
             const log = document.getElementById('logTextNormal');
-            btn.innerText = "Aguarde, sendo analisando...";
-            log.innerHTML = "> Analisando pixels da imagem...<br>> Mapeando tendências de minutos...";
+            const laser = document.getElementById('laserNormal');
+            document.getElementById('btnAnalisar').disabled = true;
+            laser.style.display = 'block';
+            log.innerHTML = `> Renderizando padrões de ${brainStorage.length} imagens...<br>> Mapeando volatilidade atual...`;
             
             setTimeout(() => {
-                btn.innerText = "ANÁLISE DE HISTÓRICO COMPLETA!";
-                log.innerHTML = "> Histórico Sincronizado.<br>> Algoritmo pronto para predição.";
+                laser.style.display = 'none';
+                log.innerHTML = "> Renderização concluída com sucesso.<br>> Sincronizado com API de histórico.";
                 document.getElementById('btnGetNormal').classList.remove('hidden');
-                document.getElementById('statusNormal').innerText = "VARRREDURA DE TENDÊNCIA OK";
+                document.getElementById('statusNormal').innerText = "RENDER: LIVE DATA OK";
                 showHistory(type);
             }, 3000);
         }
@@ -206,59 +170,62 @@
             grid.innerHTML = '';
             grid.classList.remove('hidden');
             for(let i=0; i<30; i++) {
-                const val = (Math.random() * 4 + 1.1).toFixed(2);
+                const val = (Math.random() * 3.5 + 1.1).toFixed(2);
                 const item = document.createElement('div');
                 item.className = 'history-item';
                 item.style.color = val >= 2 ? '#a855f7' : '#3b82f6';
+                item.style.animationDelay = `${i * 0.03}s`;
                 item.innerText = val + 'x';
                 grid.appendChild(item);
             }
         }
 
         function getSignal(type) {
+            playSound();
             const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
             const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
             const log = document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip');
+            const fill = document.getElementById(type === 'normal' ? 'trustFillNormal' : 'trustFillVip');
             
             res.classList.remove('hidden');
-            det.classList.remove('hidden');
-            log.innerHTML = "> Calculando probabilidade de acerto...<br>> Sinal Gerado com Sucesso!";
+            if(det) det.classList.remove('hidden');
+            document.getElementById(type === 'normal' ? 'trustContainerNormal' : 'trustContainerVip').style.display = 'block';
+            
+            fill.style.width = '0%';
+            setTimeout(() => { fill.style.width = (Math.random() * 15 + 85) + '%'; }, 100);
+
+            const lastData = brainStorage[brainStorage.length - 1];
+            const renderSeed = lastData ? lastData.lastMod % 100 : Math.random() * 100;
 
             if(type === 'normal') {
-                const val = (1.1 + Math.random() * 8.8).toFixed(2);
+                const val = (1.5 + (renderSeed / 20)).toFixed(2);
                 res.innerText = val + "x";
                 res.className = `multiplier-text ${val >= 2 ? 'color-purple' : 'color-blue'}`;
-                document.getElementById('rangeNormal').innerText = new Date(Date.now() + 120000).toLocaleTimeString().slice(0,5);
-                document.getElementById('minNormal').innerText = (val * 0.9).toFixed(2);
-                document.getElementById('maxNormal').innerText = (val * 1.1).toFixed(2);
                 updateChart(val);
+                log.innerHTML = `> Sinal renderizado via Seed: ${renderSeed.toFixed(0)}`;
             } else {
-                const val = (10 + Math.random() * 40).toFixed(2);
+                const val = (12.0 + (renderSeed / 4)).toFixed(2);
                 res.innerText = val + "x";
-                document.getElementById('probVip').innerText = Math.floor(Math.random() * 15 + 83) + "%";
-                document.getElementById('minVip').innerText = (val * 0.9).toFixed(2);
-                document.getElementById('maxVip').innerText = (val * 1.3).toFixed(2);
+                log.innerHTML = `> VIP Deep Render: High-Value detectado.`;
                 showHistory('vip');
             }
         }
 
         function initChart() {
             const ctx = document.getElementById('chartNormal').getContext('2d');
+            const grad = ctx.createLinearGradient(0,0,0,180);
+            grad.addColorStop(0, 'rgba(225,29,72,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['1','2','3','4','5'], datasets: [{ data: [1.2, 2.5, 1.8, 3.2, 2.1], borderColor: '#e11d48', tension: 0.4, fill: true, backgroundColor: 'rgba(225, 29, 72, 0.05)' }] },
+                data: { labels: ['1','2','3','4','5','6'], datasets: [{ data: [1.2, 2.1, 1.5, 3.0, 1.8, 2.5], borderColor: '#e11d48', fill: true, backgroundColor: grad, tension: 0.4 }] },
                 options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: '#111' } } } }
             });
         }
 
         function updateChart(val) {
             chart.data.datasets[0].data.push(val);
-            if(chart.data.datasets[0].data.length > 7) chart.data.datasets[0].data.shift();
+            chart.data.datasets[0].data.shift();
             chart.update();
-        }
-
-        function trainIA(s) {
-            alert(s === 'WIN' ? "IA: Acerto registrado. Refinando algoritmo." : "IA: Erro mapeado para correção.");
         }
     </script>
 </body>

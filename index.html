@@ -1,320 +1,274 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>Will+Boot-PRO Aviator | IA Sniper Angola</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root { --primary: #ff003c; --accent: #ff00ff; --bg: #030303; }
-        
-        body { 
-            background: radial-gradient(circle at top right, #1a0808, #050505 50%);
-            color: #fff; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; 
-        }
-
-        /* Camada de Vidro Futurista */
-        .glass-ui { 
-            background: rgba(20, 20, 25, 0.6); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Botão Sniper */
-        .btn-sniper {
-            background: linear-gradient(135deg, #ff003c 0%, #a30026 100%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-sniper:before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg); transition: 0.6s;
-        }
-        .btn-sniper:hover:before { left: 100%; }
-        .btn-sniper:active { transform: scale(0.96); box-shadow: 0 0 30px var(--primary); }
-
-        /* Núcleo do Preditor (Estilo Aviator) */
-        .predictor-core {
-            position: relative;
-            width: 100%; height: 320px;
-            background: radial-gradient(circle, rgba(255, 0, 60, 0.05) 0%, transparent 70%);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        }
-        
-        .radar-circle {
-            position: absolute; width: 280px; height: 280px;
-            border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 50%;
-            animation: pulseRadar 3s infinite ease-out;
-        }
-        @keyframes pulseRadar { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.2); opacity: 0; } }
-
-        .multiplier-display {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 82px; font-weight: 900;
-            background: linear-gradient(to bottom, #fff, #ff003c);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(255, 0, 60, 0.4));
-        }
-
-        /* Relógio e Texto */
-        .clock-ui { font-family: 'Orbitron', sans-serif; font-size: 40px; color: #fff; text-shadow: 0 0 15px var(--primary); }
-        .input-ui { background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 20px; padding: 20px; color: #fff; width: 100%; outline: none; transition: 0.3s; }
-        .input-ui:focus { border-color: var(--primary); background: rgba(255,0,60,0.02); }
-
-        /* Console de Logs */
-        .console-box { font-family: 'Courier New', monospace; font-size: 11px; background: rgba(0,0,0,0.8); border-left: 3px solid var(--primary); padding: 12px; border-radius: 12px; color: #00ff41; }
-
-        /* Scanning Line */
-        .scanner { position: absolute; width: 100%; height: 2px; background: var(--primary); box-shadow: 0 0 15px var(--primary); z-index: 10; display: none; animation: scanMove 2s linear infinite; }
-        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WillBoot-PRO • Aviator IA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { background:#050505; font-family:sans-serif; color:white; }
+  .glass { background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); border-radius:16px; }
+  .neon-red { box-shadow:0 0 25px rgba(220,38,38,.6); }
+  .btn-red { background:#dc2626; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
+  .btn-red:hover { background:#b91c1c; }
+  .btn-gray { background:#111; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.3s; }
+  .btn-gray:hover { background:#222; }
+  .signal-card { padding:16px; border-radius:12px; text-align:center; transition:0.3s; border-width: 2px; }
+</style>
 </head>
-<body class="flex flex-col items-center p-4 min-h-screen">
+<body>
 
-    <div id="pageLogin" class="w-full max-w-sm flex flex-col items-center justify-center min-h-screen">
-        <div class="mb-12 text-center">
-            <div class="inline-block bg-rose-600/10 px-4 py-1 rounded-full text-[10px] font-bold text-rose-500 uppercase tracking-widest border border-rose-600/20 mb-4">Angola Sniper IA</div>
-            <h1 class="text-6xl font-black italic tracking-tighter">WILL<span class="text-rose-600">+</span>BOOT</h1>
-            <p class="text-zinc-500 font-medium tracking-[0.3em] text-[12px] uppercase">Professional Edition</p>
-        </div>
-        
-        <div class="glass-ui p-10 w-full">
-            <div class="space-y-4">
-                <input id="user" type="text" placeholder="USUÁRIO" class="input-ui">
-                <input id="pass" type="password" placeholder="SENHA" class="input-ui">
-                <select id="casaAposta" class="input-ui appearance-none">
-                    <option value="">CASA DE APOSTA</option>
-                    <option value="elephant">ElephantBet</option>
-                    <option value="bantu">BantuBet</option>
-                    <option value="premier">PremierBet</option>
-                </select>
-                <button onclick="login()" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 uppercase tracking-widest text-sm">Acessar Terminal</button>
-            </div>
-        </div>
+<div id="page1" class="min-h-screen flex items-center justify-center">
+  <div class="glass p-10 w-full max-w-md border border-red-600/30">
+    <h1 class="text-3xl font-black text-red-600 mb-6 text-center">WILLBOOT-PRO</h1>
+    <input id="userMain" placeholder="Usuário" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
+    <input id="passMain" type="password" placeholder="Senha" class="w-full mb-6 p-3 rounded bg-black border border-gray-700">
+    <button class="btn-red w-full neon-red mb-4" onclick="loginMain()">🔐 ENTRAR</button>
+    <p class="text-center text-gray-400 text-sm">Acesso normal ao site</p>
+  </div>
+</div>
+
+<div id="page2" class="hidden max-w-7xl mx-auto px-6 py-10">
+  
+  <div class="glass p-6 border border-red-600/20 mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div id="clock2" class="text-red-500 font-bold text-xl"></div>
+      <div class="flex gap-4 mt-4 md:mt-0">
+        <button class="btn-red neon-red" onclick="analyzeHistory()">🔥 GERAR SINAIS / ANALISAR</button>
+        <button class="btn-gray" onclick="logoutMain()">🚪 SAIR</button>
+      </div>
     </div>
-
-    <div id="pageTerminal" class="hidden w-full max-w-md flex flex-col">
-        <header class="text-center py-8">
-            <div id="clock" class="clock-ui">00:00:00</div>
-            <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.4em] mt-2">Sincronização Luanda / Angola</p>
-        </header>
-
-        <div class="flex justify-between items-center mb-6 px-2">
-            <div class="flex items-center gap-2">
-                <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
-                <span class="text-[11px] font-black uppercase text-zinc-400 tracking-tighter">IA Server Online</span>
-            </div>
-            <button onclick="location.reload()" class="bg-zinc-900 border border-zinc-800 px-4 py-1.5 rounded-full text-[10px] font-bold text-zinc-500 uppercase hover:text-white transition">Sair</button>
-        </div>
-
-        <div class="glass-ui p-6 mb-4">
-            <div id="dropZoneNormal" onclick="document.getElementById('upNormal').click()" class="border-2 border-dashed border-zinc-800 rounded-2xl py-8 text-center cursor-pointer hover:border-rose-600 transition group">
-                <input type="file" id="upNormal" class="hidden" accept="image/*" onchange="storeImg(this, 'normal')">
-                <p id="upTextNormal" class="text-[11px] font-bold text-zinc-500 uppercase tracking-widest group-hover:text-rose-500 transition">Sincronizar Histórico Real</p>
-            </div>
-            <button id="btnAnalisarNormal" onclick="analisarProcesso('normal')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 text-sm uppercase" disabled>Iniciar Varredura Sniper</button>
-        </div>
-
-        <div class="glass-ui p-5 mb-4">
-            <div class="console-box mb-6 h-20 overflow-hidden">
-                <div id="logTextNormal">> Aguardando injeção de dados...</div>
-            </div>
-
-            <div class="predictor-core" id="displayNormal">
-                <div id="laserNormal" class="scanner"></div>
-                <div class="radar-circle"></div>
-                <div id="statusNormal" class="text-zinc-700 font-bold uppercase text-[10px] tracking-widest absolute">Inativo</div>
-                
-                <div id="historyNormal" class="grid grid-cols-6 gap-2 w-full px-4 hidden"></div>
-                <div id="resultNormal" class="multiplier-display hidden">0.00x</div>
-                
-                <div id="detailsNormal" class="absolute bottom-6 w-full px-8 hidden">
-                    <div class="flex justify-between border-t border-zinc-800/50 pt-4">
-                        <div class="text-center"><span class="block text-[9px] text-zinc-500 uppercase">Mínimo</span><span id="minNormal" class="text-lg font-black">--</span></div>
-                        <div class="text-center"><span class="block text-[9px] text-zinc-500 uppercase">Máximo</span><span id="maxNormal" class="text-lg font-black">--</span></div>
-                    </div>
-                    <div class="mt-4 bg-rose-600/10 py-2 rounded-xl text-center text-[10px] font-black text-rose-500 uppercase">Alcance: <span id="rangeNormal" class="text-white">--</span></div>
-                </div>
-            </div>
-            
-            <button id="btnGetNormal" onclick="getSignal('normal')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-6 hidden bg-green-600 text-sm uppercase">Gerar Próximo Sinal</button>
-        </div>
-
-        <div id="feedbackNormal" class="flex gap-4 mb-6 px-2 hidden">
-            <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/10 border border-green-500/20 py-4 rounded-2xl text-green-500 font-black text-[11px] uppercase transition hover:bg-green-500/20">Win ✅</button>
-            <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/10 border border-rose-500/20 py-4 rounded-2xl text-rose-500 font-black text-[11px] uppercase transition hover:bg-rose-500/20">Loss ❌</button>
-        </div>
-
-        <div class="glass-ui p-4 h-[180px] mb-6">
-            <canvas id="chartNormal"></canvas>
-        </div>
-
-        <div class="glass-ui p-8 border-rose-900/30">
-            <input id="vipPass" type="password" placeholder="PASSWORD VIP" class="input-ui mb-4 text-center">
-            <button onclick="acessoVip()" class="btn-sniper w-full py-4 text-[10px] font-black !from-zinc-900 !to-black">Acessar Deep Render VIP</button>
-        </div>
+    
+    <div class="bg-black/40 p-4 rounded-xl border border-gray-800 text-center">
+      <label class="block mb-2 font-bold text-gray-300">Escolha o Print do Histórico:</label>
+      <input type="file" id="uploadHistory" accept="image/*" class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700">
+      <p id="historyResult" class="mt-2 text-xs text-red-400 font-medium uppercase"></p>
     </div>
+  </div>
 
-    <div id="pageVip" class="hidden w-full max-w-md flex flex-col">
-        <header class="text-center py-8">
-            <div id="clockVip" class="clock-ui" style="text-shadow: 0 0 20px #ff00ff;">00:00:00</div>
-            <h2 class="text-rose-500 font-black italic text-2xl tracking-tighter mt-2 uppercase">Deep Render VIP</h2>
-        </header>
-
-        <div class="glass-ui p-8 mb-6 text-center">
-            <input type="file" id="upVip" class="hidden" accept="image/*" onchange="storeImg(this, 'vip')">
-            <div id="dropZoneVip" onclick="document.getElementById('upVip').click()" class="border-2 border-dashed border-rose-900/40 rounded-3xl py-10 cursor-pointer">
-                <span id="upTextVip" class="text-[11px] font-black text-rose-400 uppercase tracking-widest">Injetar Histórico VIP</span>
-            </div>
-            <button id="btnAnalisarVip" onclick="analisarProcesso('vip')" class="btn-sniper w-full py-5 rounded-2xl font-black mt-8 text-sm uppercase" disabled>Varredura de Alta Seed</button>
-        </div>
-
-        <div class="glass-ui p-6 border-rose-500/20">
-            <div class="predictor-core" style="background: radial-gradient(circle, rgba(255, 0, 255, 0.05) 0%, transparent 70%);">
-                <div id="laserVip" class="scanner" style="background: #ff00ff; box-shadow: 0 0 20px #ff00ff;"></div>
-                <div id="historyVip" class="grid grid-cols-6 gap-2 w-full px-4 hidden"></div>
-                <div id="resultVip" class="multiplier-display hidden" style="background: linear-gradient(to bottom, #fff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px #ff00ff);">0.00x</div>
-                
-                <div id="detailsVip" class="absolute bottom-10 w-full text-center hidden">
-                    <span class="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Pico Máximo Estimado</span>
-                    <div class="text-4xl font-black text-white mt-1" id="maxVip">--</div>
-                </div>
-            </div>
-            
-            <button id="btnGetVip" onclick="getSignal('vip')" class="btn-sniper w-full py-6 rounded-2xl font-black mt-8 text-sm uppercase !from-rose-600 !to-purple-900 hidden">Gerar Multiplicador Rosa</button>
-
-            <div id="feedbackVip" class="flex gap-4 mt-8 hidden">
-                <button onclick="trainIA('WIN')" class="flex-1 bg-green-500/20 border border-green-500/30 py-4 rounded-2xl text-green-400 font-black text-[11px] uppercase">Win ✅</button>
-                <button onclick="trainIA('LOSS')" class="flex-1 bg-rose-500/20 border border-rose-500/30 py-4 rounded-2xl text-rose-400 font-black text-[11px] uppercase">Loss ❌</button>
-            </div>
-
-            <button onclick="back()" class="w-full mt-10 text-[10px] text-zinc-600 font-black uppercase tracking-[0.5em] text-center">Voltar ao Terminal</button>
-        </div>
+  <div id="signalsPage2" class="grid md:grid-cols-3 gap-6 my-10">
+     <div class="glass p-6 border border-red-600/20 text-center text-gray-300 col-span-3">
+      Aguardando análise do histórico para gerar sinais...
     </div>
+  </div>
 
-    <script>
-        let chart;
-        let brainData = { normal: null, vip: null };
-        const beep = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
+  <div class="glass p-6 mb-6 border border-red-600/20">
+    <label class="mb-2 block font-bold">Escolha a Casa de Aposta:</label>
+    <select id="betHouse" class="w-full p-3 rounded bg-black border border-gray-700">
+      <option value="ElephantBet">ElephantBet</option>
+      <option value="BantuBet">BantuBet</option>
+      <option value="888Bet">888Bet</option>
+      <option value="TopAposta">TopAposta</option>
+    </select>
+  </div>
 
-        function playSound() { beep.volume = 0.15; beep.play().catch(()=>{}); }
+  <div class="glass p-6 rounded-xl border border-red-600/20">
+    <h3 class="text-center font-bold mb-4">📊 Performance IA (Histórico Real)</h3>
+    <canvas id="chartPage2" height="120"></canvas>
+  </div>
 
-        setInterval(() => {
-            const time = new Intl.DateTimeFormat('pt-PT', { timeZone: 'Africa/Luanda', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date());
-            document.getElementById('clock').innerText = time;
-            if(document.getElementById('clockVip')) document.getElementById('clockVip').innerText = time;
-        }, 1000);
+  <div class="glass p-8 mt-10 border border-red-600/30 text-center">
+    <h2 class="text-2xl font-black text-red-600 mb-4">💎 ACESSO VIP</h2>
+    <p class="text-gray-300 mb-4">Sinais ROSA de alta probabilidade • IA treinada</p>
+    <input id="vipUser" placeholder="Usuário VIP" class="w-full mb-2 p-3 rounded bg-black border border-gray-700">
+    <input id="vipPass" type="password" placeholder="Senha VIP" class="w-full mb-4 p-3 rounded bg-black border border-gray-700">
+    <button class="btn-red neon-red w-full" onclick="loginVIP()">🔐 ENTRAR VIP</button>
+  </div>
+</div>
 
-        function login() { playSound(); document.getElementById('pageLogin').style.display='none'; document.getElementById('pageTerminal').classList.remove('hidden'); initChart(); }
-        function back() { playSound(); document.getElementById('pageVip').classList.add('hidden'); document.getElementById('pageTerminal').classList.remove('hidden'); }
-        function acessoVip() { playSound(); if(document.getElementById('vipPass').value === "230220") { document.getElementById('pageTerminal').classList.add('hidden'); document.getElementById('pageVip').classList.remove('hidden'); } else { alert("ACESSO REJEITADO!"); } }
+<div id="page3" class="hidden max-w-7xl mx-auto px-6 py-10">
+  <h1 class="text-3xl font-black text-red-600 mb-6 text-center">💎 VIP - Sinais ROSA</h1>
 
-        function storeImg(input, type) {
-            if(input.files[0]) {
-                brainData[type] = input.files[0];
-                const zone = document.getElementById(type === 'normal' ? 'dropZoneNormal' : 'dropZoneVip');
-                const btn = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
-                zone.style.borderColor = "#ff003c";
-                btn.disabled = false;
-                document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip').innerHTML = `> Mídia Identificada: ${input.files[0].name.substring(0,15)}...<br>> Aguardando processamento.`;
-                playSound();
-            }
-        }
+  <div class="glass p-4 mb-6 text-center border border-red-600/20">
+    <div id="clock3" class="text-red-500 font-bold text-xl"></div>
+  </div>
 
-        function analisarProcesso(type) {
-            playSound();
-            const log = document.getElementById(type === 'normal' ? 'logTextNormal' : 'logTextVip');
-            const laser = document.getElementById(type === 'normal' ? 'laserNormal' : 'laserVip');
-            const btn = document.getElementById(type === 'normal' ? 'btnAnalisarNormal' : 'btnAnalisarVip');
-            btn.disabled = true;
-            laser.style.display = 'block';
-            log.innerHTML = "> Injetando algoritmos de rede neural...<br>> Mapeando seeds da rodada...";
-            
-            setTimeout(() => {
-                laser.style.display = 'none';
-                log.innerHTML = "> Varredura Concluída.<br>> Renderizador Sniper Pronto.";
-                document.getElementById(type === 'normal' ? 'btnGetNormal' : 'btnGetVip').classList.remove('hidden');
-                showHistory(type);
-            }, 3000);
-        }
+  <div id="signalsVIP" class="grid md:grid-cols-3 gap-6 my-6"></div>
 
-        function showHistory(type) {
-            const grid = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
-            grid.innerHTML = ''; grid.classList.remove('hidden');
-            for(let i=0; i<12; i++) {
-                const val = (Math.random() * 3.5 + 1.1).toFixed(2);
-                const item = document.createElement('div');
-                item.className = 'bg-zinc-900 border border-zinc-800 rounded-lg text-center py-2 text-[10px] font-bold';
-                item.style.color = val >= 2 ? '#ff00ff' : '#3b82f6';
-                item.innerText = val + 'x';
-                grid.appendChild(item);
-            }
-        }
+  <div class="glass p-6 rounded-xl border border-red-600/20">
+    <h3 class="text-center font-bold mb-4">📊 Performance VIP (Aviator)</h3>
+    <canvas id="chartVIP" height="120"></canvas>
+  </div>
 
-        function getSignal(type) {
-            playSound();
-            const res = document.getElementById(type === 'normal' ? 'resultNormal' : 'resultVip');
-            const det = document.getElementById(type === 'normal' ? 'detailsNormal' : 'detailsVip');
-            const feed = document.getElementById(type === 'normal' ? 'feedbackNormal' : 'feedbackVip');
-            const status = document.getElementById(type === 'normal' ? 'statusNormal' : '');
-            const hist = document.getElementById(type === 'normal' ? 'historyNormal' : 'historyVip');
-            
-            res.classList.add('hidden');
-            det.classList.add('hidden');
-            feed.classList.add('hidden');
-            hist.classList.add('hidden');
-            if(status) status.classList.remove('hidden');
+  <div class="glass p-6 mt-6 text-center border border-red-600/30">
+    <p class="text-gray-300">Usuário VIP: William | Passe: 230220</p>
+    <button class="btn-gray mt-4" onclick="location.reload()">⬅ VOLTAR AO INÍCIO</button>
+  </div>
 
-            setTimeout(() => {
-                if(status) status.classList.add('hidden');
-                res.classList.remove('hidden');
-                det.classList.remove('hidden');
-                feed.classList.remove('hidden');
-                
-                if(type === 'normal') {
-                    const val = (1.6 + Math.random() * 5).toFixed(2);
-                    res.innerText = val + "x";
-                    const rangeTime = new Date(new Date().getTime() + 120000);
-                    document.getElementById('rangeNormal').innerText = rangeTime.toLocaleTimeString('pt-PT');
-                    document.getElementById('minNormal').innerText = (val * 0.9).toFixed(2) + "x";
-                    document.getElementById('maxNormal').innerText = (val * 1.18).toFixed(2) + "x";
-                    updateChart(val);
-                } else {
-                    const val = (18 + Math.random() * 40).toFixed(2);
-                    res.innerText = val + "x";
-                    document.getElementById('maxVip').innerText = (val * 1.25).toFixed(2) + "x";
-                }
-            }, 600);
-        }
+  <div class="glass p-6 mb-6 mt-10 border border-red-600/20 text-center">
+    <label class="block mb-2 font-bold">Enviar histórico Aviator VIP (PNG/JPG)</label>
+    <input type="file" id="uploadHistoryVIP" accept="image/*" class="mb-4">
+    <button class="btn-red neon-red" onclick="analyzeHistoryVIP()">📊 ANALISAR VIP</button>
+    <p id="historyResultVIP" class="mt-2 text-gray-300"></p>
+  </div>
+</div>
 
-        function initChart() {
-            const ctx = document.getElementById('chartNormal').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: ['','','','',''], datasets: [{ data: [1.2, 2.5, 1.8, 4.2, 2.1], borderColor: '#ff003c', tension: 0.5, borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(255, 0, 60, 0.05)' }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-            });
-        }
+<script>
+const BACKEND_URL = "https://willboot-backend-1.onrender.com";
 
-        function updateChart(val) {
-            chart.data.datasets[0].data.push(val);
-            chart.data.datasets[0].data.shift();
-            chart.update();
-        }
+/** RELÓGIOS **/
+setInterval(()=>{
+  const now = new Date().toLocaleString("pt-PT",{timeZone:"Africa/Luanda"});
+  if(document.getElementById("clock2")) clock2.innerHTML="🕐 "+now;
+  if(document.getElementById("clock3")) clock3.innerHTML="🕐 "+now;
+},1000);
 
-        function trainIA(s) { playSound(); alert(s === 'WIN' ? "SINAL CONFIRMADO!" : "AJUSTANDO ALGORITMO..."); }
-    </script>
+/** LOGIN (admin / 1234) **/
+function loginMain(){
+  const u=userMain.value, p=passMain.value;
+  if(u === "admin" && p === "1234"){
+    localStorage.setItem("mainAccess","true");
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.remove("hidden");
+    loadHistoryPage2();
+  } else { alert("Acesso negado."); }
+}
+function logoutMain(){
+  localStorage.removeItem("mainAccess");
+  location.reload();
+}
+if(localStorage.getItem("mainAccess")) {
+  window.onload = () => {
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.remove("hidden");
+    loadHistoryPage2();
+  }
+}
+
+/** LÓGICA DE NORMALIZAÇÃO E TRATAMENTO **/
+function pick(obj, keys, fallback=null){
+  for(const k of keys){
+    if(obj && Object.prototype.hasOwnProperty.call(obj, k)) return obj[k];
+  }
+  return fallback;
+}
+
+function normalizeAnalyzeResponse(data){
+  const analysis = pick(data, ["analysis","analise","result"], {}) || {};
+  let sinal = String(pick(analysis, ["sinal","signal"], "")).toUpperCase();
+  const mult = parseFloat(pick(analysis, ["mult","multiplo"], 1.0));
+  
+  // Forçar lógica de cores baseada no multiplicador
+  if(mult < 2.0) sinal = "AZUL";
+  else if(mult >= 2.0 && mult < 10.0) sinal = "ROXO";
+  else sinal = "ROSA";
+
+  return {
+    sinal: sinal,
+    mult: mult.toFixed(2),
+    azul: pick(analysis, ["azul_pct","azul"], 0),
+    roxo: pick(analysis, ["roxo_pct","roxo"], 0),
+    rosa: pick(analysis, ["rosa_pct","rosa"], 0),
+    conf: pick(analysis, ["confianca","conf"], 50)
+  };
+}
+
+/** GRÁFICOS **/
+let historyPage2 = JSON.parse(localStorage.getItem("historyPage2")||"[]");
+let chartPage2Obj;
+
+function loadHistoryPage2(){ updateChartPage2(); }
+
+function updateChartPage2(){
+  if(historyPage2.length>50) historyPage2=historyPage2.slice(-50);
+  localStorage.setItem("historyPage2",JSON.stringify(historyPage2));
+  if(chartPage2Obj) chartPage2Obj.destroy();
+  chartPage2Obj = new Chart(chartPage2.getContext("2d"),{
+    type:"line",
+    data:{
+      labels:historyPage2.map((_,i)=>i+1),
+      datasets:[{
+        data:historyPage2, borderColor:"#dc2626", backgroundColor:"rgba(220,38,38,.2)", tension:.4, fill:true
+      }]
+    },
+    options:{plugins:{legend:{display:false}}, scales:{y:{min:0,max:100}}}
+  });
+}
+
+/** ANALISAR E GERAR SINAIS (TUDO EM UM) **/
+let lastAnalyze = null;
+
+async function analyzeHistory(){
+  const file = document.getElementById("uploadHistory").files[0];
+  if(!file){ alert("Selecione uma imagem do histórico primeiro!"); return; }
+
+  document.getElementById("historyResult").innerHTML = "⌛ PROCESSANDO HISTÓRICO...";
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: formData });
+    const data = await res.json();
+    lastAnalyze = normalizeAnalyzeResponse(data);
+    
+    document.getElementById("historyResult").innerHTML = "✅ ANÁLISE CONCLUÍDA!";
+    renderSignalsPage2(lastAnalyze);
+    
+    // Atualiza gráfico
+    historyPage2.push(lastAnalyze.conf);
+    updateChartPage2();
+  } catch(err) {
+    document.getElementById("historyResult").innerHTML = "❌ ERRO AO CONECTAR SERVIDOR.";
+  }
+}
+
+function renderSignalsPage2(info){
+  const cards = [
+    {t:"AZUL", c:"blue-500", pct: info.azul, limit: "1.00x - 1.99x"},
+    {t:"ROXO", c:"purple-500", pct: info.roxo, limit: "2.00x - 9.99x"}
+  ];
+
+  // Filtramos para não mostrar Rosa na página normal se quiser manter exclusivo
+  signalsPage2.innerHTML = cards.map(x=>{
+    const recommended = (info.sinal === x.t);
+    return `
+      <div class="signal-card glass ${recommended ? 'border-white scale-105' : 'border-gray-800 opacity-50'}">
+        <h3 class="font-bold text-${x.c}">${recommended ? '🔥 ' : ''}SINAL ${x.t}</h3>
+        <div class="text-4xl font-black my-2">${recommended ? '×'+info.mult : '---'}</div>
+        <p class="text-xs text-gray-400">${x.limit}</p>
+        <p class="mt-2 text-sm">Precisão: ${x.pct}%</p>
+      </div>`;
+  }).join("");
+  
+  // Adiciona o aviso de Rosa para VIP
+  if(info.sinal === "ROSA") {
+     signalsPage2.innerHTML += `
+      <div class="signal-card glass border-pink-600 bg-pink-900/10 col-span-1">
+        <h3 class="font-bold text-pink-400">💎 SINAL ROSA</h3>
+        <p class="text-xs">Disponível apenas no Painel VIP</p>
+      </div>`;
+  }
+}
+
+/** VIP (William / 230220) **/
+function loginVIP(){
+  const u=vipUser.value, p=vipPass.value;
+  if(u === "William" && p === "230220"){
+    document.getElementById("page2").classList.add("hidden");
+    document.getElementById("page3").classList.remove("hidden");
+  } else { alert("Acesso VIP negado."); }
+}
+
+async function analyzeHistoryVIP(){
+  const file = document.getElementById("uploadHistoryVIP").files[0];
+  if(!file){ return; }
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch(`${BACKEND_URL}/analyze`, { method: "POST", body: formData });
+    const data = await res.json();
+    const info = normalizeAnalyzeResponse(data);
+    
+    signalsVIP.innerHTML = `
+      <div class="signal-card glass border-pink-500 col-span-3">
+        <h1 class="text-pink-500 font-bold">🚀 ENTRADA ROSA CONFIRMADA</h1>
+        <div class="text-6xl font-black my-4">×${info.mult}</div>
+        <p>Probabilidade de acerto: ${info.rosa}%</p>
+      </div>`;
+  } catch(e) {}
+}
+</script>
 </body>
 </html>
